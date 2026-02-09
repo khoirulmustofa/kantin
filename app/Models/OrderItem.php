@@ -6,18 +6,23 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductCategory extends Model
+class OrderItem extends Model
 {
     use HasUuids, SoftDeletes;
 
-    protected $table = 'product_categories';
+    protected $table = 'order_items';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
     protected $guarded = [];
 
-    public function products()
+    public function product()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }

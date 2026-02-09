@@ -19,6 +19,7 @@ export default {
             },
         },
     },
+    darkMode: ['selector', '[class~="my-app-dark"]'],
 
-    plugins: [PrimeUI,forms],
+    plugins: [PrimeUI, forms],
 };

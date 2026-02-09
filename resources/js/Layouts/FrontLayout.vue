@@ -23,7 +23,7 @@ const closeAll = () => {
 
 <template>
     <div class="min-h-screen flex flex-col font-sans text-gray-900">
-        <header class="bg-gray-dark sticky top-0 z-50">
+        <header class="bg-blue-900 sticky top-0 z-50">
             <div class="container mx-auto flex justify-between items-center py-4 px-4 lg:px-0">
                 <Link href="/" class="flex items-center">
                     <div>
@@ -100,7 +100,7 @@ const closeAll = () => {
                         </li>
 
                         <li>
-                            <Link href="/shop" class="hover:text-secondary font-semibold">Shop</Link>
+                            <Link href="/produk" class="hover:text-secondary font-semibold">Produk</Link>
                         </li>
                         <li>
                             <Link href="/checkout" class="hover:text-secondary font-semibold">Checkout</Link>

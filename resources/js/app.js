@@ -1,5 +1,6 @@
-import '../css/app.css';
+import 'primeicons/primeicons.css';
 import './bootstrap';
+import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -22,14 +23,18 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(PrimeVue, {
                 theme: {
-                    preset: Aura
-                }
+                    preset: Aura,
+                    options: {
+                        darkModeSelector: '.my-app-dark'
+                    }
+                },
+                ripple: true
             })
             .use(plugin)
             .use(ZiggyVue)
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#2ff507ff',
     },
 });

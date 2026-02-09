@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_categories', function (Blueprint $table) {
+        Schema::create('financial_accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('image')->nullable();
+            $table->string('name'); // Misal: "Bank BCA", "Kas Operasional"
+            $table->string('account_number')->nullable(); // No Rekening
+            $table->decimal('balance', 15, 2)->default(0); // Saldo saat ini
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_categories');
+        Schema::dropIfExists('financial_accounts');
     }
 };

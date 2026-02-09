@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductCategory extends Model
+class FinancialCategory extends Model
 {
     use HasUuids, SoftDeletes;
 
-    protected $table = 'product_categories';
+    protected $table = 'financial_categories';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
     protected $guarded = [];
 
-    public function products()
+    public function mutations()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(FinancialMutation::class);
     }
 }
