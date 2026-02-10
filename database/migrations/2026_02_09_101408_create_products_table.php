@@ -19,11 +19,11 @@ return new class extends Migration
             $table->decimal('price', 12, 2);
             $table->integer('stock')->default(0);
             $table->boolean('is_active')->default(true);
-            $table->uuid('category_id')->index();
+            $table->uuid('product_category_id')->index();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('category_id')->references('id')->on('product_categories')->onDelete('cascade');
+            $table->foreign('product_category_id')->references('id')->on('product_categories')->onDelete('cascade');
         });
     }
 

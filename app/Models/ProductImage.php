@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductImage extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
 
     protected $table = 'product_images';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $guarded = [];
 

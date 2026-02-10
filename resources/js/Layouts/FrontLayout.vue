@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { useCartStore } from '@/Stores/cart';
+import { formatCurrencyIndo } from '@/Utils/formatter';
+
+const cartStore = useCartStore();
 
 // State untuk UI
 const isMobileMenuOpen = ref(false);
@@ -19,6 +23,9 @@ const closeAll = () => {
     activeDropdown.value = null;
     isSearchOpen.value = false;
 };
+
+const menuActive = defineModel('menuActive');
+const title = defineModel('title');
 </script>
 
 <template>
@@ -117,28 +124,70 @@ const closeAll = () => {
                         Login</Link>
 
                     <div class="relative group">
-                        <Link href="/cart">
-                            <img src="assets/images/cart-shopping.svg" alt="Cart"
+                        <Link :href="route('front.cart.index')" class="relative">
+                            <img src="/assets/images/cart-shopping.svg" alt="Cart"
                                 class="h-6 w-6 transition group-hover:scale-110 brightness-200">
+                            <span v-if="cartStore.totalItems > 0"
+                                class="absolute -top-2 -right-2 bg-rose-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-blue-900 shadow-lg">
+                                {{ cartStore.totalItems }}
+                            </span>
                         </Link>
+                        <!-- Mini Cart Dropdown -->
                         <div
-                            class="absolute right-0 mt-1 w-80 bg-white shadow-xl p-4 rounded hidden group-hover:block text-black border-t-2 border-primary">
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between pb-4 border-b">
-                                    <div class="flex items-center">
-                                        <img src="/assets/images/single-product/1.jpg"
-                                            class="h-12 w-12 object-cover rounded mr-2">
+                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-rose-600 z-[60] translate-y-2 group-hover:translate-y-0">
+                            <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 px-1">My Cart
+                            </h3>
+
+                            <div v-if="cartStore.items.length > 0"
+                                class="space-y-6 max-h-96 overflow-y-auto pr-2 no-scrollbar">
+                                <div v-for="item in cartStore.items" :key="item.id"
+                                    class="flex items-center justify-between group/item">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+                                            <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
+                                                class="w-full h-full object-cover">
+                                            <div v-else
+                                                class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
+                                                <i class="pi pi-image text-xl"></i>
+                                            </div>
+                                        </div>
                                         <div>
-                                            <p class="font-semibold text-sm">Summer dress</p>
-                                            <p class="text-xs">Qty: 1</p>
+                                            <p
+                                                class="font-black text-xs uppercase tracking-tight text-gray-900 line-clamp-1 mb-1">
+                                                {{ item.name }}</p>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
+                                                }}</span>
+                                                <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+                                                <span class="text-xs font-black text-rose-600">{{
+                                                    formatCurrencyIndo(item.price) }}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p class="font-semibold">$25.00</p>
+                                    <button @click="cartStore.removeItem(item.id)"
+                                        class="text-gray-300 hover:text-rose-600 transition-colors opacity-0 group-hover/item:opacity-100">
+                                        <i class="pi pi-times text-xs"></i>
+                                    </button>
+                                </div>
+
+                                <div class="pt-6 border-t border-gray-100">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <span
+                                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total</span>
+                                        <span class="text-xl font-black text-gray-900 tracking-tighter">{{
+                                            formatCurrencyIndo(cartStore.totalPrice) }}</span>
+                                    </div>
+                                    <Link :href="route('front.cart.index')"
+                                        class="block text-center bg-gray-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black hover:shadow-xl hover:shadow-gray-200 transition-all active:scale-95">
+                                        Go to Checkout</Link>
                                 </div>
                             </div>
-                            <Link href="/cart"
-                                class="block text-center mt-4 bg-primary text-white py-2 rounded-full font-semibold hover:bg-black transition">
-                                Go to Cart</Link>
+
+                            <div v-else class="flex flex-col items-center justify-center py-10 opacity-50 italic">
+                                <i class="pi pi-shopping-cart text-4xl mb-4"></i>
+                                <p class="text-xs font-bold uppercase tracking-widest text-center">Cart is empty</p>
+                            </div>
                         </div>
                     </div>
 
@@ -209,7 +258,7 @@ const closeAll = () => {
             </transition>
         </header>
 
-       <slot />
+        <slot />
 
         <footer class="bg-white border-t border-gray-200 pt-20">
             <div class="container mx-auto px-4 py-12">
@@ -248,7 +297,7 @@ const closeAll = () => {
                                 <Link href="/login" class="hover:text-amber-500">My Account</Link>
                             </li>
                             <li>
-                                <Link href="/cart" class="hover:text-amber-500">Cart</Link>
+                                <Link :href="route('front.cart.index')" class="hover:text-amber-500">Cart</Link>
                             </li>
                             <li>
                                 <Link href="/checkout" class="hover:text-amber-500">Checkout</Link>

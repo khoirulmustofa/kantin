@@ -1,380 +1,78 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
+import Chart from 'primevue/chart';
 
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { formatCurrencyIndo } from '@/Utils/formatter';
 
 const props = defineProps({
     menu: String,
     title: String,
+    stats: Object,
+    chartData: Object,
+    recent_products: Array,
 });
 
-const products = ref(
-    [
-        {
-            id: '1000',
-            code: 'f230fh0g3',
-            name: 'Bamboo Watch',
-            description: 'Product Description',
-            image: 'bamboo-watch.jpg',
-            price: 65,
-            category: 'Accessories',
-            quantity: 24,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
+const chartOptions = ref({
+    maintainAspectRatio: false,
+    aspectRatio: 0.8,
+    plugins: {
+        legend: {
+            labels: {
+                color: '#94a3b8',
+                usePointStyle: true,
+                font: {
+                    weight: 'bold',
+                    size: 11
+                }
+            }
         },
-        {
-            id: '1001',
-            code: 'nvklal433',
-            name: 'Black Watch',
-            description: 'Product Description',
-            image: 'black-watch.jpg',
-            price: 72,
-            category: 'Accessories',
-            quantity: 61,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1002',
-            code: 'zz21cz3c1',
-            name: 'Blue Band',
-            description: 'Product Description',
-            image: 'blue-band.jpg',
-            price: 79,
-            category: 'Fitness',
-            quantity: 2,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 3
-        },
-        {
-            id: '1003',
-            code: '244wgerg2',
-            name: 'Blue T-Shirt',
-            description: 'Product Description',
-            image: 'blue-t-shirt.jpg',
-            price: 29,
-            category: 'Clothing',
-            quantity: 25,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
-        },
-        {
-            id: '1004',
-            code: 'h456wer53',
-            name: 'Bracelet',
-            description: 'Product Description',
-            image: 'bracelet.jpg',
-            price: 15,
-            category: 'Accessories',
-            quantity: 73,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1005',
-            code: 'av2231fwg',
-            name: 'Brown Purse',
-            description: 'Product Description',
-            image: 'brown-purse.jpg',
-            price: 120,
-            category: 'Accessories',
-            quantity: 0,
-            inventoryStatus: 'OUTOFSTOCK',
-            rating: 4
-        },
-        {
-            id: '1006',
-            code: 'bib36pfvm',
-            name: 'Chakra Bracelet',
-            description: 'Product Description',
-            image: 'chakra-bracelet.jpg',
-            price: 32,
-            category: 'Accessories',
-            quantity: 5,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 3
-        },
-        {
-            id: '1007',
-            code: 'mbvjkgip5',
-            name: 'Galaxy Earrings',
-            description: 'Product Description',
-            image: 'galaxy-earrings.jpg',
-            price: 34,
-            category: 'Accessories',
-            quantity: 23,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
-        },
-        {
-            id: '1008',
-            code: 'vbb124btr',
-            name: 'Game Controller',
-            description: 'Product Description',
-            image: 'game-controller.jpg',
-            price: 99,
-            category: 'Electronics',
-            quantity: 2,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 4
-        },
-        {
-            id: '1009',
-            code: 'cm230f032',
-            name: 'Gaming Set',
-            description: 'Product Description',
-            image: 'gaming-set.jpg',
-            price: 299,
-            category: 'Electronics',
-            quantity: 63,
-            inventoryStatus: 'INSTOCK',
-            rating: 3
-        },
-        {
-            id: '1010',
-            code: 'plb34234v',
-            name: 'Gold Phone Case',
-            description: 'Product Description',
-            image: 'gold-phone-case.jpg',
-            price: 24,
-            category: 'Accessories',
-            quantity: 0,
-            inventoryStatus: 'OUTOFSTOCK',
-            rating: 4
-        },
-        {
-            id: '1011',
-            code: '4920nnc2d',
-            name: 'Green Earbuds',
-            description: 'Product Description',
-            image: 'green-earbuds.jpg',
-            price: 89,
-            category: 'Electronics',
-            quantity: 23,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1012',
-            code: '250vm23cc',
-            name: 'Green T-Shirt',
-            description: 'Product Description',
-            image: 'green-t-shirt.jpg',
-            price: 49,
-            category: 'Clothing',
-            quantity: 74,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
-        },
-        {
-            id: '1013',
-            code: 'fldsmn31b',
-            name: 'Grey T-Shirt',
-            description: 'Product Description',
-            image: 'grey-t-shirt.jpg',
-            price: 48,
-            category: 'Clothing',
-            quantity: 0,
-            inventoryStatus: 'OUTOFSTOCK',
-            rating: 3
-        },
-        {
-            id: '1014',
-            code: 'waas1x2as',
-            name: 'Headphones',
-            description: 'Product Description',
-            image: 'headphones.jpg',
-            price: 175,
-            category: 'Electronics',
-            quantity: 8,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 5
-        },
-        {
-            id: '1015',
-            code: 'vb34btbg5',
-            name: 'Light Green T-Shirt',
-            description: 'Product Description',
-            image: 'light-green-t-shirt.jpg',
-            price: 49,
-            category: 'Clothing',
-            quantity: 34,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1016',
-            code: 'k8l6j58jl',
-            name: 'Lime Band',
-            description: 'Product Description',
-            image: 'lime-band.jpg',
-            price: 79,
-            category: 'Fitness',
-            quantity: 12,
-            inventoryStatus: 'INSTOCK',
-            rating: 3
-        },
-        {
-            id: '1017',
-            code: 'v435nn85n',
-            name: 'Mini Speakers',
-            description: 'Product Description',
-            image: 'mini-speakers.jpg',
-            price: 85,
-            category: 'Clothing',
-            quantity: 42,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1018',
-            code: '09zx9c0zc',
-            name: 'Painted Phone Case',
-            description: 'Product Description',
-            image: 'painted-phone-case.jpg',
-            price: 56,
-            category: 'Accessories',
-            quantity: 41,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
-        },
-        {
-            id: '1019',
-            code: 'mnb5mb2m5',
-            name: 'Pink Band',
-            description: 'Product Description',
-            image: 'pink-band.jpg',
-            price: 79,
-            category: 'Fitness',
-            quantity: 63,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1020',
-            code: 'r23fwf2w3',
-            name: 'Pink Purse',
-            description: 'Product Description',
-            image: 'pink-purse.jpg',
-            price: 110,
-            category: 'Accessories',
-            quantity: 0,
-            inventoryStatus: 'OUTOFSTOCK',
-            rating: 4
-        },
-        {
-            id: '1021',
-            code: 'pxpzczo23',
-            name: 'Purple Band',
-            description: 'Product Description',
-            image: 'purple-band.jpg',
-            price: 79,
-            category: 'Fitness',
-            quantity: 6,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 3
-        },
-        {
-            id: '1022',
-            code: '2c42cb5cb',
-            name: 'Purple Gemstone Necklace',
-            description: 'Product Description',
-            image: 'purple-gemstone-necklace.jpg',
-            price: 45,
-            category: 'Accessories',
-            quantity: 62,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1023',
-            code: '5k43kkk23',
-            name: 'Purple T-Shirt',
-            description: 'Product Description',
-            image: 'purple-t-shirt.jpg',
-            price: 49,
-            category: 'Clothing',
-            quantity: 2,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 5
-        },
-        {
-            id: '1024',
-            code: 'lm2tny2k4',
-            name: 'Shoes',
-            description: 'Product Description',
-            image: 'shoes.jpg',
-            price: 64,
-            category: 'Clothing',
-            quantity: 0,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1025',
-            code: 'nbm5mv45n',
-            name: 'Sneakers',
-            description: 'Product Description',
-            image: 'sneakers.jpg',
-            price: 78,
-            category: 'Clothing',
-            quantity: 52,
-            inventoryStatus: 'INSTOCK',
-            rating: 4
-        },
-        {
-            id: '1026',
-            code: 'zx23zc42c',
-            name: 'Teal T-Shirt',
-            description: 'Product Description',
-            image: 'teal-t-shirt.jpg',
-            price: 49,
-            category: 'Clothing',
-            quantity: 3,
-            inventoryStatus: 'LOWSTOCK',
-            rating: 3
-        },
-        {
-            id: '1027',
-            code: 'acvx872gc',
-            name: 'Yellow Earbuds',
-            description: 'Product Description',
-            image: 'yellow-earbuds.jpg',
-            price: 89,
-            category: 'Electronics',
-            quantity: 35,
-            inventoryStatus: 'INSTOCK',
-            rating: 3
-        },
-        {
-            id: '1028',
-            code: 'tx125ck42',
-            name: 'Yoga Mat',
-            description: 'Product Description',
-            image: 'yoga-mat.jpg',
-            price: 20,
-            category: 'Fitness',
-            quantity: 15,
-            inventoryStatus: 'INSTOCK',
-            rating: 5
-        },
-        {
-            id: '1029',
-            code: 'gwuby345v',
-            name: 'Yoga Set',
-            description: 'Product Description',
-            image: 'yoga-set.jpg',
-            price: 20,
-            category: 'Fitness',
-            quantity: 25,
-            inventoryStatus: 'INSTOCK',
-            rating: 8
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            titleColor: '#1e293b',
+            bodyColor: '#475569',
+            borderColor: '#e2e8f0',
+            borderWidth: 1,
+            padding: 12,
+            boxPadding: 6,
+            usePointStyle: true,
         }
-    ]);
-
-
-
+    },
+    scales: {
+        x: {
+            ticks: {
+                color: '#94a3b8',
+                font: {
+                    size: 10,
+                    weight: 'bold'
+                }
+            },
+            grid: {
+                display: false,
+            }
+        },
+        y: {
+            ticks: {
+                color: '#94a3b8',
+                callback: function (value) {
+                    if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                    if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
+                    return value;
+                },
+                font: {
+                    size: 10,
+                    weight: 'bold'
+                }
+            },
+            grid: {
+                color: 'rgba(148, 163, 184, 0.1)',
+            }
+        }
+    }
+});
 </script>
 
 <template>
@@ -382,13 +80,174 @@ const products = ref(
     <Head :title="props.title" />
 
     <AdminLayout v-model:menuActive="props.menu" v-model:title="props.title">
+        <!-- Stats Recap Section -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
+            <!-- Total In Card -->
+            <div
+                class="relative overflow-hidden group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300">
+                <div
+                    class="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.07] group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500">
+                    <i class="pi pi-arrow-down-left text-7xl text-emerald-600"></i>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
+                        <i class="pi pi-arrow-down-left text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total Income</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter mb-1">
+                        {{ formatCurrencyIndo(stats?.total_in || 0) }}
+                    </h2>
+                    <p
+                        class="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full w-fit">
+                        Lifetime Revenue
+                    </p>
+                </div>
+            </div>
+
+            <!-- Total Out Card -->
+            <div
+                class="relative overflow-hidden group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:shadow-rose-500/10 transition-all duration-300">
+                <div
+                    class="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.07] group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500">
+                    <i class="pi pi-arrow-up-right text-7xl text-rose-600"></i>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-inner">
+                        <i class="pi pi-arrow-up-right text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total Expense</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter mb-1">
+                        {{ formatCurrencyIndo(stats?.total_out || 0) }}
+                    </h2>
+                    <p
+                        class="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-full w-fit">
+                        Lifetime Spending
+                    </p>
+                </div>
+            </div>
+
+            <!-- Net Balance Card -->
+            <div
+                class="relative overflow-hidden group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300">
+                <div
+                    class="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.07] group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500">
+                    <i class="pi pi-wallet text-7xl text-blue-600"></i>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-inner">
+                        <i class="pi pi-wallet text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Net Balance</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter mb-1">
+                        {{ formatCurrencyIndo(stats?.total_balance || 0) }}
+                    </h2>
+                    <p
+                        class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full w-fit">
+                        Available Resources
+                    </p>
+                </div>
+            </div>
+
+            <div
+                class="relative overflow-hidden group p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300">
+                <div
+                    class="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.07] group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500">
+                    <i class="pi pi-shopping-cart text-7xl text-blue-600"></i>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-inner">
+                        <i class="pi pi-shopping-cart text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total Orders</span>
+                </div>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter mb-1">
+                        {{ stats?.total_orders || 0 }}
+                    </h2>
+                    <p
+                        class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded-full w-fit">
+                        Total Orders
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Chart Section -->
         <div
-            class="card p-2 sm:p-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-300 min-w-0">
-            <DataTable :value="products" scrollable tableStyle="min-width: 50rem" class="p-datatable-sm" stripedRows>
-                <Column field="code" header="Code" style="min-width: 10rem"></Column>
-                <Column field="name" header="Name" style="min-width: 15rem"></Column>
-                <Column field="category" header="Category" style="min-width: 10rem"></Column>
-                <Column field="quantity" header="Quantity" style="min-width: 10rem"></Column>
+            class="card p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm mb-8">
+            <div class="flex flex-col mb-6">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white tracking-tight">Financial Performance</h3>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Revenue vs Expenses (Last 30
+                    Days)</p>
+            </div>
+            <div class="h-[30rem]">
+                <Chart type="bar" :data="props.chartData" :options="chartOptions" class="h-full" />
+            </div>
+        </div>
+
+        <div
+            class="card p-4 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300">
+            <div class="flex items-center justify-between mb-6 px-2">
+                <div class="flex flex-col">
+                    <h3 class="text-xl font-black text-gray-900 dark:text-white tracking-tight">Recent Products</h3>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Latest Inventory Additions
+                    </p>
+                </div>
+                <Link :href="route('admin.products.index')">
+                    <Button label="View All" icon="pi pi-external-link" text severity="secondary" size="small"
+                        class="font-black text-[10px] uppercase tracking-widest" />
+                </Link>
+            </div>
+
+            <DataTable :value="recent_products" scrollable tableStyle="min-width: 50rem" class="p-datatable-sm"
+                stripedRows>
+                <template #empty>
+                    <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                        <i class="pi pi-box text-4xl mb-2 opacity-20"></i>
+                        <p class="text-xs font-bold uppercase tracking-wider">No products found</p>
+                    </div>
+                </template>
+                <Column field="name" header="Name" style="min-width: 15rem">
+                    <template #body="slotProps">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-gray-900 dark:text-white">{{ slotProps.data.name }}</span>
+                            <span class="text-[10px] text-gray-400 font-mono uppercase">{{ slotProps.data.slug }}</span>
+                        </div>
+                    </template>
+                </Column>
+                <Column field="category.name" header="Category" style="min-width: 10rem">
+                    <template #body="slotProps">
+                        <Tag :value="slotProps.data.category?.name || 'Uncategorized'" severity="info" rounded
+                            class="text-[9px] uppercase font-black" />
+                    </template>
+                </Column>
+                <Column field="price" header="Price" style="min-width: 10rem">
+                    <template #body="slotProps">
+                        <span class="font-black text-gray-700 dark:text-gray-300">{{
+                            formatCurrencyIndo(slotProps.data.price) }}</span>
+                    </template>
+                </Column>
+                <Column field="stock" header="In Stock" style="min-width: 10rem">
+                    <template #body="slotProps">
+                        <div class="flex items-center gap-2">
+                            <span :class="[
+                                'w-2 h-2 rounded-full',
+                                slotProps.data.stock > 10 ? 'bg-emerald-500' : slotProps.data.stock > 0 ? 'bg-amber-500' : 'bg-rose-500'
+                            ]"></span>
+                            <span class="font-bold">{{ slotProps.data.stock }}</span>
+                        </div>
+                    </template>
+                </Column>
             </DataTable>
         </div>
     </AdminLayout>

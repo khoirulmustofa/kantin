@@ -159,8 +159,8 @@ const confirmLogout = () => {
                         <div class="flex flex-col items-end hidden lg:flex">
                             <span class="text-xs font-bold text-gray-800 dark:text-gray-100 leading-none">{{
                                 page.props.auth.user.name }}</span>
-                            <span
-                                class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">Admin</span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">{{
+                                page.props.auth.user.role }}</span>
                         </div>
                         <Avatar :label="page.props.auth.user.name.charAt(0)"
                             class="!bg-emerald-500 !text-white !font-bold shadow-sm group-hover:scale-105 transition-transform"

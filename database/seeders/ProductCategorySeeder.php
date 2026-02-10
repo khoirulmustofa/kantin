@@ -12,6 +12,13 @@ class ProductCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\ProductCategory::create([
+            'name' => 'Makanan',
+            'slug' => 'makanan',
+        ]);
+        \App\Models\ProductCategory::create([
+            'name' => 'Minuman',
+            'slug' => 'minuman',
+        ]);
     }
 }

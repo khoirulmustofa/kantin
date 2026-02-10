@@ -20,19 +20,70 @@ const items = ref([
         label: 'Master Data',
         items: [
             {
-                label: 'User Management',
+                label: 'User',
                 icon: 'pi pi-users',
                 route: 'admin.users.index',
                 menu: 'users'
             },
+
         ]
     },
     {
-        label: 'Components',
+        label: 'Koperasi',
         items: [
-            { label: 'Form Layout', icon: 'pi pi-id-card', to: '/formlayout' },
-            { label: 'Input', icon: 'pi pi-check-square', to: '/input' },
-            { label: 'Button', icon: 'pi pi-mobile', to: '/button' },
+            {
+                label: 'Product Category',
+                icon: 'pi pi-list',
+                route: 'admin.product-categories.index',
+                menu: 'product-categories'
+            },
+            {
+                label: 'Product',
+                icon: 'pi pi-tag',
+                route: 'admin.products.index',
+                menu: 'products'
+            },
+            {
+                label: 'Order',
+                icon: 'pi pi-shopping-bag',
+                route: 'admin.orders.index',
+                menu: 'orders'
+            },
+        ]
+    },
+    {
+        label: 'Cash Flow',
+        items: [
+            {
+                label: 'Account',
+                icon: 'pi pi-wallet',
+                route: 'admin.financial_accounts.index',
+                menu: 'financial-accounts'
+            },
+            {
+                label: 'Category',
+                icon: 'pi pi-tags',
+                route: 'admin.financial_categories.index',
+                menu: 'financial-categories'
+            },
+            {
+                label: 'Cash Inflow',
+                icon: 'pi pi-plus-circle',
+                route: 'admin.financial_cash_in.index',
+                menu: 'financial-cash-in'
+            },
+            {
+                label: 'Cash Outflow',
+                icon: 'pi pi-minus-circle',
+                route: 'admin.financial_cash_out.index',
+                menu: 'financial-cash-out'
+            },
+            {
+                label: 'Transaction History',
+                icon: 'pi pi-history',
+                route: 'admin.financial_transactions.index',
+                menu: 'financial-transactions'
+            },
         ]
     },
     {

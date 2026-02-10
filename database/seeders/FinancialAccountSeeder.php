@@ -12,6 +12,17 @@ class FinancialAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\FinancialAccount::create([
+            'name' => 'Cash',
+            'account_number' => 'cash',
+            'balance' => 0,
+            'is_active' => true,
+        ]);
+        \App\Models\FinancialAccount::create([
+            'name' => 'Bank',
+            'account_number' => '1234567890',
+            'balance' => 0,
+            'is_active' => true,
+        ]);
     }
 }

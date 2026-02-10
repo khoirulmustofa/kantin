@@ -11,7 +11,10 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
+import { createPinia } from 'pinia';
 
+const pinia = createPinia();
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -35,8 +38,10 @@ createInertiaApp({
             })
             .use(plugin)
             .use(ZiggyVue)
+            .use(pinia)
             .use(ConfirmationService)
             .use(ToastService)
+            .directive('tooltip', Tooltip)
             .mount(el);
     },
     progress: {

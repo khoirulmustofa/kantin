@@ -12,11 +12,13 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import FrontLayout from '@/Layouts/FrontLayout.vue';
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    menu:String,
+    title:String,
 });
 
 onMounted(() => {
@@ -45,7 +47,7 @@ onMounted(() => {
 
     <Head title="Welcome" />
 
-    <FrontLayout>
+   <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
 
     <!-- Slider -->
     <section id="product-slider" class="relative">
