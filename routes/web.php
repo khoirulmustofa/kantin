@@ -152,6 +152,20 @@ Route::middleware('auth')->group(function () {
         ->name('admin.purchase-orders.destroy');
     Route::post('/admin/purchase-orders/{id}/sync-finance', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'syncToFinance'])
         ->name('admin.purchase-orders.sync_finance');
+
+    // Role routes
+    Route::get('/admin/roles', [\App\Http\Controllers\Admin\RoleController::class, 'index'])
+        ->name('admin.roles.index');
+    Route::get('/admin/roles/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])
+        ->name('admin.roles.create');
+    Route::post('/admin/roles', [\App\Http\Controllers\Admin\RoleController::class, 'store'])
+        ->name('admin.roles.store');
+    Route::get('/admin/roles/{id}/edit', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])
+        ->name('admin.roles.edit');
+    Route::put('/admin/roles/{id}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])
+        ->name('admin.roles.update');
+    Route::delete('/admin/roles/{id}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])
+        ->name('admin.roles.destroy');
 });
 
 require __DIR__ . '/auth.php';

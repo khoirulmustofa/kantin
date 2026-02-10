@@ -102,11 +102,17 @@ const items = ref([
     {
         label: 'System Settings',
         items: [
-            { label: 'Security & Roles', icon: 'pi pi-shield', to: '/blocks' },
+            {
+                label: 'Roles',
+                icon: 'pi pi-shield',
+                route: 'admin.roles.index',
+                menu: 'roles'
+            },
             { label: 'Global Config', icon: 'pi pi-cog', to: '/config' }
         ]
     }
 ]);
+
 </script>
 
 <template>
