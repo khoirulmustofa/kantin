@@ -40,6 +40,24 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll);
 });
+
+const menus = ref([
+    {
+        label: 'Home',
+        href: '/',
+        active: menuActive.value === 'home'
+    },
+    {
+        label: 'Product',
+        href: '/product',
+        active: menuActive.value === 'products'
+    },
+    {
+        label: 'Checkout',
+        href: '/checkout',
+        active: menuActive.value === 'checkout'
+    }
+]);
 </script>
 
 <template>
@@ -47,10 +65,10 @@ onUnmounted(() => {
     <Toast />
     <div class="min-h-screen flex flex-col font-sans text-gray-900">
         <header :class="[
-            'sticky top-0 z-50 transition-all duration-500',
+            'sticky top-0 z-50 transition-all',
             isScrolled
-                ? 'bg-blue-900/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg'
-                : 'bg-blue-900 py-2'
+                ? 'bg-green-900/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg rounded-b-[50px]'
+                : 'bg-green-800 py-2'
         ]">
             <div class="container mx-auto flex justify-between items-center py-2 px-4 lg:px-0">
                 <Link href="/" class="flex items-center">
@@ -75,27 +93,11 @@ onUnmounted(() => {
 
                 <nav class="hidden lg:flex md:flex-grow justify-center">
                     <ul class="flex justify-center space-x-2 text-white p-1">
-                        <li>
-                            <Link href="/"
+                        <li v-for="menu in menus" :key="menu.href">
+                            <Link :href="menu.href"
                                 class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
-                                :class="$page.props.menu === 'home' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
-                                Home
-                            </Link>
-                        </li>
-
-                        <li>
-                            <Link href="/product"
-                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
-                                :class="$page.props.menu === 'products' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
-                                Product
-                            </Link>
-                        </li>
-
-                        <li>
-                            <Link href="/checkout"
-                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
-                                :class="$page.props.menu === 'checkout' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
-                                Checkout
+                                :class="menu.active ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
+                                {{ menu.label }}
                             </Link>
                         </li>
                     </ul>
@@ -120,7 +122,7 @@ onUnmounted(() => {
                         </Link>
                         <!-- Mini Cart Dropdown -->
                         <div
-                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-blue-600 z-[60] translate-y-2 group-hover:translate-y-0">
+                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-green-600 z-[60] translate-y-2 group-hover:translate-y-0">
                             <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 px-1">My Cart
                             </h3>
 
@@ -144,15 +146,15 @@ onUnmounted(() => {
                                                 {{ item.name }}</p>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                    }}</span>
+                                                }}</span>
                                                 <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-                                                <span class="text-xs font-black text-blue-600">{{
+                                                <span class="text-xs font-black text-green-600">{{
                                                     formatCurrencyIndo(item.price) }}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button @click="cartStore.removeItem(item.id)"
-                                        class="text-gray-300 hover:text-blue-600 transition-colors opacity-0 group-hover/item:opacity-100">
+                                        class="text-gray-300 hover:text-green-600 transition-colors opacity-0 group-hover/item:opacity-100">
                                         <i class="pi pi-times text-xs"></i>
                                     </button>
                                 </div>
@@ -185,17 +187,12 @@ onUnmounted(() => {
                 <nav v-if="isMobileMenuOpen"
                     class="mobile-menu flex flex-col items-center space-y-4 lg:hidden bg-gray-dark text-white p-6 pb-10">
                     <ul class="w-full text-center">
-                        <li>
-                            <Link href="/" class="hover:text-secondary font-bold block py-2">Home</Link>
+                        <li v-for="menu in menus" :key="menu.href">
+                            <Link :href="menu.href" class="hover:text-secondary font-bold block py-2">{{ menu.label
+                            }}</Link>
                         </li>
 
-                        <li>
-                            <Link href="/product" class="hover:text-secondary font-bold block py-3">Product</Link>
-                        </li>
-
-                        <li>
-                            <Link href="/checkout" class="hover:text-secondary font-bold block py-3">Checkout</Link>
-                        </li>
+                       
                     </ul>
 
                     <div class="flex flex-col w-full space-y-3 pt-4">

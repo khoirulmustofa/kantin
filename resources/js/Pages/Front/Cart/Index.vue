@@ -101,7 +101,7 @@ const confirmClearCart = () => {
                 <!-- Order Summary -->
                 <div class="lg:col-span-1">
                     <div
-                        class="sticky top-32 p-5 bg-blue-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50">
+                        class="sticky top-32 p-5 bg-green-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50">
                         <h2 class="text-xl font-bold tracking-tight text-gray-900 mb-6 pb-4 border-b border-gray-50">
                             Order Summary
                         </h2>
@@ -133,7 +133,7 @@ const confirmClearCart = () => {
 
                         <div class="space-y-4">
                             <Link :href="route('checkout.index')"
-                                class="block w-full text-center bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95">
+                                class="block w-full text-center bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95">
                                 Process to Checkout
                             </Link>
 

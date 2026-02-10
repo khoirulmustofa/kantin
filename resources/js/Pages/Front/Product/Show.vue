@@ -36,9 +36,9 @@ const selectImage = (img) => {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <!-- Breadcrumbs -->
             <nav class="flex mb-8 font-black text-gray-400">
-                <Link :href="route('home')" class="hover:text-blue-600 transition-colors">Home</Link>
+                <Link :href="route('home')" class="hover:text-green-600 transition-colors">Home</Link>
                 <span class="mx-2">/</span>
-                <Link :href="route('product.index')" class="hover:text-blue-600 transition-colors">Products</Link>
+                <Link :href="route('product.index')" class="hover:text-green-600 transition-colors">Products</Link>
                 <span class="mx-2">/</span>
                 <span class="text-gray-900 dark:text-white">{{ product.name }}</span>
             </nav>
@@ -58,7 +58,7 @@ const selectImage = (img) => {
                     <div v-if="product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
                         <button v-for="(img, idx) in product.images" :key="idx" @click="selectImage(img.image)"
                             class="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-300"
-                            :class="activeImage === img.image ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:border-gray-200'">
+                            :class="activeImage === img.image ? 'border-green-600 ring-4 ring-green-50' : 'border-transparent hover:border-gray-200'">
                             <img :src="`/storage/${img.image}`" class="w-full h-full object-cover" />
                         </button>
                     </div>
@@ -68,12 +68,12 @@ const selectImage = (img) => {
                 <div class="flex flex-col justify-center">
                     <div class="mb-6">
                         <Tag v-if="product.category" :value="product.category.name" rounded
-                            class="!bg-blue-50 !text-blue-600 !text-[10px] font-black uppercase tracking-widest px-4 mb-4" />
+                            class="!bg-green-50 !text-green-600 !text-[10px] font-black uppercase tracking-widest px-4 mb-4" />
                         <h1 class="text-5xl font-black text-gray-900 dark:text-white tracking-tighter mb-4 uppercase">
                             {{ product.name }}
                         </h1>
                         <div class="flex items-center gap-4 mb-8">
-                            <span class="text-4xl font-black text-blue-600 tracking-tighter">{{
+                            <span class="text-4xl font-black text-green-600 tracking-tighter">{{
                                 formatCurrencyIndo(product.selling_price) }}</span>
                             <span class="text-lg text-gray-400 line-through font-bold opacity-50">{{
                                 formatCurrencyIndo(product.selling_price * 1.2) }}</span>
@@ -83,7 +83,7 @@ const selectImage = (img) => {
                         </div>
 
                         <div
-                            class="pblue pblue-blue dark:pblue-invert max-w-none text-gray-500 dark:text-gray-400 leading-relaxed mb-10 italic">
+                            class="pgreen pgreen-green dark:pgreen-invert max-w-none text-gray-500 dark:text-gray-400 leading-relaxed mb-10 italic">
                             {{ product.description || 'No description available for this masterpiece.' }}
                         </div>
                     </div>
@@ -119,7 +119,7 @@ const selectImage = (img) => {
                             Lainnya</h2>
                     </div>
                     <Link :href="route('product.index')"
-                        class="text-xs font-black tracking-widest border-b-2 border-blue-600 pb-1 hover:text-blue-600 transition-colors">
+                        class="text-xs font-black tracking-widest border-b-2 border-green-600 pb-1 hover:text-green-600 transition-colors">
                         Lihat Semua
                     </Link>
                 </div>
@@ -145,8 +145,8 @@ const selectImage = (img) => {
                                 <h3
                                     class="text-sm font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight truncate">
                                     {{ rel.name }}</h3>
-                                <span class="text-lg font-black text-blue-600">{{ formatCurrencyIndo(rel.selling_price)
-                                    }}</span>
+                                <span class="text-lg font-black text-green-600">{{ formatCurrencyIndo(rel.selling_price)
+                                }}</span>
                             </div>
                         </Link>
                     </div>

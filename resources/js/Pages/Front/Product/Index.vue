@@ -8,14 +8,6 @@ import { useCartStore } from '@/Stores/cart';
 
 const cartStore = useCartStore();
 
-// PrimeVue Components (Explicit imports to help linter/auto-import)
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import Image from 'primevue/image';
-
 const props = defineProps({
     menu: String,
     title: String,
@@ -59,26 +51,26 @@ const selectCategory = (slug) => {
                     <div class="sticky top-24 space-y-8">
                         <!-- Search -->
                         <div>
-                            <h3 class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white mb-4">
-                                Search</h3>
+                            <h3 class="text-sm font-black  tracking-widest text-gray-900 dark:text-white mb-4">
+                                Cari Produk</h3>
                             <IconField class="w-full">
                                 <InputIcon><i class="pi pi-search" /></InputIcon>
-                                <InputText v-model="search" placeholder="Find products..." class="w-full !rounded-xl" />
+                                <InputText v-model="search" placeholder="Cari nama produk...." class="w-full !rounded-xl" />
                             </IconField>
                         </div>
 
                         <!-- Categories -->
                         <div>
-                            <h3 class="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white mb-4">
-                                Category</h3>
+                            <h3 class="text-sm font-black  tracking-widest text-gray-900 dark:text-white mb-4">
+                                Kategori</h3>
                             <div class="flex flex-col gap-2">
                                 <button v-for="cat in categories" :key="cat.id" @click="selectCategory(cat.slug)"
                                     class="group flex items-center justify-between p-3 rounded-xl border transition-all duration-300 text-left"
                                     :class="selectedCategory === cat.slug
-                                        ? 'bg-rose-600 border-rose-600 text-white shadow-lg shadow-rose-200'
-                                        : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-rose-400'">
-                                    <span class="text-xs font-bold uppercase tracking-wider">{{ cat.name }}</span>
-                                    <span class="text-[10px] px-2 py-0.5 rounded-full"
+                                        ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-200'
+                                        : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-green-400'">
+                                    <span class="font-bold  tracking-wider">{{ cat.name }}</span>
+                                    <span class="text-sm px-2 py-0.5 rounded-full"
                                         :class="selectedCategory === cat.slug ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700'">
                                         {{ cat.products_count }}
                                     </span>
@@ -94,8 +86,8 @@ const selectCategory = (slug) => {
                         <div class="flex flex-col">
                             <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{{
                                 props.title }}</h1>
-                            <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">Showing {{
-                                products.from || 0 }} - {{ products.to || 0 }} of {{ products.total }} results</p>
+                            <p class="text-xs text-gray-500 font-bold  tracking-widest">Menampilkan {{
+                                products.from || 0 }} - {{ products.to || 0 }} dari {{ products.total }} hasil</p>
                         </div>
                     </div>
 
@@ -112,13 +104,13 @@ const selectCategory = (slug) => {
                                 </div>
                                 <div class="absolute top-4 left-4">
                                     <Tag v-if="product.category" :value="product.category.name" rounded
-                                        class="!bg-white/90 !text-gray-900 !text-[10px] font-black uppercase tracking-widest backdrop-blur-sm px-3" />
+                                        class="!bg-white/90 !text-gray-900 !text-[10px] font-black  tracking-widest backdrop-blur-sm px-3" />
                                 </div>
                                 <div
                                     class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <Button @click="cartStore.addItem(product)" label="Add to Cart"
+                                    <Button @click="cartStore.addItem(product)" label="Tambah ke Keranjang"
                                         icon="pi pi-shopping-cart"
-                                        class="!rounded-full !bg-rose-600 !border-rose-600 !px-6 !font-black !text-xs !uppercase shadow-xl" />
+                                        class="!rounded-full !bg-green-600 !border-green-600 !px-6 !font-black !text-xs ! shadow-xl" />
                                 </div>
                             </div>
 
@@ -126,14 +118,14 @@ const selectCategory = (slug) => {
                             <div class="p-6">
                                 <Link :href="route('product.show', product.slug)">
                                     <h3
-                                        class="text-lg font-black text-gray-900 dark:text-white mb-1 group-hover:text-rose-600 transition-colors uppercase tracking-tight">
+                                        class="text-lg font-black text-gray-900 dark:text-white mb-1 group-hover:text-green-600 transition-colors  tracking-tight">
                                         {{ product.name }}
                                     </h3>
                                 </Link>
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl font-black text-rose-600">{{
+                                    <span class="text-xl font-black text-green-600">{{
                                         formatCurrencyIndo(product.selling_price)
-                                        }}</span>
+                                    }}</span>
                                     <!-- Placeholder for original price if needed -->
                                     <span class="text-xs text-gray-400 line-through font-bold">{{
                                         formatCurrencyIndo(product.selling_price * 1.2) }}</span>
@@ -149,27 +141,34 @@ const selectCategory = (slug) => {
                             class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
                             <i class="pi pi-search text-3xl text-gray-300"></i>
                         </div>
-                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tighter">No
-                            Products Found</h3>
-                        <p class="text-gray-500 text-sm italic">Try adjusting your filters or search terms.</p>
-                        <Button label="Clear All Filters" text severity="info"
-                            class="mt-4 font-black text-xs uppercase underline"
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2  tracking-tighter">Produk Tidak Ditemukan.</h3>
+                        <p class="text-gray-500 text-sm italic">Coba sesuaikan filter atau istilah pencarian.</p>
+                        <Button label="Hapus Semua Filter" text severity="info"
+                            class="mt-4 font-black text-xs  underline"
                             @click="search = ''; selectedCategory = null; filterProducts();" />
                     </div>
 
                     <!-- Pagination -->
                     <div v-if="products.links.length > 3" class="mt-12 flex justify-center">
-                        <nav class="flex items-center gap-2">
+                        <nav class="flex items-center gap-2 flex-wrap justify-center">
                             <template v-for="(link, k) in products.links" :key="k">
+
                                 <Link v-if="link.url" :href="link.url"
-                                    class="w-10 h-10 flex items-center justify-center rounded-xl text-xs font-black transition-all duration-300 border"
-                                    :class="link.active
-                                        ? 'bg-rose-600 border-rose-600 text-white shadow-lg shadow-rose-200'
-                                        : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-500 hover:border-rose-400 hover:text-rose-600'"
-                                    v-html="link.label" />
+                                    class="flex items-center justify-center transition-all duration-300 border font-bold text-sm  tracking-tighter"
+                                    :class="[
+                                        // Jika label mengandung 'Next' atau 'Previous', buat padding lebih lebar (w-auto)
+                                        link.label.includes('Next') || link.label.includes('Previous') ? 'px-6 h-10 rounded-2xl' : 'w-10 h-10 rounded-xl',
+
+                                        link.active
+                                            ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30'
+                                            : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-white/5 text-gray-500 hover:border-green-400 hover:text-green-500'
+                                    ]" v-html="link.label" />
+
                                 <span v-else
-                                    class="w-10 h-10 flex items-center justify-center text-xs font-black text-gray-300 select-none"
+                                    class="flex items-center justify-center text-sm font-bold text-gray-300 select-none border border-transparent"
+                                    :class="link.label.includes('Next') || link.label.includes('Previous') ? 'px-6 h-10' : 'w-10 h-10'"
                                     v-html="link.label" />
+
                             </template>
                         </nav>
                     </div>
