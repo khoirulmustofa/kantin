@@ -95,8 +95,8 @@ const menus = ref([
                     <ul class="flex justify-center space-x-2 text-white p-1">
                         <li v-for="menu in menus" :key="menu.href">
                             <Link :href="menu.href"
-                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
-                                :class="menu.active ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
+                                class="px-4 py-2 transition-all duration-300 font-semibold flex items-center"
+                                :class="menu.active ? 'text-yellow-300 rounded-b-lg border-b-2 border-yellow-300' : 'hover:text-lg text-white/70 hover:text-yellow-300'">
                                 {{ menu.label }}
                             </Link>
                         </li>
