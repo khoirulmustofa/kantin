@@ -16,9 +16,9 @@ return new class extends Migration
             $table->uuid('order_id')->index();
             $table->uuid('product_id')->index();
             $table->integer('quantity');
-            $table->decimal('price', 12, 2);
+            $table->decimal('cost_price', 12, 2);
+            $table->decimal('selling_price', 12, 2);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

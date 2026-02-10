@@ -28,7 +28,7 @@ const search = ref(props.filters?.search || '');
 const selectedCategory = ref(props.filters?.category || null);
 
 const filterProducts = () => {
-    router.get(route('front.produk.index'), {
+    router.get(route('product.index'), {
         search: search.value,
         category: selectedCategory.value,
     }, {
@@ -124,18 +124,19 @@ const selectCategory = (slug) => {
 
                             <!-- Content Area -->
                             <div class="p-6">
-                                <Link :href="route('front.produk.show', product.slug)">
+                                <Link :href="route('product.show', product.slug)">
                                     <h3
                                         class="text-lg font-black text-gray-900 dark:text-white mb-1 group-hover:text-rose-600 transition-colors uppercase tracking-tight">
                                         {{ product.name }}
                                     </h3>
                                 </Link>
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xl font-black text-rose-600">{{ formatCurrencyIndo(product.price)
-                                    }}</span>
+                                    <span class="text-xl font-black text-rose-600">{{
+                                        formatCurrencyIndo(product.selling_price)
+                                        }}</span>
                                     <!-- Placeholder for original price if needed -->
                                     <span class="text-xs text-gray-400 line-through font-bold">{{
-                                        formatCurrencyIndo(product.price * 1.2) }}</span>
+                                        formatCurrencyIndo(product.selling_price * 1.2) }}</span>
                                 </div>
                             </div>
                         </div>

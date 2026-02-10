@@ -143,6 +143,7 @@ const confirmDeleteUser = (data) => {
                     </template>
                 </Column>
                 <Column field="email" header="Email" sortable style="min-width: 14rem"></Column>
+                <Column field="username" header="Username" sortable style="min-width: 14rem"></Column>
 
                 <Column field="role" header="Role" style="min-width: 10rem">
                     <template #body="slotProps">

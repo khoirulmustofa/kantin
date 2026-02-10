@@ -6,25 +6,29 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Order extends Model
+class PurchaseOrder extends Model
 {
-
     use HasUuids, SoftDeletes;
 
-    protected $table = 'orders';
+    protected $table = 'purchase_orders';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
     protected $guarded = [];
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function orderItems()
+    public function purchaseOrderItems()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(PurchaseOrderItem::class);
     }
 
     public function mutation()

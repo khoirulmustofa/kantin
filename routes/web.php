@@ -5,18 +5,20 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/produk', [\App\Http\Controllers\ProductController::class, 'index'])
-    ->name('front.produk.index');
-Route::get('/produk/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])
-    ->name('front.produk.show');
+Route::get('/', [\App\Http\Controllers\Front\HomeController::class, 'index'])
+    ->name('home');
+Route::get('/product', [\App\Http\Controllers\Front\ProductController::class, 'index'])
+    ->name('product.index');
+Route::get('/product/{slug}', [\App\Http\Controllers\Front\ProductController::class, 'show'])
+    ->name('product.show');
 
-Route::get('/cart', function () {
-    return Inertia::render('Cart/Index', [
-        'menu' => 'cart',
-        'title' => 'Shopping Cart',
-    ]);
-})->name('front.cart.index');
+Route::get('/cart', [\App\Http\Controllers\Front\CartController::class, 'index'])
+    ->name('cart.index');
+
+Route::get('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 'index'])
+    ->name('checkout.index');
+Route::post('/checkout/store', [\App\Http\Controllers\Front\CheckoutController::class, 'store'])
+    ->name('checkout.store');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -68,6 +70,8 @@ Route::middleware('auth')->group(function () {
         ->name('admin.orders.create');
     Route::post('/admin/orders', [\App\Http\Controllers\Admin\OrderController::class, 'store'])
         ->name('admin.orders.store');
+    Route::get('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])
+        ->name('admin.orders.show');
     Route::get('/admin/orders/{id}/edit', [\App\Http\Controllers\Admin\OrderController::class, 'edit'])
         ->name('admin.orders.edit');
     Route::put('/admin/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'update'])
@@ -120,6 +124,34 @@ Route::middleware('auth')->group(function () {
     // Financial Transaction (History) routes
     Route::get('/admin/financial_transactions', [\App\Http\Controllers\Admin\FinancialTransactionController::class, 'index'])
         ->name('admin.financial_transactions.index');
+
+    // Supplier routes
+    Route::get('/admin/suppliers', [\App\Http\Controllers\Admin\SupplierController::class, 'index'])
+        ->name('admin.suppliers.index');
+    Route::post('/admin/suppliers', [\App\Http\Controllers\Admin\SupplierController::class, 'store'])
+        ->name('admin.suppliers.store');
+    Route::put('/admin/suppliers/{id}', [\App\Http\Controllers\Admin\SupplierController::class, 'update'])
+        ->name('admin.suppliers.update');
+    Route::delete('/admin/suppliers/{id}', [\App\Http\Controllers\Admin\SupplierController::class, 'destroy'])
+        ->name('admin.suppliers.destroy');
+
+    // Purchase Order routes
+    Route::get('/admin/purchase-orders', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'index'])
+        ->name('admin.purchase-orders.index');
+    Route::get('/admin/purchase-orders/create', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'create'])
+        ->name('admin.purchase-orders.create');
+    Route::post('/admin/purchase-orders', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'store'])
+        ->name('admin.purchase-orders.store');
+    Route::get('/admin/purchase-orders/{id}', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'show'])
+        ->name('admin.purchase-orders.show');
+    Route::get('/admin/purchase-orders/{id}/edit', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'edit'])
+        ->name('admin.purchase-orders.edit');
+    Route::put('/admin/purchase-orders/{id}', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'update'])
+        ->name('admin.purchase-orders.update');
+    Route::delete('/admin/purchase-orders/{id}', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'destroy'])
+        ->name('admin.purchase-orders.destroy');
+    Route::post('/admin/purchase-orders/{id}/sync-finance', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'syncToFinance'])
+        ->name('admin.purchase-orders.sync_finance');
 });
 
 require __DIR__ . '/auth.php';

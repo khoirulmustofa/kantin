@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
@@ -26,12 +26,33 @@ const closeAll = () => {
 
 const menuActive = defineModel('menuActive');
 const title = defineModel('title');
+
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+    isScrolled.value = window.scrollY > 10;
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <template>
+    <ConfirmDialog />
+    <Toast />
     <div class="min-h-screen flex flex-col font-sans text-gray-900">
-        <header class="bg-blue-900 sticky top-0 z-50">
-            <div class="container mx-auto flex justify-between items-center py-4 px-4 lg:px-0">
+        <header :class="[
+            'sticky top-0 z-50 transition-all duration-500',
+            isScrolled
+                ? 'bg-blue-900/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg'
+                : 'bg-blue-900 py-2'
+        ]">
+            <div class="container mx-auto flex justify-between items-center py-2 px-4 lg:px-0">
                 <Link href="/" class="flex items-center">
                     <div>
                         <img src="assets/images/template-white-logo.png" alt="Logo" class="h-14 w-auto mr-4">
@@ -53,64 +74,29 @@ const title = defineModel('title');
                 </div>
 
                 <nav class="hidden lg:flex md:flex-grow justify-center">
-                    <ul class="flex justify-center space-x-4 text-white">
+                    <ul class="flex justify-center space-x-2 text-white p-1">
                         <li>
-                            <Link href="/" class="hover:text-secondary font-semibold">Home</Link>
-                        </li>
-
-                        <li class="relative group" @mouseenter="activeDropdown = 'men'"
-                            @mouseleave="activeDropdown = null">
-                            <Link href="/shop" class="hover:text-secondary font-semibold flex items-center">
-                                Men
-                                <i
-                                    :class="['fas ml-1 text-xs', activeDropdown === 'men' ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+                            <Link href="/"
+                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
+                                :class="$page.props.menu === 'home' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
+                                Home
                             </Link>
-                            <transition name="fade">
-                                <ul v-show="activeDropdown === 'men'"
-                                    class="absolute left-0 bg-white text-black space-y-2 mt-0 p-2 rounded shadow-lg border-t-2 border-primary">
-                                    <li>
-                                        <Link href="/shop"
-                                            class="min-w-40 block px-4 py-2 hover:bg-primary hover:text-white rounded transition">
-                                            Men Item 1</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/shop"
-                                            class="min-w-40 block px-4 py-2 hover:bg-primary hover:text-white rounded transition">
-                                            Men Item 2</Link>
-                                    </li>
-                                </ul>
-                            </transition>
                         </li>
 
-                        <li class="relative group" @mouseenter="activeDropdown = 'women'"
-                            @mouseleave="activeDropdown = null">
-                            <Link href="/shop" class="hover:text-secondary font-semibold flex items-center">
-                                Women
-                                <i
-                                    :class="['fas ml-1 text-xs', activeDropdown === 'women' ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+                        <li>
+                            <Link href="/product"
+                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
+                                :class="$page.props.menu === 'products' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
+                                Product
                             </Link>
-                            <transition name="fade">
-                                <ul v-show="activeDropdown === 'women'"
-                                    class="absolute left-0 bg-white text-black space-y-2 mt-0 p-2 rounded shadow-lg border-t-2 border-primary">
-                                    <li>
-                                        <Link href="/shop"
-                                            class="min-w-40 block px-4 py-2 hover:bg-primary hover:text-white rounded transition">
-                                            Women Item 1</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/shop"
-                                            class="min-w-40 block px-4 py-2 hover:bg-primary hover:text-white rounded transition">
-                                            Women Item 2</Link>
-                                    </li>
-                                </ul>
-                            </transition>
                         </li>
 
                         <li>
-                            <Link href="/produk" class="hover:text-secondary font-semibold">Produk</Link>
-                        </li>
-                        <li>
-                            <Link href="/checkout" class="hover:text-secondary font-semibold">Checkout</Link>
+                            <Link href="/checkout"
+                                class="px-4 py-2 rounded-xl transition-all duration-300 font-semibold flex items-center"
+                                :class="$page.props.menu === 'checkout' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'hover:bg-white/10 text-white/70 hover:text-white'">
+                                Checkout
+                            </Link>
                         </li>
                     </ul>
                 </nav>
@@ -124,17 +110,17 @@ const title = defineModel('title');
                         Login</Link>
 
                     <div class="relative group">
-                        <Link :href="route('front.cart.index')" class="relative">
+                        <Link :href="route('cart.index')" class="relative">
                             <img src="/assets/images/cart-shopping.svg" alt="Cart"
                                 class="h-6 w-6 transition group-hover:scale-110 brightness-200">
                             <span v-if="cartStore.totalItems > 0"
-                                class="absolute -top-2 -right-2 bg-rose-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-blue-900 shadow-lg">
+                                class="absolute -top-2 -right-2 bg-yellow-300 text-black text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-yellow-500 shadow-lg">
                                 {{ cartStore.totalItems }}
                             </span>
                         </Link>
                         <!-- Mini Cart Dropdown -->
                         <div
-                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-rose-600 z-[60] translate-y-2 group-hover:translate-y-0">
+                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-blue-600 z-[60] translate-y-2 group-hover:translate-y-0">
                             <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 px-1">My Cart
                             </h3>
 
@@ -158,15 +144,15 @@ const title = defineModel('title');
                                                 {{ item.name }}</p>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-                                                <span class="text-xs font-black text-rose-600">{{
+                                                <span class="text-xs font-black text-blue-600">{{
                                                     formatCurrencyIndo(item.price) }}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <button @click="cartStore.removeItem(item.id)"
-                                        class="text-gray-300 hover:text-rose-600 transition-colors opacity-0 group-hover/item:opacity-100">
+                                        class="text-gray-300 hover:text-blue-600 transition-colors opacity-0 group-hover/item:opacity-100">
                                         <i class="pi pi-times text-xs"></i>
                                     </button>
                                 </div>
@@ -178,7 +164,7 @@ const title = defineModel('title');
                                         <span class="text-xl font-black text-gray-900 tracking-tighter">{{
                                             formatCurrencyIndo(cartStore.totalPrice) }}</span>
                                     </div>
-                                    <Link :href="route('front.cart.index')"
+                                    <Link :href="route('cart.index')"
                                         class="block text-center bg-gray-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black hover:shadow-xl hover:shadow-gray-200 transition-all active:scale-95">
                                         Go to Checkout</Link>
                                 </div>
@@ -191,17 +177,7 @@ const title = defineModel('title');
                         </div>
                     </div>
 
-                    <button @click="isSearchOpen = !isSearchOpen" class="text-white hover:text-secondary transition">
-                        <img src="assets/images/search-icon.svg" alt="Search" class="h-6 w-6 brightness-200">
-                    </button>
 
-                    <transition name="slide-fade">
-                        <div v-if="isSearchOpen"
-                            class="absolute top-full right-0 mt-2 w-64 bg-white shadow-lg p-2 rounded">
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded text-black outline-none"
-                                placeholder="Search products...">
-                        </div>
-                    </transition>
                 </div>
             </div>
 
@@ -213,32 +189,12 @@ const title = defineModel('title');
                             <Link href="/" class="hover:text-secondary font-bold block py-2">Home</Link>
                         </li>
 
-                        <li class="border-b border-gray-700">
-                            <button @click="mobileMenOpen = !mobileMenOpen"
-                                class="w-full hover:text-secondary font-bold py-3 flex justify-center items-center">
-                                Men <i
-                                    :class="['fas ml-2 text-xs', mobileMenOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
-                            </button>
-                            <div v-show="mobileMenOpen" class="bg-gray-800 rounded-lg mb-2">
-                                <Link href="/shop" class="block py-2">Shop Men</Link>
-                                <Link href="/shop" class="block py-2">Men Item 1</Link>
-                            </div>
-                        </li>
-
-                        <li class="border-b border-gray-700">
-                            <button @click="mobileWomenOpen = !mobileWomenOpen"
-                                class="w-full hover:text-secondary font-bold py-3 flex justify-center items-center">
-                                Women <i
-                                    :class="['fas ml-2 text-xs', mobileWomenOpen ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
-                            </button>
-                            <div v-show="mobileWomenOpen" class="bg-gray-800 rounded-lg mb-2">
-                                <Link href="/shop" class="block py-2">Shop Women</Link>
-                                <Link href="/shop" class="block py-2">Women Item 1</Link>
-                            </div>
+                        <li>
+                            <Link href="/product" class="hover:text-secondary font-bold block py-3">Product</Link>
                         </li>
 
                         <li>
-                            <Link href="/produk" class="hover:text-secondary font-bold block py-3">Produk</Link>
+                            <Link href="/checkout" class="hover:text-secondary font-bold block py-3">Checkout</Link>
                         </li>
                     </ul>
 
@@ -248,11 +204,6 @@ const title = defineModel('title');
                         <Link href="/login"
                             class="bg-transparent border border-white text-white py-3 rounded-full font-bold text-center">
                             Login</Link>
-                        <div class="relative pt-2">
-                            <input type="text"
-                                class="w-full p-3 rounded-full bg-white text-black text-center outline-none"
-                                placeholder="Search products...">
-                        </div>
                     </div>
                 </nav>
             </transition>
@@ -297,7 +248,7 @@ const title = defineModel('title');
                                 <Link href="/login" class="hover:text-amber-500">My Account</Link>
                             </li>
                             <li>
-                                <Link :href="route('front.cart.index')" class="hover:text-amber-500">Cart</Link>
+                                <Link :href="route('cart.index')" class="hover:text-amber-500">Cart</Link>
                             </li>
                             <li>
                                 <Link href="/checkout" class="hover:text-amber-500">Checkout</Link>

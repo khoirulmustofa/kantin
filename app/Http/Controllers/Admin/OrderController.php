@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\FinancialAccount;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -21,7 +22,7 @@ class OrderController extends Controller
             $rows = $request->input('rows', 10);
             $query = Order::select('orders.*') // Hindari kolom ID tertimpa
                 ->join('users', 'orders.user_id', '=', 'users.id')
-                ->with(['user', 'orderItems.product', 'mutation']);
+                ->with(['user', 'financialAccount', 'orderItems.product', 'mutation']);
 
             // Handle Search
             $query->when($request->search, function ($q, $search) {
@@ -74,6 +75,7 @@ class OrderController extends Controller
             'title' => 'Create Order',
             'users' => User::all(),
             'products' => Product::where('is_active', true)->get(),
+            'financialAccounts' => FinancialAccount::where('is_active', true)->get(),
         ]);
     }
 
@@ -81,6 +83,7 @@ class OrderController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|uuid|exists:users,id',
+            'financial_account_id' => 'required|uuid|exists:financial_accounts,id',
             'shipping_address' => 'required|string',
             'shipping_cost' => 'required|numeric|min:0',
             'status' => 'required|in:pending,processing,completed,cancelled',
@@ -88,19 +91,21 @@ class OrderController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|uuid|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.cost_price' => 'required|numeric|min:0',
+            'items.*.selling_price' => 'required|numeric|min:0',
         ]);
 
         try {
             DB::beginTransaction();
 
             $grandTotal = collect($validated['items'])->sum(function ($item) {
-                return $item['price'] * $item['quantity'];
+                return $item['selling_price'] * $item['quantity'];
             }) + $validated['shipping_cost'];
 
             $order = Order::create([
                 'order_number' => $this->generateOrderNumber(),
                 'user_id' => $validated['user_id'],
+                'financial_account_id' => $validated['financial_account_id'],
                 'shipping_address' => $validated['shipping_address'],
                 'shipping_cost' => $validated['shipping_cost'],
                 'grand_total' => $grandTotal,
@@ -113,7 +118,8 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
-                    'price' => $item['price'],
+                    'cost_price' => $item['cost_price'],
+                    'selling_price' => $item['selling_price'],
                 ]);
             }
 
@@ -127,14 +133,25 @@ class OrderController extends Controller
 
     public function edit($id)
     {
-        $order = Order::with(['user', 'orderItems.product'])->findOrFail($id);
+        $order = Order::with(['user', 'financialAccount', 'orderItems.product'])->findOrFail($id);
         return Inertia::render('Admin/Order/Form', [
             'menu' => 'orders',
-            'title' => 'Edit Order',
+            'title' => 'Edit Order ' . $order->order_number,
             'order' => $order,
             'users' => User::all(),
             'products' => Product::where('is_active', true)->get(),
+            'financialAccounts' => FinancialAccount::where('is_active', true)->get(),
             'isEdit' => true,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $order = Order::with(['user', 'financialAccount', 'orderItems.product.category'])->findOrFail($id);
+        return Inertia::render('Admin/Order/Show', [
+            'menu' => 'orders',
+            'title' => 'Order Detail',
+            'order' => $order,
         ]);
     }
 
@@ -147,21 +164,24 @@ class OrderController extends Controller
             'shipping_cost' => 'required|numeric|min:0',
             'status' => 'required|in:pending,processing,completed,cancelled',
             'payment_status' => 'required|in:unpaid,paid,failed',
+            'financial_account_id' => 'required|uuid|exists:financial_accounts,id',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|uuid|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
-            'items.*.price' => 'required|numeric|min:0',
+            'items.*.cost_price' => 'required|numeric|min:0',
+            'items.*.selling_price' => 'required|numeric|min:0',
         ]);
 
         try {
             DB::beginTransaction();
 
             $grandTotal = collect($validated['items'])->sum(function ($item) {
-                return $item['price'] * $item['quantity'];
+                return $item['selling_price'] * $item['quantity'];
             }) + $validated['shipping_cost'];
 
             $order->update([
                 'user_id' => $validated['user_id'],
+                'financial_account_id' => $validated['financial_account_id'],
                 'shipping_address' => $validated['shipping_address'],
                 'shipping_cost' => $validated['shipping_cost'],
                 'grand_total' => $grandTotal,
@@ -176,7 +196,8 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
-                    'price' => $item['price'],
+                    'cost_price' => $item['cost_price'],
+                    'selling_price' => $item['selling_price'],
                 ]);
             }
 
@@ -213,13 +234,13 @@ class OrderController extends Controller
                 return redirect()->back()->with('error', 'Only paid orders can be synced to finance.');
             }
 
-            // Get default account and category
-            $account = \App\Models\FinancialAccount::where('is_active', true)->first();
+            // Get associated account and category
+            $account = $order->financialAccount;
             $category = \App\Models\FinancialCategory::where('type', 'income')->where('name', 'Pemasukan Kantin')->first()
                 ?? \App\Models\FinancialCategory::where('type', 'income')->first();
 
             if (!$account || !$category) {
-                return redirect()->back()->with('error', 'Financial Account or Income Category not found. Please set them up first.');
+                return redirect()->back()->with('error', 'Selected Financial Account or Income Category not found.');
             }
 
             $mutation = \App\Models\FinancialMutation::create([

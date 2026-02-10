@@ -5,23 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderItem extends Model
+class PurchaseOrderItem extends Model
 {
     use HasUuids;
 
-    protected $table = 'order_items';
+    protected $table = 'purchase_order_items';
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
     protected $guarded = [];
 
+    public function purchaseOrder()
+    {
+        return $this->belongsTo(PurchaseOrder::class);
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
     }
 }

@@ -26,6 +26,7 @@ class OrderSeeder extends Seeder
             $order = \App\Models\Order::create([
                 'order_number' => $this->generateOrderNumber(),                
                 'grand_total' => 0,
+                'financial_account_id' => \App\Models\FinancialAccount::first()->id,
                 'status' => 'completed',
                 'payment_status' => 'paid',                
                 'shipping_address' => 'Shipping Address',
@@ -38,12 +39,14 @@ class OrderSeeder extends Seeder
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'quantity' => rand(1, 3),
-                    'price' => $product->price,
+                    'cost_price' => $product->cost_price,
+                    'selling_price' => $product->selling_price,
                 ]);
             }
 
             $order->update([
-                'grand_total' => $order->orderItems->sum('price') + $order->shipping_cost,
+                'grand_total' => $order->orderItems()
+                    ->sum(DB::raw('selling_price * quantity')) + $order->shipping_cost,
             ]);
             DB::commit();   
         }

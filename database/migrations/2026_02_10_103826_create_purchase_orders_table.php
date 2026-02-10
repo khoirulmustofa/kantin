@@ -11,24 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('purchase_orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('order_number')->unique(); // Kode unik misal: ORD-2023-XXXX
-            $table->decimal('grand_total', 12, 2);
-            $table->uuid('financial_account_id')->index(); // Relasi dengan financial_accounts sebagai metode pembayaran
-            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
+            $table->string('po_number')->unique();
+            $table->decimal('grand_total', 12, 2)->default(0);
+            $table->uuid('financial_account_id')->index(); // Relasi dengan financial_accounts sebagai metode pembayaran    
+            $table->enum('status', ['draft', 'ordered', 'received', 'cancelled'])->default('draft');
             $table->enum('payment_status', ['unpaid', 'paid', 'failed'])->default('unpaid');
-            $table->text('shipping_address');
             $table->decimal('shipping_cost', 12, 2)->default(0);
-            $table->uuid('user_id')->index(); // Relasi dengan users yang order
+            $table->text('notes')->nullable();
+            $table->uuid('supplier_id')->index();
+            $table->uuid('user_id')->index();
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('financial_account_id')->references('id')->on('financial_accounts')->onDelete('cascade');
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('purchase_orders');
     }
 };

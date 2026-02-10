@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue';
 
 export const useCartStore = defineStore('cart', () => {
 
-    // State: menyimpan daftar produk dalam keranjang
+    // State: menyimpan daftar product dalam keranjang
     const items = ref([]);
 
     // Ambil data cart dari localStorage saat pertama kali dijalankan
@@ -27,7 +27,7 @@ export const useCartStore = defineStore('cart', () => {
         return items.value.reduce((total, item) => total + (item.price * item.quantity), 0);
     });
 
-    // Menambahkan produk ke keranjang
+    // Menambahkan product ke keranjang
     const addItem = (product, quantity = 1) => {
         const existingItem = items.value.find(item => item.id === product.id);
 
@@ -40,7 +40,7 @@ export const useCartStore = defineStore('cart', () => {
                 id: product.id,
                 name: product.name,
                 slug: product.slug,
-                price: parseFloat(product.price),
+                price: parseFloat(product.selling_price),
                 image: product.images && product.images.length > 0
                     ? product.images[0].image
                     : null,
@@ -52,12 +52,12 @@ export const useCartStore = defineStore('cart', () => {
         }
     };
 
-    // Menghapus produk dari keranjang berdasarkan ID
+    // Menghapus product dari keranjang berdasarkan ID
     const removeItem = (productId) => {
         items.value = items.value.filter(item => item.id !== productId);
     };
 
-    // Mengubah jumlah produk
+    // Mengubah jumlah product
     const updateQuantity = (productId, quantity) => {
         const item = items.value.find(item => item.id === productId);
 

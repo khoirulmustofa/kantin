@@ -18,6 +18,7 @@ class UserController extends Controller
             // Handle Search
             $query->when($request->search, function ($q, $search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
 

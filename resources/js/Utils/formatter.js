@@ -8,3 +8,13 @@ export const formatCurrencyIndo = (value) => {
         minimumFractionDigits: 0
     }).format(value);
 };
+
+// Format Tanggal
+export const formatDateIndonesian = (value) => {
+    if (!value) return '-';
+    return new Date(value).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};

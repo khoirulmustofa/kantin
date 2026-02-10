@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import TransactionDetail from './Detail.vue';
-import { formatCurrencyIndo } from '@/Utils/formatter';
+import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
@@ -108,9 +108,7 @@ const viewDetail = (data) => {
                 <Column field="transaction_date" header="Date" sortable style="min-width: 10rem">
                     <template #body="slotProps">
                         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            {{ new Date(slotProps.data.transaction_date).toLocaleDateString('id-ID', {
-                                day: '2-digit',
-                                month: 'short', year: 'numeric' }) }}
+                            {{ formatDateIndonesian(slotProps.data.transaction_date) }}
                         </span>
                     </template>
                 </Column>

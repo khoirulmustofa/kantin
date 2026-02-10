@@ -32,7 +32,13 @@ const items = ref([
         label: 'Koperasi',
         items: [
             {
-                label: 'Product Category',
+                label: 'Supplier',
+                icon: 'pi pi-truck',
+                route: 'admin.suppliers.index',
+                menu: 'suppliers'
+            },
+            {
+                label: 'Category',
                 icon: 'pi pi-list',
                 route: 'admin.product-categories.index',
                 menu: 'product-categories'
@@ -49,8 +55,15 @@ const items = ref([
                 route: 'admin.orders.index',
                 menu: 'orders'
             },
+            {
+                label: 'Purchase Order',
+                icon: 'pi pi-file-import',
+                route: 'admin.purchase-orders.index',
+                menu: 'purchase-orders'
+            },
         ]
     },
+
     {
         label: 'Cash Flow',
         items: [
@@ -112,7 +125,7 @@ const items = ref([
                             stroke-linejoin="round" />
                     </svg>
                 </div>
-                <span class="text-xl font-black text-gray-900 dark:text-white tracking-tighter">SAKAI</span>
+                <span class="text-xl font-black text-gray-900 dark:text-white tracking-tighter">Koperasi Digital</span>
             </Link>
         </div>
 

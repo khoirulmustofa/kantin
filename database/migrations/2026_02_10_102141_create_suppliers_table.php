@@ -11,20 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->decimal('cost_price', 12, 2)->default(0);
-            $table->decimal('selling_price', 12, 2)->default(0);
-            $table->integer('stock')->default(0);
+            
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('contact_person')->nullable();
+
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('province')->nullable();
+            $table->string('postal_code')->nullable();
+
             $table->boolean('is_active')->default(true);
-            $table->uuid('product_category_id')->index();
+
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('product_category_id')->references('id')->on('product_categories')->onDelete('cascade');
         });
     }
 
@@ -33,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('suppliers');
     }
 };

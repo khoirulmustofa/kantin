@@ -16,7 +16,8 @@ const imagePreviews = ref([]);
 const form = useForm({
     name: '',
     description: '',
-    price: 0,
+    cost_price: 0,
+    selling_price: 0,
     stock: 0,
     is_active: true,
     product_category_id: null,
@@ -29,7 +30,8 @@ watch(() => props.product, (newVal) => {
     if (newVal && props.isEdit) {
         form.name = newVal.name || '';
         form.description = newVal.description || '';
-        form.price = newVal.price || 0;
+        form.cost_price = newVal.cost_price || 0;
+        form.selling_price = newVal.selling_price || 0;
         form.stock = newVal.stock || 0;
         form.is_active = newVal.is_active === 1 || newVal.is_active === true;
         form.product_category_id = newVal.product_category_id || null;
@@ -124,18 +126,33 @@ const saveProduct = () => {
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label for="price" class="text-sm font-bold text-gray-700 dark:text-gray-300">Price</label>
-                        <InputNumber id="price" v-model="form.price" mode="currency" fluid currency="IDR" locale="id-ID"
-                           :maxFractionDigits="0" :invalid="!!form.errors.price" />
-                        <Message v-if="form.errors.price" severity="error" variant="simple">{{ form.errors.price }}
+                        <label for="cost_price" class="text-sm font-bold text-gray-700 dark:text-gray-300">Cost
+                            Price</label>
+                        <InputNumber id="cost_price" v-model="form.cost_price" mode="currency" fluid currency="IDR"
+                            locale="id-ID" :maxFractionDigits="0" :invalid="!!form.errors.cost_price" />
+                        <Message v-if="form.errors.cost_price" severity="error" variant="simple">{{
+                            form.errors.cost_price }}
                         </Message>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label for="stock" class="text-sm font-bold text-gray-700 dark:text-gray-300">Stock</label>
-                        <InputNumber id="stock" v-model="form.stock" :invalid="!!form.errors.stock" />
-                        <Message v-if="form.errors.stock" severity="error" variant="simple">{{ form.errors.stock }}
+                        <label for="selling_price" class="text-sm font-bold text-gray-700 dark:text-gray-300">Selling
+                            Price</label>
+                        <InputNumber id="selling_price" v-model="form.selling_price" mode="currency" fluid
+                            currency="IDR" locale="id-ID" :maxFractionDigits="0"
+                            :invalid="!!form.errors.selling_price" />
+                        <Message v-if="form.errors.selling_price" severity="error" variant="simple">{{
+                            form.errors.selling_price }}
                         </Message>
                     </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label for="stock" class="text-sm font-bold text-gray-700 dark:text-gray-300">Available
+                        Stock</label>
+                    <InputNumber id="stock" v-model="form.stock" :invalid="!!form.errors.stock" showButtons :min="0"
+                        placeholder="0" />
+                    <Message v-if="form.errors.stock" severity="error" variant="simple">{{ form.errors.stock }}
+                    </Message>
                 </div>
 
                 <div class="flex flex-col gap-2">

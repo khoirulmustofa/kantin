@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin',
+            'username' => 'admin',
             'email' => 'admin@admin.com',
             'password' => 'password',
             'role' => 'admin',
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
         for ($i = 1; $i <= 50; $i++) {
             User::create([
                 'name' => 'User ' . $i,
+                'username' => 'user' . $i,
                 'email' => 'user' . $i . '@admin.com',
                 'password' => 'password',
                 'role' => 'user',

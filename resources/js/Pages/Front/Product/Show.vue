@@ -35,10 +35,10 @@ const selectImage = (img) => {
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <!-- Breadcrumbs -->
-            <nav class="flex mb-8 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                <Link :href="route('home')" class="hover:text-rose-600 transition-colors">Home</Link>
+            <nav class="flex mb-8 font-black text-gray-400">
+                <Link :href="route('home')" class="hover:text-blue-600 transition-colors">Home</Link>
                 <span class="mx-2">/</span>
-                <Link :href="route('front.produk.index')" class="hover:text-rose-600 transition-colors">Products</Link>
+                <Link :href="route('product.index')" class="hover:text-blue-600 transition-colors">Products</Link>
                 <span class="mx-2">/</span>
                 <span class="text-gray-900 dark:text-white">{{ product.name }}</span>
             </nav>
@@ -58,7 +58,7 @@ const selectImage = (img) => {
                     <div v-if="product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
                         <button v-for="(img, idx) in product.images" :key="idx" @click="selectImage(img.image)"
                             class="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-300"
-                            :class="activeImage === img.image ? 'border-rose-600 ring-4 ring-rose-50' : 'border-transparent hover:border-gray-200'">
+                            :class="activeImage === img.image ? 'border-blue-600 ring-4 ring-blue-50' : 'border-transparent hover:border-gray-200'">
                             <img :src="`/storage/${img.image}`" class="w-full h-full object-cover" />
                         </button>
                     </div>
@@ -68,22 +68,22 @@ const selectImage = (img) => {
                 <div class="flex flex-col justify-center">
                     <div class="mb-6">
                         <Tag v-if="product.category" :value="product.category.name" rounded
-                            class="!bg-rose-50 !text-rose-600 !text-[10px] font-black uppercase tracking-widest px-4 mb-4" />
+                            class="!bg-blue-50 !text-blue-600 !text-[10px] font-black uppercase tracking-widest px-4 mb-4" />
                         <h1 class="text-5xl font-black text-gray-900 dark:text-white tracking-tighter mb-4 uppercase">
                             {{ product.name }}
                         </h1>
                         <div class="flex items-center gap-4 mb-8">
-                            <span class="text-4xl font-black text-rose-600 tracking-tighter">{{
-                                formatCurrencyIndo(product.price) }}</span>
+                            <span class="text-4xl font-black text-blue-600 tracking-tighter">{{
+                                formatCurrencyIndo(product.selling_price) }}</span>
                             <span class="text-lg text-gray-400 line-through font-bold opacity-50">{{
-                                formatCurrencyIndo(product.price * 1.2) }}</span>
+                                formatCurrencyIndo(product.selling_price * 1.2) }}</span>
                             <span
                                 class="bg-emerald-50 text-emerald-600 text-[10px] font-black px-2 py-1 rounded-lg uppercase">-20%
                                 OFF</span>
                         </div>
 
                         <div
-                            class="prose prose-rose dark:prose-invert max-w-none text-gray-500 dark:text-gray-400 leading-relaxed mb-10 italic">
+                            class="pblue pblue-blue dark:pblue-invert max-w-none text-gray-500 dark:text-gray-400 leading-relaxed mb-10 italic">
                             {{ product.description || 'No description available for this masterpiece.' }}
                         </div>
                     </div>
@@ -92,8 +92,7 @@ const selectImage = (img) => {
                         <!-- Actions -->
                         <div class="flex flex-col sm:flex-row items-center gap-4">
                             <div class="w-full sm:w-auto">
-                                <span
-                                    class="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2 px-1">Quantity</span>
+                                <span class="font-black text-gray-400 block mb-2 px-1">Quantity</span>
                                 <InputNumber v-model="quantity" showButtons buttonLayout="horizontal" :min="1"
                                     :max="product.stock"
                                     class="!w-full !rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
@@ -102,40 +101,10 @@ const selectImage = (img) => {
                                     inputClass="!w-16 !text-center !font-black !border-none !bg-white dark:!bg-gray-900" />
                             </div>
                             <div class="flex-1 w-full">
-                                <span
-                                    class="hidden sm:block text-[10px] font-black uppercase tracking-widest text-transparent mb-2">Spacer</span>
+                                <span class="hidden sm:block font-black text-transparent mb-2">Spacer</span>
                                 <Button @click="cartStore.addItem(product, quantity)" label="Add to Cart"
                                     icon="pi pi-shopping-cart" size="large"
                                     class="!w-full !rounded-2xl !bg-gray-900 !border-gray-900 hover:!bg-black !py-4 !font-black !text-sm !uppercase !tracking-widest shadow-2xl shadow-gray-900/20 transition-all duration-300 active:scale-95" />
-                            </div>
-                        </div>
-
-                        <!-- Extra Info cards -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div
-                                class="p-4 rounded-3xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                                <div
-                                    class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center text-emerald-500 shadow-sm">
-                                    <i class="pi pi-check-circle text-xl"></i>
-                                </div>
-                                <div>
-                                    <span
-                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Availability</span>
-                                    <span class="text-xs font-bold text-gray-900 dark:text-white">{{ product.stock > 0 ?
-                                        'In Stock (' + product.stock + ')' : 'Out of Stock' }}</span>
-                                </div>
-                            </div>
-                            <div
-                                class="p-4 rounded-3xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                                <div
-                                    class="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center text-blue-500 shadow-sm">
-                                    <i class="pi pi-truck text-xl"></i>
-                                </div>
-                                <div>
-                                    <span
-                                        class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Delivery</span>
-                                    <span class="text-xs font-bold text-gray-900 dark:text-white">Same Day</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -146,21 +115,19 @@ const selectImage = (img) => {
             <div v-if="related_products.length > 0">
                 <div class="flex items-center justify-between mb-10">
                     <div class="flex flex-col">
-                        <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase">You
-                            Might Like</h2>
-                        <p class="text-xs text-xs text-gray-500 font-bold uppercase tracking-[0.3em]">Similar Treasures
-                        </p>
+                        <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">Produk
+                            Lainnya</h2>
                     </div>
-                    <Link :href="route('front.produk.index')"
-                        class="text-xs font-black uppercase tracking-widest border-b-2 border-rose-600 pb-1 hover:text-rose-600 transition-colors">
-                        Explore More
+                    <Link :href="route('product.index')"
+                        class="text-xs font-black tracking-widest border-b-2 border-blue-600 pb-1 hover:text-blue-600 transition-colors">
+                        Lihat Semua
                     </Link>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div v-for="rel in related_products" :key="rel.id"
                         class="group relative bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-2">
-                        <Link :href="route('front.produk.show', rel.slug)">
+                        <Link :href="route('product.show', rel.slug)">
                             <div class="aspect-[4/5] overflow-hidden bg-gray-100 relative">
                                 <img v-if="rel.images.length > 0" :src="`/storage/${rel.images[0].image}`"
                                     :alt="rel.name"
@@ -178,7 +145,7 @@ const selectImage = (img) => {
                                 <h3
                                     class="text-sm font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight truncate">
                                     {{ rel.name }}</h3>
-                                <span class="text-lg font-black text-rose-600">{{ formatCurrencyIndo(rel.price)
+                                <span class="text-lg font-black text-blue-600">{{ formatCurrencyIndo(rel.selling_price)
                                     }}</span>
                             </div>
                         </Link>

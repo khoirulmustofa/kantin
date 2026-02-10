@@ -20,7 +20,6 @@ class ProductController extends Controller
             // Handle Search
             $query->when($request->search, function ($q, $search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%");
             });
 
@@ -78,7 +77,8 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
             'product_category_id' => 'required|uuid|exists:product_categories,id',
@@ -90,7 +90,8 @@ class ProductController extends Controller
                 'name' => $validated['name'],
                 'slug' => Str::slug($validated['name']),
                 'description' => $validated['description'] ?? '',
-                'price' => $validated['price'],
+                'cost_price' => $validated['cost_price'],
+                'selling_price' => $validated['selling_price'],
                 'stock' => $validated['stock'],
                 'is_active' => $validated['is_active'],
                 'product_category_id' => $validated['product_category_id'],
@@ -118,7 +119,8 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
             'product_category_id' => 'required|uuid|exists:product_categories,id',
@@ -131,7 +133,8 @@ class ProductController extends Controller
                 'name' => $validated['name'],
                 'slug' => Str::slug($validated['name']),
                 'description' => $validated['description'] ?? '',
-                'price' => $validated['price'],
+                'cost_price' => $validated['cost_price'],
+                'selling_price' => $validated['selling_price'],
                 'stock' => $validated['stock'],
                 'is_active' => $validated['is_active'],
                 'product_category_id' => $validated['product_category_id'],

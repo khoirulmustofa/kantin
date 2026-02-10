@@ -19,8 +19,14 @@ class FinancialAccountSeeder extends Seeder
             'is_active' => true,
         ]);
         \App\Models\FinancialAccount::create([
-            'name' => 'Bank',
+            'name' => 'Bank BSI',
             'account_number' => '1234567890',
+            'balance' => 0,
+            'is_active' => true,
+        ]);
+        \App\Models\FinancialAccount::create([
+            'name' => 'Bank BJBS',
+            'account_number' => '12345674354',
             'balance' => 0,
             'is_active' => true,
         ]);

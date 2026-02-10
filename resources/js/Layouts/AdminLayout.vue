@@ -191,7 +191,7 @@ const confirmLogout = () => {
                 class="bg-white/50 dark:bg-[#1e293b]/50 backdrop-blur-sm py-4 px-8 text-xs text-gray-400 dark:text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-4 mt-auto border-t border-gray-100 dark:border-gray-800">
                 <div class="flex items-center gap-2">
                     <span>&copy; {{ new Date().getFullYear() }}</span>
-                    <span class="font-bold text-emerald-600/80">SAKAI</span>
+                    <span class="font-bold text-emerald-600/80">Koperasi Digital</span>
                     <span class="text-gray-300 dark:text-gray-700">|</span>
                     <span>Admin Dashboard</span>
                 </div>

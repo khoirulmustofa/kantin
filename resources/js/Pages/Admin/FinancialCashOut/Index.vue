@@ -6,7 +6,7 @@ import OutflowForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
-import { formatCurrencyIndo } from '@/Utils/formatter';
+import { formatCurrencyIndo ,formatDateIndonesian } from '@/Utils/formatter';
 
 const props = defineProps({
     menu: String,
@@ -149,8 +149,7 @@ const confirmDeleteAction = (data) => {
 
                 <Column field="transaction_date" header="Date" sortable style="min-width: 10rem">
                     <template #body="slotProps">
-                        <span class="text-sm font-medium">{{ new
-                            Date(slotProps.data.transaction_date).toLocaleDateString('id-ID') }}</span>
+                        <span class="text-sm font-medium">{{ formatDateIndonesian(slotProps.data.transaction_date) }}</span>
                     </template>
                 </Column>
 

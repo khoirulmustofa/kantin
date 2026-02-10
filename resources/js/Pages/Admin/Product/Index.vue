@@ -175,9 +175,31 @@ const confirmDeleteProduct = (data) => {
                     </template>
                 </Column>
 
-                <Column field="price" header="Price" sortable style="min-width: 10rem">
+                <Column field="cost_price" header="Cost Price" sortable style="min-width: 10rem">
                     <template #body="slotProps">
-                        {{ formatCurrencyIndo(slotProps.data.price) }}
+                        {{ formatCurrencyIndo(slotProps.data.cost_price) }}
+                    </template>
+                </Column>
+
+                <Column field="selling_price" header="Selling Price" sortable style="min-width: 12rem">
+                    <template #body="slotProps">
+                        <div class="flex flex-col">
+                            <span class="font-semibold text-gray-900 dark:text-white">
+                                {{ formatCurrencyIndo(slotProps.data.selling_price) }}
+                            </span>
+
+                            <div v-if="slotProps.data.cost_price" class="text-xs mt-1">
+                                <span class="text-emerald-600 dark:text-emerald-400 font-medium">
+                                    +{{ formatCurrencyIndo(slotProps.data.selling_price - slotProps.data.cost_price) }}
+                                </span>
+                                <span class="text-gray-400 mx-1">|</span>
+                                <span
+                                    class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-1 rounded">
+                                    {{ (((slotProps.data.selling_price - slotProps.data.cost_price) /
+                                        slotProps.data.cost_price) * 100).toFixed(1) }}%
+                                </span>
+                            </div>
+                        </div>
                     </template>
                 </Column>
 
@@ -196,7 +218,7 @@ const confirmDeleteProduct = (data) => {
                     </template>
                 </Column>
 
-                
+
             </DataTable>
         </div>
     </AdminLayout>

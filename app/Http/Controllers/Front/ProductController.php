@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -27,13 +28,13 @@ class ProductController extends Controller
             $products = $query->latest()->paginate(12)->withQueryString();
             $categories = \App\Models\ProductCategory::withCount('products')->get();
 
-            return Inertia::render('Product/Index', [
+            return Inertia::render('Front/Product/Index', [
                 'products' => $products,
                 'categories' => $categories,
                 'filters' => $request->only(['category', 'search']),
                 'menu' => 'products',
                 'title' => 'Product List',
-            ]);
+            ])->rootView('front');
         } catch (\Throwable $th) {
             return Inertia::render('Errors/Error500', [
                 'status' => false,
@@ -59,7 +60,7 @@ class ProductController extends Controller
                 ->take(4)
                 ->get();
 
-            return Inertia::render('Product/Show', [
+            return Inertia::render('Front/Product/Show', [
                 'product' => $product,
                 'related_products' => $relatedProducts,
                 'menu' => 'products',

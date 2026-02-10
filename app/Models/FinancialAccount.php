@@ -20,4 +20,14 @@ class FinancialAccount extends Model
     {
         return $this->hasMany(FinancialMutation::class);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function purchaseOrders()
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
 }
