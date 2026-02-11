@@ -3,7 +3,9 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import AppSidebar from '@/Components/AppSidebar.vue';
 import { useConfirm } from "primevue/useconfirm";
+import { useAuthStore } from '@/Stores/authStore';
 
+const authStore = useAuthStore();
 const showingMobileSidebar = ref(false);
 const isDesktopSidebarVisible = ref(true);
 const isDark = ref(false);
@@ -98,6 +100,10 @@ const confirmLogout = () => {
             severity: 'danger'
         },
         accept: () => {
+            // Kosongkan Pinia Store agar data role/permission hilang dari memori
+            authStore.resetAuth();
+            
+            // Jalankan logout ke server
             router.post(route('logout'));
         },
         reject: () => {

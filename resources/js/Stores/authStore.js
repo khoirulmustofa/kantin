@@ -26,5 +26,12 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    return { user, roles, permissions, isLoaded, can, hasRole, fetchAuth };
+    const resetAuth = () => {
+        user.value = null;
+        roles.value = [];
+        permissions.value = [];
+        isLoaded.value = false; // Set ke false agar aplikasi tahu data sudah kosong
+    };
+
+    return { user, roles, permissions, isLoaded, can, hasRole, fetchAuth, resetAuth };
 });
