@@ -13,7 +13,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Avatar: typeof import('primevue/avatar')['default']
     Button: typeof import('primevue/button')['default']
-    Chart: typeof import('primevue/chart')['default']
     Column: typeof import('primevue/column')['default']
     ConfirmDialog: typeof import('primevue/confirmdialog')['default']
     DataTable: typeof import('primevue/datatable')['default']
@@ -29,7 +28,6 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     Password: typeof import('primevue/password')['default']
     Select: typeof import('primevue/select')['default']
-    SelectButton: typeof import('primevue/selectbutton')['default']
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
     Toast: typeof import('primevue/toast')['default']

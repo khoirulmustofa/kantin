@@ -99,9 +99,9 @@ const selectCategory = (slug) => {
                                 <img v-if="product.images.length > 0" :src="`/storage/${product.images[0].image}`"
                                     :alt="product.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <i class="pi pi-image text-5xl"></i>
-                                </div>
+                                <img v-else src="assets/images/placeholder.webp"
+                                    :alt="product.name"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div class="absolute top-4 left-4">
                                     <Tag v-if="product.category" :value="product.category.name" rounded
                                         class="!bg-white/90 !text-gray-900 !text-[10px] font-black  tracking-widest backdrop-blur-sm px-3" />

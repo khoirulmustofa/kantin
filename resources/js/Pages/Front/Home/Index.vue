@@ -105,7 +105,7 @@ onMounted(() => {
                         <Link :href="route('product.index', { category: category.slug })"
                             class="group relative block overflow-hidden rounded-[2.5rem] aspect-[4/5] shadow-2xl shadow-gray-200/50 border border-gray-100">
 
-                            <img :src="category.image ? `/storage/${category.image}` : '/assets/images/placeholder.jpg'"
+                            <img :src="category.image ? `/storage/${category.image}` : '/assets/images/placeholder.webp'"
                                 :alt="category.name"
                                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
 
@@ -153,7 +153,7 @@ onMounted(() => {
                             <img v-if="product.images && product.images.length > 0"
                                 :src="`/storage/${product.images[0].image}`" :alt="product.name"
                                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                            <img v-else src="/assets/images/placeholder-product.jpg" :alt="product.name"
+                            <img v-else src="/assets/images/placeholder.webp" :alt="product.name"
                                 class="w-full h-full object-cover grayscale opacity-50">
                             <div
                                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">

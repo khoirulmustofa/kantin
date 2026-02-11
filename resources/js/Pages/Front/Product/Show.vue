@@ -50,9 +50,8 @@ const selectImage = (img) => {
                         class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-gray-100 border border-gray-100 dark:border-gray-800 shadow-2xl shadow-gray-200/50">
                         <img v-if="activeImage" :src="`/storage/${activeImage}`" :alt="product.name"
                             class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
-                        <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                            <i class="pi pi-image text-7xl"></i>
-                        </div>
+                        <img v-else src="\assets\images\placeholder.webp" :alt="product.name"
+                            class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
                     </div>
 
                     <div v-if="product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
@@ -132,9 +131,8 @@ const selectImage = (img) => {
                                 <img v-if="rel.images.length > 0" :src="`/storage/${rel.images[0].image}`"
                                     :alt="rel.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <i class="pi pi-image text-3xl"></i>
-                                </div>
+                                <img v-else src="\assets\images\placeholder.webp" :alt="rel.name"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div
                                     class="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
                                     <Button label="View Detail"

@@ -67,13 +67,13 @@ const menus = ref([
         <header :class="[
             'sticky top-0 z-50 transition-all',
             isScrolled
-                ? 'bg-green-900/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg rounded-b-[50px]'
-                : 'bg-green-800 py-2'
+                ? 'bg-gray-100/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg rounded-b-[50px]'
+                : 'bg-gray-100 py-2'
         ]">
             <div class="container mx-auto flex justify-between items-center py-2 px-4 lg:px-0">
                 <Link href="/" class="flex items-center">
                     <div>
-                        <img src="assets/images/template-white-logo.png" alt="Logo" class="h-14 w-auto mr-4">
+                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="h-14 w-auto mr-4">
                     </div>
                 </Link>
 
@@ -92,11 +92,11 @@ const menus = ref([
                 </div>
 
                 <nav class="hidden lg:flex md:flex-grow justify-center">
-                    <ul class="flex justify-center space-x-2 text-white p-1">
+                    <ul class="flex justify-center space-x-2 text-gray-900 p-1">
                         <li v-for="menu in menus" :key="menu.href">
                             <Link :href="menu.href"
                                 class="px-4 py-2 transition-all duration-300 font-semibold flex items-center"
-                                :class="menu.active ? 'text-yellow-300 rounded-b-lg border-b-2 border-yellow-300' : 'hover:text-lg text-white/70 hover:text-yellow-300'">
+                                :class="menu.active ? 'text-blue-800 rounded-b-lg border-b-2 border-blue-800' : 'hover:text-lg text-gray-900/70 hover:text-blue-800'">
                                 {{ menu.label }}
                             </Link>
                         </li>
@@ -152,10 +152,8 @@ const menus = ref([
                                             class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
                                             <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
                                                 class="w-full h-full object-cover">
-                                            <div v-else
-                                                class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
-                                                <i class="pi pi-image text-xl"></i>
-                                            </div>
+                                            <img v-else src="\assets\images\placeholder.webp" :alt="item.name"
+                                                class="w-full h-full object-cover">
                                         </div>
                                         <div>
                                             <p
@@ -229,9 +227,8 @@ const menus = ref([
             <div class="container mx-auto px-4 py-12">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2">
-                        <img src="/assets/images/template-logo.png" alt="Logo" class="h-12 mb-6">
-                        <p class="text-gray-500 max-w-sm mb-4">Your shop's description goes here. Elevate your lifestyle
-                            with our premium sportswear collection.</p>
+                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="mb-6">
+                        <p class="text-gray-500 max-w-sm mb-4">{{ $page.props.settings.site_description }}</p>
                         <div class="flex space-x-4">
                             <a href="#" class="h-8 w-8 transition hover:scale-110"><img
                                     src="/assets/images/social_icons/facebook.svg" alt="FB"></a>
@@ -289,11 +286,9 @@ const menus = ref([
             <div class="bg-gray-50 py-6 border-t border-gray-100">
                 <div
                     class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                    <p>&copy; 2026 Your Company. All rights reserved.</p>
+                    <p>&copy; {{ new Date().getFullYear() }} {{ $page.props.settings.site_name }}. All rights reserved.</p>
                     <div class="flex space-x-4 mt-4 md:mt-0">
-                        <img src="/assets/images/social_icons/visa.svg" class="h-6">
-                        <img src="/assets/images/social_icons/paypal.svg" class="h-6">
-                        <img src="/assets/images/social_icons/stripe.svg" class="h-6">
+                       
                     </div>
                 </div>
             </div>

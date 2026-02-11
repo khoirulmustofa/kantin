@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class SettingController extends Controller
@@ -51,6 +52,8 @@ class SettingController extends Controller
                     ['value' => $value]
                 );
             }
+
+            Cache::forget('app_settings');
 
             return redirect()->back()->with('success', 'Settings updated successfully');
         } catch (\Throwable $th) {

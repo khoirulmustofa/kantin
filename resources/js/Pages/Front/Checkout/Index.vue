@@ -119,9 +119,8 @@ const submitCheckout = () => {
                                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
                                     <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
                                         class="w-full h-full object-cover">
-                                    <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                                        <i class="pi pi-image text-xl"></i>
-                                    </div>
+                                    <img v-else src="\assets\images\placeholder.webp" :alt="item.name"
+                                        class="w-full h-full object-cover">
                                 </div>
                                 <div>
                                     <h3 class="font-black text-gray-900 dark:text-white  text-xs tracking-tight">

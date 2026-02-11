@@ -46,9 +46,8 @@ const confirmClearCart = () => {
                             <div class="w-24 h-24 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
                                 <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
                                     class="w-full h-full object-cover">
-                                <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <i class="pi pi-image text-3xl"></i>
-                                </div>
+                                <img v-else src="\assets\images\placeholder.webp" :alt="item.name"
+                                    class="w-full h-full object-cover">
                             </div>
 
                             <!-- Info -->
