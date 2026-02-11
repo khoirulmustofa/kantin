@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,8 +20,11 @@ Route::get('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 
 Route::post('/checkout/store', [\App\Http\Controllers\Front\CheckoutController::class, 'store'])
     ->name('checkout.store');
 
+Route::get('/user/permissions', [\App\Http\Controllers\Auth\UserController::class, 'getPermissions'])
+    ->name('user.permissions');
+
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('admin.dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -166,6 +169,32 @@ Route::middleware('auth')->group(function () {
         ->name('admin.roles.update');
     Route::delete('/admin/roles/{id}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])
         ->name('admin.roles.destroy');
+    Route::get('/admin/roles/{id}/users', [\App\Http\Controllers\Admin\RoleController::class, 'getUsers'])
+        ->name('admin.roles.users');
+    Route::post('/admin/roles/{id}/toggle-user', [\App\Http\Controllers\Admin\RoleController::class, 'toggleUser'])
+        ->name('admin.roles.users.toggle');
+
+
+
+    // Settings routes
+    Route::get('/admin/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])
+        ->name('admin.settings.index');
+    Route::post('/admin/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])
+        ->name('admin.settings.update');
+
+    // Utilities routes
+    Route::get('/admin/utilities', [\App\Http\Controllers\Admin\UtilitiesController::class, 'index'])
+        ->name('admin.utilities.index');
+    Route::post('/admin/utilities/clear-cache', [\App\Http\Controllers\Admin\UtilitiesController::class, 'clearCache'])
+        ->name('admin.utilities.clear_cache');
+    Route::post('/admin/utilities/clear-log', [\App\Http\Controllers\Admin\UtilitiesController::class, 'clearLog'])
+        ->name('admin.utilities.clear_log');
+    Route::post('/admin/utilities/toggle-debug', [\App\Http\Controllers\Admin\UtilitiesController::class, 'toggleDebug'])
+        ->name('admin.utilities.toggle_debug');
+    Route::post('/admin/utilities/clear-session', [\App\Http\Controllers\Admin\UtilitiesController::class, 'clearSession'])
+        ->name('admin.utilities.clear_session');
 });
+
+
 
 require __DIR__ . '/auth.php';

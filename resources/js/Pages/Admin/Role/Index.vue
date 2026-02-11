@@ -5,6 +5,9 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
+import axios from 'axios';
+import UserAssignment from './User.vue';
+
 
 const props = defineProps({
     menu: String,
@@ -16,12 +19,16 @@ const props = defineProps({
 const confirm = useConfirm();
 const toast = useToast();
 
+const displayUserModal = ref(false);
+const selectedRole = ref(null);
 const search = ref(props.filters.search || '');
 const loading = ref(false);
+const multiSortMeta = ref([]);
 
 const loadLazyData = (extraParams = {}) => {
     router.get(route('admin.roles.index'), {
         search: search.value,
+        multiSortMeta: JSON.stringify(multiSortMeta.value),
         ...extraParams
     }, {
         preserveState: true,
@@ -31,15 +38,27 @@ const loadLazyData = (extraParams = {}) => {
     });
 };
 
+const openUserAssignment = (role) => {
+    selectedRole.value = role;
+    displayUserModal.value = true;
+};
+
 watch(search, debounce((value) => {
     loadLazyData({ page: 1 });
 }, 300));
 
 const onPage = (event) => {
     loadLazyData({
-        page: event.page + 1
+        page: event.page + 1,
+        rows: event.rows
     });
 };
+
+const onSort = (event) => {
+    multiSortMeta.value = event.multiSortMeta;
+    loadLazyData({ page: 1 });
+};
+
 
 const deleteRole = (data) => {
     confirm.require({
@@ -87,9 +106,29 @@ const deleteRole = (data) => {
                 </template>
             </Toolbar>
 
-            <DataTable :value="roles.data" :loading="loading" dataKey="id" class="p-datatable-sm" stripedRows
-                tableStyle="min-width: 50rem">
+            <DataTable :value="roles.data" lazy paginator sortMode="multiple" :multiSortMeta="multiSortMeta"
+                :first="(roles.current_page - 1) * roles.per_page" :rows="roles.per_page" :totalRecords="roles.total"
+                scrollable
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                :rowsPerPageOptions="[5, 10, 25]"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" @page="onPage" @sort="onSort"
+                :loading="loading" dataKey="id" class="p-datatable-sm" stripedRows tableStyle="min-width: 70rem">
+
                 <template #empty> No roles found. </template>
+                <template #loading> Loading roles data... </template>
+                <Column header="Actions" :exportable="false" style="min-width: 10rem" class="text-center">
+                    <template #body="slotProps">
+                        <div class="flex justify-end gap-2">
+                            <Button icon="pi pi-users" text rounded severity="success"
+                                @click="openUserAssignment(slotProps.data)" tooltip="Assign Users" />
+                            <Link :href="route('admin.roles.edit', slotProps.data.id)">
+                                <Button icon="pi pi-pencil" text rounded severity="info" />
+                            </Link>
+                            <Button v-if="slotProps.data.name !== 'Admin'" icon="pi pi-trash" text rounded
+                                severity="danger" @click="deleteRole(slotProps.data)" />
+                        </div>
+                    </template>
+                </Column>
 
                 <Column field="name" header="Role Name" sortable style="min-width: 14rem">
                     <template #body="slotProps">
@@ -104,31 +143,19 @@ const deleteRole = (data) => {
                     </template>
                 </Column>
 
-                <Column header="Actions" :exportable="false" style="min-width: 8rem" class="text-right">
+                <Column field="users_count" header="Users" style="min-width: 10rem">
                     <template #body="slotProps">
-                        <div class="flex justify-end gap-2">
-                            <Link :href="route('admin.roles.edit', slotProps.data.id)">
-                                <Button icon="pi pi-pencil" text rounded severity="info" />
-                            </Link>
-                            <Button v-if="slotProps.data.name !== 'Admin'" icon="pi pi-trash" text rounded
-                                severity="danger" @click="deleteRole(slotProps.data)" />
-                        </div>
+                        <Tag :value="`${slotProps.data.users_count} Users`" severity="info" rounded
+                            class="cursor-pointer" @click="openUserAssignment(slotProps.data)" />
                     </template>
                 </Column>
+
+
             </DataTable>
 
-            <div class="mt-4 flex justify-between items-center">
-                <span class="text-sm text-gray-500 font-medium">Showing {{ roles.from }} to {{ roles.to }} of {{
-                    roles.total }}
-                    roles</span>
-                <nav v-if="roles.links.length > 3" class="flex gap-1">
-                    <Link v-for="(link, k) in roles.links" :key="k" :href="link.url || '#'"
-                        class="px-3 py-1 rounded-lg border text-sm transition-all shadow-sm" :class="[
-                            link.active ? 'bg-primary border-primary text-white' : 'bg-white border-gray-200 text-gray-700 hover:border-primary hover:text-primary',
-                            !link.url ? 'opacity-50 cursor-not-allowed' : ''
-                        ]" v-html="link.label" />
-                </nav>
-            </div>
+            <!-- User Assignment Modal -->
+            <UserAssignment v-model:visible="displayUserModal" :role="selectedRole" @saved="loadLazyData" />
+
         </div>
     </AdminLayout>
 </template>

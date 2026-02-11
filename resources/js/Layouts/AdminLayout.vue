@@ -9,6 +9,7 @@ const isDesktopSidebarVisible = ref(true);
 const isDark = ref(false);
 const userMenu = ref();
 const page = usePage();
+const settings = ref(page.props.settings);
 
 const menuActive = defineModel('menuActive', { type: String });
 const title = defineModel('title', { type: String });
@@ -60,6 +61,7 @@ onMounted(() => {
         if (prefersDark) document.documentElement.classList.add('my-app-dark');
     }
 });
+
 
 onUnmounted(() => {
     window.removeEventListener('resize', handleResize);

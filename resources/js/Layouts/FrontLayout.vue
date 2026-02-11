@@ -104,12 +104,29 @@ const menus = ref([
                 </nav>
 
                 <div class="hidden lg:flex items-center space-x-4 relative">
-                    <Link href="/register"
-                        class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
-                        Register</Link>
-                    <Link href="/login"
-                        class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
-                        Login</Link>
+                    <template v-if="!$page.props.auth.user">
+                        <Link href="/register"
+                            class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
+                            Daftar
+                        </Link>
+                        <Link href="/login"
+                            class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
+                            Masuk
+                        </Link>
+                    </template>
+
+                    <template v-else>
+                        <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
+                                <i class="pi pi-user text-xs"></i>
+                            </div>
+                            <span
+                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
+                                {{ $page.props.auth.user.name }}
+                            </span>
+                        </Link>
+                    </template>
 
                     <div class="relative group">
                         <Link :href="route('cart.index')" class="relative">
@@ -146,7 +163,7 @@ const menus = ref([
                                                 {{ item.name }}</p>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="w-1 h-1 rounded-full bg-gray-200"></span>
                                                 <span class="text-xs font-black text-green-600">{{
                                                     formatCurrencyIndo(item.price) }}</span>
@@ -189,10 +206,10 @@ const menus = ref([
                     <ul class="w-full text-center">
                         <li v-for="menu in menus" :key="menu.href">
                             <Link :href="menu.href" class="hover:text-secondary font-bold block py-2">{{ menu.label
-                            }}</Link>
+                                }}</Link>
                         </li>
 
-                       
+
                     </ul>
 
                     <div class="flex flex-col w-full space-y-3 pt-4">

@@ -108,7 +108,20 @@ const items = ref([
                 route: 'admin.roles.index',
                 menu: 'roles'
             },
-            { label: 'Global Config', icon: 'pi pi-cog', to: '/config' }
+            {
+                label: 'Settings',
+                icon: 'pi pi-cog',
+                route: 'admin.settings.index',
+                menu: 'settings'
+            },
+            {
+                label: 'Utilities',
+                icon: 'pi pi-wrench',
+                route: 'admin.utilities.index',
+                menu: 'utilities'
+            }
+
+
         ]
     }
 ]);
@@ -121,17 +134,7 @@ const items = ref([
         <!-- Logo Area -->
         <div class="flex items-center px-8 border-b border-gray-50 dark:border-gray-800 h-16 min-h-[4rem]">
             <Link :href="route('home')" class="flex items-center gap-3 group">
-                <div class="p-1.5 bg-emerald-500 rounded-lg group-hover:rotate-12 transition-transform duration-300">
-                    <svg class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2.5"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <span class="text-xl font-black text-gray-900 dark:text-white tracking-tighter">Koperasi Digital</span>
+                <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class=" w-auto"></img>
             </Link>
         </div>
 

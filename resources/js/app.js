@@ -13,6 +13,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import { createPinia } from 'pinia';
+import { useAuthStore } from '@/Stores/authStore';
 
 const pinia = createPinia();
 
@@ -26,23 +27,26 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
-            .use(PrimeVue, {
-                theme: {
-                    preset: Aura,
-                    options: {
-                        darkModeSelector: '.my-app-dark'
-                    }
-                },
-                ripple: true
-            })
-            .use(plugin)
-            .use(ZiggyVue)
-            .use(pinia)
-            .use(ConfirmationService)
-            .use(ToastService)
-            .directive('tooltip', Tooltip)
-            .mount(el);
+        const app = createApp({ render: () => h(App, props) });
+        app.use(PrimeVue, {
+            theme: {
+                preset: Aura,
+                options: {
+                    darkModeSelector: '.my-app-dark'
+                }
+            },
+            ripple: true
+        })
+        app.use(plugin)
+        app.use(ZiggyVue)
+        app.use(pinia)
+        app.use(ConfirmationService)
+        app.use(ToastService)
+        app.directive('tooltip', Tooltip)
+
+        const authStore = useAuthStore();
+        authStore.fetchAuth();
+        app.mount(el);
     },
     progress: {
         color: '#f50707ff',
