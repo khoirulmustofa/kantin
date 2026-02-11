@@ -7,7 +7,7 @@ pipeline {
         SERVER_USER  = 'nfbsb'                             // Username SSH server target
         SERVER_HOST  = '192.168.100.125'                  // IP Address server target
         PROJECT_PATH = '/home/nfbsb/php/kantin_nfbs'     // Lokasi folder proyek di server
-        GIT_REPO     = 'https://github.com/khoirulmustofa/kantin.git' // URL Repository
+        GIT_REPO     = 'git@github.com:khoirulmustofa/kantin.git' // URL Repository
     }
 
     stages {
