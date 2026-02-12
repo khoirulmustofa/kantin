@@ -47,6 +47,10 @@ pipeline {
                                 docker compose down
                             fi
 
+                            # === Langkah 3.5: Hapus Volume Lama ===
+                            echo "[INFO] Membersihkan sampah Docker (Prune)..."
+                            docker system prune -f
+
                             # === Langkah 4: Build & Run Container ===
                             # Sekarang npm run build di Dockerfile tidak akan error
                             echo "[INFO] Membangun dan menjalankan container baru..."
@@ -60,12 +64,7 @@ pipeline {
                             if [ \$(docker ps -q -f name=kantin_nfbs) ]; then
                                 docker exec kantin_nfbs chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
                                 docker exec kantin_nfbs chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-                                
-                                # Folder Uploads
-                                docker exec kantin_nfbs mkdir -p /var/www/html/public/uploads
-                                docker exec kantin_nfbs chown -R www-data:www-data /var/www/html/public/uploads
-                                docker exec kantin_nfbs chmod -R 775 /var/www/html/public/uploads
-                                
+                                                                                                
                                 # === Langkah 6: Symlink Storage ===
                                 docker exec kantin_nfbs php artisan storage:link
                                 
