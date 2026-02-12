@@ -7,7 +7,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # 3. Setup Environment
-RUN cp .env.prod .env
+RUN cp /home/nfbsb/.env/.env.kantin .env
 
 # 4. Install PHP Dependencies
 RUN composer install --no-scripts --no-dev --optimize-autoloader
