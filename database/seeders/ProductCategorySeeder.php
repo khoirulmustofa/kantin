@@ -13,12 +13,30 @@ class ProductCategorySeeder extends Seeder
     public function run(): void
     {
         \App\Models\ProductCategory::create([
-            'name' => 'Makanan',
-            'slug' => 'makanan',
+            'name' => 'Seragam SMP Putra',
+            'slug' => 'seragam-smp-putra',
         ]);
         \App\Models\ProductCategory::create([
-            'name' => 'Minuman',
-            'slug' => 'minuman',
+            'name' => 'Seragam SMP Putri',
+            'slug' => 'seragam-smp-putri',
+        ]);
+
+        \App\Models\ProductCategory::create([
+            'name' => 'Seragam SMA Putra',
+            'slug' => 'seragam-sma-putra',
+        ]);
+        \App\Models\ProductCategory::create([
+            'name' => 'Seragam SMA Putri',
+            'slug' => 'seragam-sma-putri',
+        ]);
+
+        \App\Models\ProductCategory::create([
+            'name' => 'Perlengkapan ATK',
+            'slug' => 'perlengkapan-atk',
+        ]);
+        \App\Models\ProductCategory::create([
+            'name' => 'Perlengkapan Seragam',
+            'slug' => 'perlengkapan-seragam',
         ]);
     }
 }

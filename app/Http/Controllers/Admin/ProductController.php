@@ -187,4 +187,47 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Failed to delete product: ' . $th->getMessage());
         }
     }
+
+    public function duplicate($id)
+    {
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            $product = Product::with('images')->findOrFail($id);
+
+            // Create new name with " (copy)"
+            $newName = $product->name . ' (copy)';
+            // Ensure uniqueness if multiple copies are made
+            $count = 1;
+            while (Product::where('name', $newName)->exists()) {
+                $newName = $product->name . ' (copy ' . $count . ')';
+                $count++;
+            }
+
+            $newProduct = $product->replicate();
+            $newProduct->name = $newName;
+            $newProduct->slug = \Illuminate\Support\Str::slug($newName);
+            $newProduct->save();
+
+            // Duplicate images
+            foreach ($product->images as $image) {
+                if ($image->image) {
+                    $oldPath = $image->image;
+                    $filename = basename($oldPath);
+                    $newPath = 'products/' . \Illuminate\Support\Str::uuid() . '_' . $filename;
+
+                    \Illuminate\Support\Facades\Storage::disk('public')->copy($oldPath, $newPath);
+
+                    $newProduct->images()->create([
+                        'image' => $newPath,
+                    ]);
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->back()->with('success', 'Product duplicated successfully.');
+        } catch (\Throwable $th) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->with('error', 'Failed to duplicate product: ' . $th->getMessage());
+        }
+    }
 }

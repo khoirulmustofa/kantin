@@ -44,7 +44,7 @@ const selectCategory = (slug) => {
     <Head :title="props.title" />
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Sidebar -->
                 <aside class="w-full lg:w-64 flex-shrink-0">
@@ -55,7 +55,8 @@ const selectCategory = (slug) => {
                                 Cari Produk</h3>
                             <IconField class="w-full">
                                 <InputIcon><i class="pi pi-search" /></InputIcon>
-                                <InputText v-model="search" placeholder="Cari nama produk...." class="w-full !rounded-xl" />
+                                <InputText v-model="search" placeholder="Cari nama produk...."
+                                    class="w-full !rounded-xl" />
                             </IconField>
                         </div>
 
@@ -65,6 +66,7 @@ const selectCategory = (slug) => {
                                 Kategori</h3>
                             <div class="flex flex-col gap-2">
                                 <button v-for="cat in categories" :key="cat.id" @click="selectCategory(cat.slug)"
+                                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-12 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                                     class="group flex items-center justify-between p-3 rounded-xl border transition-all duration-300 text-left"
                                     :class="selectedCategory === cat.slug
                                         ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-200'
@@ -93,14 +95,14 @@ const selectCategory = (slug) => {
 
                     <div v-if="products.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                         <div v-for="product in products.data" :key="product.id"
+                            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                             class="group relative bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-2">
                             <!-- Image Area -->
                             <div class="relative aspect-[4/5] overflow-hidden bg-gray-100">
                                 <img v-if="product.images.length > 0" :src="`/storage/${product.images[0].image}`"
                                     :alt="product.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <img v-else src="assets/images/placeholder.webp"
-                                    :alt="product.name"
+                                <img v-else src="assets/images/placeholder.webp" :alt="product.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div class="absolute top-4 left-4">
                                     <Tag v-if="product.category" :value="product.category.name" rounded
@@ -125,7 +127,7 @@ const selectCategory = (slug) => {
                                 <div class="flex items-center gap-3">
                                     <span class="text-xl font-black text-green-600">{{
                                         formatCurrencyIndo(product.selling_price)
-                                    }}</span>
+                                        }}</span>
                                     <!-- Placeholder for original price if needed -->
                                     <span class="text-xs text-gray-400 line-through font-bold">{{
                                         formatCurrencyIndo(product.selling_price * 1.2) }}</span>
@@ -141,7 +143,8 @@ const selectCategory = (slug) => {
                             class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
                             <i class="pi pi-search text-3xl text-gray-300"></i>
                         </div>
-                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2  tracking-tighter">Produk Tidak Ditemukan.</h3>
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2  tracking-tighter">Produk Tidak
+                            Ditemukan.</h3>
                         <p class="text-gray-500 text-sm italic">Coba sesuaikan filter atau istilah pencarian.</p>
                         <Button label="Hapus Semua Filter" text severity="info"
                             class="mt-4 font-black text-xs  underline"

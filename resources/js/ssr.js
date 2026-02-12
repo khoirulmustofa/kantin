@@ -11,7 +11,8 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import { createPinia } from 'pinia';
-import { useAuthStore } from '@/Stores/authStore';
+import { useAuthStore } from '@/Stores/authStore'; 
+import AnimateOnScroll from 'primevue/animateonscroll'; 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -47,6 +48,7 @@ createServer((page) =>
             app.use(pinia)
             app.use(ConfirmationService)
             app.use(ToastService)
+            app.directive('animateonscroll', AnimateOnScroll);
             app.directive('tooltip', Tooltip)
 
             return app;

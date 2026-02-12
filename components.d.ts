@@ -35,6 +35,7 @@ declare module 'vue' {
     Toolbar: typeof import('primevue/toolbar')['default']
   }
   export interface GlobalDirectives {
+    AnimateOnScroll: typeof import('primevue/animateonscroll')['default']
     Tooltip: typeof import('primevue/tooltip')['default']
   }
 }

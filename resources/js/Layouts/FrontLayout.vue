@@ -1,8 +1,44 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
+import { useToast } from "primevue/usetoast";
+
+const page = usePage();
+const toast = useToast();
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+    isScrolled.value = window.scrollY > 10;
+};
+
+const showFlashMessage = (flash) => {
+
+    if (flash?.success) {
+        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 3000 });
+    }
+    if (flash?.warning) {
+        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
+    }
+    if (flash?.error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
+    }
+};
+
+onMounted(() => {
+    // Pastikan DOM dan PrimeVue Service siap sebelum menampilkan flash awal
+    nextTick(() => {
+        showFlashMessage(page.props.flash);
+    });
+
+    window.addEventListener('scroll', handleScroll);
+});
+
+// Watcher untuk navigasi antar halaman (Inertia Props Update)
+watch(() => page.props.flash, (newFlash) => {
+    showFlashMessage(newFlash);
+}, { deep: true });
 
 const cartStore = useCartStore();
 
@@ -27,17 +63,9 @@ const closeAll = () => {
 const menuActive = defineModel('menuActive');
 const title = defineModel('title');
 
-const isScrolled = ref(false);
-
-const handleScroll = () => {
-    isScrolled.value = window.scrollY > 10;
-};
-
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll);
-});
 
 onUnmounted(() => {
+
     window.removeEventListener('scroll', handleScroll);
 });
 
@@ -58,11 +86,13 @@ const menus = ref([
         active: menuActive.value === 'checkout'
     }
 ]);
+
+
 </script>
 
 <template>
-    <ConfirmDialog />
     <Toast />
+    <ConfirmDialog></ConfirmDialog>
     <div class="min-h-screen flex flex-col font-sans text-gray-900">
         <header :class="[
             'sticky top-0 z-50 transition-all',
@@ -78,7 +108,7 @@ const menus = ref([
                 </Link>
 
                 <div class="flex lg:hidden">
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="text-white focus:outline-none">
+                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="text-blue-700 font-bold focus:outline-none">
                         <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -105,14 +135,11 @@ const menus = ref([
 
                 <div class="hidden lg:flex items-center space-x-4 relative">
                     <template v-if="!$page.props.auth.user">
-                        <Link href="/register"
-                            class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
-                            Daftar
-                        </Link>
-                        <Link href="/login"
-                            class="bg-primary border border-primary hover:bg-transparent text-white hover:text-primary font-semibold px-4 py-2 rounded-full transition">
-                            Masuk
-                        </Link>
+                        <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
+                            class="w-full flex items-center justify-center gap-3 !border-red-400 !border-2 !py-3 !rounded-2xl">
+                            <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
+                            <span class="font-bold tracking-tight">Masuk dengan Google</span>
+                        </Button>
                     </template>
 
                     <template v-else>
@@ -130,8 +157,7 @@ const menus = ref([
 
                     <div class="relative group">
                         <Link :href="route('cart.index')" class="relative">
-                            <img src="/assets/images/cart-shopping.svg" alt="Cart"
-                                class="h-6 w-6 transition group-hover:scale-110 brightness-200">
+                            <i class="pi pi-shopping-cart !animate-bounce !text-4xl !text-blue-700 !text-gray-700"></i>
                             <span v-if="cartStore.totalItems > 0"
                                 class="absolute -top-2 -right-2 bg-yellow-300 text-black text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-yellow-500 shadow-lg">
                                 {{ cartStore.totalItems }}
@@ -161,7 +187,7 @@ const menus = ref([
                                                 {{ item.name }}</p>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                    }}</span>
+                                                }}</span>
                                                 <span class="w-1 h-1 rounded-full bg-gray-200"></span>
                                                 <span class="text-xs font-black text-green-600">{{
                                                     formatCurrencyIndo(item.price) }}</span>
@@ -200,30 +226,44 @@ const menus = ref([
 
             <transition name="mobile-slide">
                 <nav v-if="isMobileMenuOpen"
-                    class="mobile-menu flex flex-col items-center space-y-4 lg:hidden bg-gray-dark text-white p-6 pb-10">
+                    class="mobile-menu flex flex-col items-center space-y-4 lg:hidden bg-blue-900/80 backdrop-blur-xl text-white p-6 pb-10">
                     <ul class="w-full text-center">
                         <li v-for="menu in menus" :key="menu.href">
                             <Link :href="menu.href" class="hover:text-secondary font-bold block py-2">{{ menu.label
-                                }}</Link>
+                            }}</Link>
                         </li>
 
 
                     </ul>
 
-                    <div class="flex flex-col w-full space-y-3 pt-4">
-                        <Link href="/register" class="bg-primary text-white py-3 rounded-full font-bold text-center">
-                            Register</Link>
-                        <Link href="/login"
-                            class="bg-transparent border border-white text-white py-3 rounded-full font-bold text-center">
-                            Login</Link>
-                    </div>
+                    <template v-if="!$page.props.auth.user">
+                        <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
+                            class="w-full flex items-center justify-center gap-3 !bg-red-400 !border-red-400 !py-3 !rounded-2xl">
+                            <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
+                            <span class="font-bold text-white tracking-tight">Masuk dengan Google</span>
+                        </Button>
+                    </template>                  
+
+                    <template v-else>
+                        <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
+                                <i class="pi pi-user text-xs"></i>
+                            </div>
+                            <span
+                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
+                                {{ $page.props.auth.user.name }}
+                            </span>
+                        </Link>
+                    </template>
                 </nav>
             </transition>
         </header>
 
         <slot />
 
-        <footer class="bg-white border-t border-gray-200 pt-20">
+        <footer v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }" 
+        class="bg-white border-t border-gray-200 pt-20">
             <div class="container mx-auto px-4 py-12">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2">
@@ -286,9 +326,10 @@ const menus = ref([
             <div class="bg-gray-50 py-6 border-t border-gray-100">
                 <div
                     class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                    <p>&copy; {{ new Date().getFullYear() }} {{ $page.props.settings.site_name }}. All rights reserved.</p>
+                    <p>&copy; {{ new Date().getFullYear() }} {{ $page.props.settings.site_name }}. All rights reserved.
+                    </p>
                     <div class="flex space-x-4 mt-4 md:mt-0">
-                       
+
                     </div>
                 </div>
             </div>

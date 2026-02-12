@@ -87,7 +87,27 @@ const confirmDeleteProduct = (data) => {
         }
     });
 };
+
+const duplicateProduct = (data) => {
+    confirm.require({
+        message: `Are you sure you want to duplicate ${data.name}?`,
+        header: 'Confirm Duplicate',
+        icon: 'pi pi-copy',
+        accept: () => {
+            loading.value = true;
+            router.post(route('admin.products.duplicate', data.id), {}, {
+                onSuccess: () => {
+                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Duplicated', life: 3000 });
+                },
+                onFinish: () => {
+                    loading.value = false;
+                }
+            });
+        }
+    });
+};
 </script>
+
 
 <template>
 
@@ -136,11 +156,14 @@ const confirmDeleteProduct = (data) => {
                 <Column header="Actions" :exportable="false" style="min-width: 5rem" class="text-center">
                     <template #body="slotProps">
                         <div class="flex justify-center gap-2">
+                            <Button icon="pi pi-copy" text rounded severity="success"
+                                @click="duplicateProduct(slotProps.data)" />
                             <Button icon="pi pi-pencil" text rounded severity="info"
                                 @click="editProduct(slotProps.data)" />
                             <Button icon="pi pi-trash" text rounded severity="danger"
                                 @click="confirmDeleteProduct(slotProps.data)" />
                         </div>
+
                     </template>
                 </Column>
 

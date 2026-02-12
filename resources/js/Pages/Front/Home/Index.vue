@@ -1,6 +1,7 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed, onMounted, ref, nextTick } from 'vue';
+
 
 // Import Swiper core and required modules
 import Swiper from 'swiper';
@@ -10,11 +11,17 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+
 import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 const cartStore = useCartStore();
+
+const page = usePage();
 
 
 const props = defineProps({
@@ -24,7 +31,17 @@ const props = defineProps({
     categories: Array,
 });
 
-onMounted(() => {
+const sliderImages = ref([]);
+
+// Menggunakan computed agar reaktif jika data berubah
+const settings = computed(() => page.props.settings);
+
+
+onMounted(async () => {
+    updateSliderImages();
+
+    await nextTick();
+
     const swiper = new Swiper('.main-slider', {
         modules: [Navigation, Pagination, Autoplay],
         loop: true,
@@ -41,6 +58,29 @@ onMounted(() => {
         },
     });
 });
+
+
+
+const updateSliderImages = () => {
+    try {
+        const sliderData = settings.value.front_slider;
+        if (sliderData) {
+            sliderImages.value = typeof sliderData === 'string'
+                ? JSON.parse(sliderData)
+                : sliderData;
+        } else {
+            sliderImages.value = [];
+        }
+    } catch (e) {
+
+        sliderImages.value = [];
+    }
+};
+
+const testToast = () => {
+    toast.add({ severity: 'success', summary: 'Success', detail: 'This is a success message', life: 3000 });
+}
+
 </script>
 
 <template>
@@ -50,41 +90,24 @@ onMounted(() => {
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
 
         <!-- Slider -->
-        <section id="product-slider" class="relative">
-            <div class="main-slider swiper overflow-hidden">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide relative">
-                        <img src="assets/images/main-slider/5.jpg" alt="Product 1" class="w-full h-auto object-cover">
+        <section id="product-slider" class="relative overflow-hidden">
+            <div class="main-slider swiper h-full overflow-hidden">
+                <div v-if="sliderImages.length > 0" class="swiper-wrapper h-full">
+                    <div v-for="(img, index) in sliderImages" :key="index" class="swiper-slide relative h-full">
+                        <img :src="`/storage/${img}`" alt="Slider Image" class="w-full h-full object-cover">
+
                         <div
                             class="swiper-slide-content absolute inset-0 flex flex-col justify-center items-center text-center">
-                            <h2
-                                class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4  tracking-tighter">
-                                New Arrivals</h2>
-                            <p class="mb-4 text-white md:text-2xl font-medium">Experience the best in quality with
-                                <br>our latest collection.
-                            </p>
+                            <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4  tracking-tighter">
+                                {{ settings.front_heading }}</h2>
+                            <p class="mb-4 text-white md:text-2xl font-medium">{{ settings.front_sub_heading }}</p>
                             <Link :href="route('product.index')"
                                 class="bg-green-600 hover:bg-white text-white hover:text-green-600 font-black px-10 py-4 rounded-2xl  text-xs tracking-widest transition-all shadow-2xl shadow-green-500/30">
-                                Shop now
+                                Beli Sekarang
                             </Link>
                         </div>
                     </div>
 
-                    <div class="swiper-slide relative">
-                        <img src="assets/images/main-slider/2.png" alt="Product 2" class="w-full h-auto object-cover">
-                        <div
-                            class="swiper-slide-content absolute inset-0 flex flex-col justify-center items-center text-center">
-                            <h2
-                                class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4  tracking-tighter">
-                                Exclusive Deals</h2>
-                            <p class="mb-4 text-white md:text-2xl font-medium">Discover the latest trends in
-                                our<br>premium selection.</p>
-                            <Link :href="route('product.index')"
-                                class="bg-white hover:bg-green-600 text-black hover:text-white font-black px-10 py-4 rounded-2xl  text-xs tracking-widest transition-all">
-                                Shop now
-                            </Link>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="swiper-button-prev !text-white opacity-50 hover:opacity-100 transition-all"></div>
@@ -100,7 +123,9 @@ onMounted(() => {
                     <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter">Kategori</h2>
                 </div>
                 <div class="flex flex-wrap -mx-4 justify-center">
-                    <div v-for="category in categories" :key="category.id" class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+                    <div v-for="category in categories" :key="category.id"
+                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000' }"
+                        class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
 
                         <Link :href="route('product.index', { category: category.slug })"
                             class="group relative block overflow-hidden rounded-[2.5rem] aspect-[4/5] shadow-2xl shadow-gray-200/50 border border-gray-100">
@@ -115,7 +140,7 @@ onMounted(() => {
 
                             <div
                                 class="absolute inset-0 flex flex-col items-center justify-end p-8 text-center text-white">
-                               
+
                                 <h3
                                     class="text-xl font-black mb-4 tracking-tighter  group-hover:scale-105 transition-transform">
                                     {{ category.name }}
@@ -147,6 +172,7 @@ onMounted(() => {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div v-for="product in products" :key="product.id"
+                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="group bg-white p-4 rounded-3xl border border-gray-100 hover:border-green-100 transition-all duration-500 hover:shadow-2xl hover:shadow-green-200">
                         <div
                             class="relative aspect-[4/5] overflow-hidden rounded-3xl mb-6 bg-gray-50 border border-gray-100">
@@ -194,7 +220,7 @@ onMounted(() => {
 
 
         <!-- Banner section -->
-        <section id="banner" class="relative bg-gray-100 py-16">
+        <section id="banner" v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }" class="relative bg-gray-100 py-16">
             <div class="container mx-auto px-4 py-20 rounded-lg relative bg-cover bg-center"
                 style="background-image: url('assets/images/banner1.jpg');">
                 <div class="absolute inset-0 bg-black opacity-40 rounded-lg"></div>
@@ -215,7 +241,8 @@ onMounted(() => {
         </section>
 
         <!-- Subscribe section -->
-        <section id="subscribe" class="py-6 lg:py-24 bg-white border-t border-gray-line">
+        <section id="subscribe" v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+        class="py-6 lg:py-24 bg-white border-t border-gray-line">
             <div class="container mx-auto">
                 <div class="flex flex-col items-center rounded-lg p-4 sm:p-0 ">
                     <div class="mb-8">

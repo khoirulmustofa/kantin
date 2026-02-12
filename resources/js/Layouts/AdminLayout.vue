@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import AppSidebar from '@/Components/AppSidebar.vue';
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 import { useAuthStore } from '@/Stores/authStore';
 
 const authStore = useAuthStore();
@@ -31,13 +32,8 @@ const toggleSidebar = () => {
 };
 
 const handleResize = () => {
-    if (window.innerWidth < 1024) {
-        isDesktopSidebarVisible.value = false;
-    } else {
-        isDesktopSidebarVisible.value = true;
-    }
+    if (window.innerWidth < 1024) { isDesktopSidebarVisible.value = false; } else { isDesktopSidebarVisible.value = true; }
 };
-
 const toggleDarkMode = () => {
     isDark.value = !isDark.value;
     if (isDark.value) {
@@ -50,8 +46,12 @@ const toggleDarkMode = () => {
 };
 
 onMounted(() => {
+    // Ambil data auth (user, roles, permissions) dari server ke Pinia Store
+    authStore.fetchAuth();
+
     window.addEventListener('resize', handleResize);
     handleResize(); // Initial check
+
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -64,6 +64,20 @@ onMounted(() => {
     }
 });
 
+
+const toast = useToast();
+
+watch(() => page.props.flash, (flash) => {
+    if (flash.success) {
+        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 3000 });
+    }
+    if (flash.warning) {
+        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
+    }
+    if (flash.error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
+    }
+}, { deep: true, immediate: true });
 
 onUnmounted(() => {
     window.removeEventListener('resize', handleResize);
@@ -102,7 +116,7 @@ const confirmLogout = () => {
         accept: () => {
             // Kosongkan Pinia Store agar data role/permission hilang dari memori
             authStore.resetAuth();
-            
+
             // Jalankan logout ke server
             router.post(route('logout'));
         },

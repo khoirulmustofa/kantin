@@ -14,6 +14,7 @@ import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import { createPinia } from 'pinia';
 import { useAuthStore } from '@/Stores/authStore';
+import AnimateOnScroll from 'primevue/animateonscroll';
 
 const pinia = createPinia();
 
@@ -43,6 +44,7 @@ createInertiaApp({
         app.use(ConfirmationService)
         app.use(ToastService)
         app.directive('tooltip', Tooltip)
+        app.directive('animateonscroll', AnimateOnScroll);
 
         const authStore = useAuthStore();
         authStore.fetchAuth();

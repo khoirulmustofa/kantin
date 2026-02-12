@@ -44,19 +44,21 @@ const submitCheckout = () => {
     <Head :title="props.title" />
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
             <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-10 tracking-tighter">{{ title }}</h1>
 
-            <div v-if="cartStore.items.length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div v-if="cartStore.items.length > 0" class="flex flex-col lg:flex-row gap-4">
                 <!-- Checkout Form -->
-                <div class="lg:col-span-2 space-y-8">
+                <div class="flex-1 space-y-8">
                     <div
+                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="card p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl shadow-gray-100/50">
                         <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">Shipping &
                             Customer Information</h2>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="flex flex-col gap-2">
+                        <div class="flex flex-col md:flex-row flex-wrap gap-6">
+                            <div class="flex flex-col gap-2 flex-1">
                                 <label class="text-xs font-black  tracking-widest text-gray-700">WhatsApp
                                     Number</label>
                                 <InputText v-model="form.username" placeholder="e.g. 08123456789"
@@ -66,7 +68,7 @@ const submitCheckout = () => {
                                     form.errors.username }}</small>
                             </div>
 
-                            <div class="flex flex-col gap-2">
+                            <div class="flex flex-col gap-2 flex-1">
                                 <label class="text-xs font-black  tracking-widest text-gray-700">Full
                                     Name</label>
                                 <InputText v-model="form.name" placeholder="Your full name"
@@ -76,7 +78,7 @@ const submitCheckout = () => {
                                     }}</small>
                             </div>
 
-                            <div class="flex flex-col gap-2 md:col-span-2">
+                            <div class="flex flex-col gap-2 w-full">
                                 <label class="text-xs font-black  tracking-widest text-gray-700">Shipping
                                     Address</label>
                                 <Textarea v-model="form.shipping_address" rows="3"
@@ -87,7 +89,7 @@ const submitCheckout = () => {
                                     form.errors.shipping_address }}</small>
                             </div>
 
-                            <div class="flex flex-col gap-2 md:col-span-2">
+                            <div class="flex flex-col gap-2 w-full">
                                 <label class="text-xs font-black  tracking-widest text-gray-700">Payment
                                     Method</label>
                                 <Select v-model="form.financial_account_id" :options="financialAccounts"
@@ -114,6 +116,7 @@ const submitCheckout = () => {
                         <h2 class="text-xl font-black text-gray-900 dark:text-white px-4 tracking-tight">Order Items
                         </h2>
                         <div v-for="item in cartStore.items" :key="item.id"
+                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                             class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
@@ -146,9 +149,10 @@ const submitCheckout = () => {
                 </div>
 
                 <!-- Order Summary & Action -->
-                <div class="lg:col-span-1">
+                <div class="w-full lg:w-96">
                     <div
-                        class="sticky top-32 p-5 bg-white rounded-2xl border border-gray-200 shadow-2xl shadow-black/20 text-black">
+                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                        class="sticky top-32 p-5 bg-green-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 text-black">
                         <h2 class="text-2xl font-black tracking-tight mb-8">Order Summary</h2>
 
                         <div class="space-y-4 mb-10">
@@ -173,7 +177,7 @@ const submitCheckout = () => {
                         </div>
 
                         <Button @click="submitCheckout" :loading="form.processing"
-                            class="!w-full !bg-green-500 !text-white !py-6 !rounded-2xl !font-black ! !tracking-[0.2em] !border-none hover:!bg-rose-500 hover:!text-white transition-all active:scale-95"
+                            class="block w-full text-center bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95"
                             label="Complete Purchase" />
 
                         <p class="text-[10px] text-center mt-6 text-white/40 font-bold  tracking-widest">Secure

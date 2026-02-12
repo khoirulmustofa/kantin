@@ -21,16 +21,5 @@ class UserSeeder extends Seeder
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);
-
-        for ($i = 1; $i <= 50; $i++) {
-            User::create([
-                'name' => 'User ' . $i,
-                'username' => 'user' . $i,
-                'email' => 'user' . $i . '@admin.com',
-                'password' => 'password',
-                'role' => 'user',
-                'email_verified_at' => now(),
-            ]);
-        }
     }
 }

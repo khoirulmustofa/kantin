@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 Route::get('/', [\App\Http\Controllers\Front\HomeController::class, 'index'])
     ->name('home');
+
 Route::get('/product', [\App\Http\Controllers\Front\ProductController::class, 'index'])
     ->name('product.index');
 Route::get('/product/{slug}', [\App\Http\Controllers\Front\ProductController::class, 'show'])
@@ -23,11 +24,15 @@ Route::post('/checkout/store', [\App\Http\Controllers\Front\CheckoutController::
 Route::get('/user/permissions', [\App\Http\Controllers\Auth\UserController::class, 'getPermissions'])
     ->name('user.permissions');
 
+Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])
+->name('google.login');
+Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback']);
+
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth','verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -65,6 +70,9 @@ Route::middleware('auth')->group(function () {
         ->name('admin.products.update');
     Route::delete('/admin/products/{id}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])
         ->name('admin.products.destroy');
+    Route::post('/admin/products/{id}/duplicate', [\App\Http\Controllers\Admin\ProductController::class, 'duplicate'])
+        ->name('admin.products.duplicate');
+
 
     // Order routes
     Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])
@@ -179,8 +187,13 @@ Route::middleware('auth')->group(function () {
     // Settings routes
     Route::get('/admin/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])
         ->name('admin.settings.index');
+    Route::get('/admin/settings/data', [\App\Http\Controllers\Admin\SettingController::class, 'getSettings'])
+        ->name('admin.settings.data');
     Route::post('/admin/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])
         ->name('admin.settings.update');
+    Route::post('/admin/settings/delete-slider', [\App\Http\Controllers\Admin\SettingController::class, 'deleteSliderImage'])
+        ->name('admin.settings.delete-slider');
+
 
     // Utilities routes
     Route::get('/admin/utilities', [\App\Http\Controllers\Admin\UtilitiesController::class, 'index'])
