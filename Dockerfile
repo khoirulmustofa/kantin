@@ -17,14 +17,16 @@ RUN npm install && \
 
 # 6. Create Storage Structure & Set Permissions
 # Combining these into one RUN command significantly saves disk space
+# Buat folder yang diperlukan
 RUN mkdir -p storage/app/public \
              storage/framework/cache \
              storage/framework/sessions \
              storage/framework/views \
              storage/logs \
              bootstrap/cache \
-             public/uploads && \
-    touch storage/logs/worker.log storage/logs/laravel.log && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 storage bootstrap/cache public/uploads && \
-    chmod g+s public/uploads
+    touch storage/logs/worker.log storage/logs/laravel.log
+
+# OPTIMASI: Hanya chown folder yang butuh akses tulis
+# Jangan chown seluruh /var/www/html agar vendor/ & node_modules/ tidak ikut diproses
+RUN chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
