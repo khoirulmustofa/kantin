@@ -9,6 +9,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - /home/nfbsb/.env/.env.kantin
     ports:
     - "7060:80"
     networks:
