@@ -93,6 +93,9 @@ const syncFinance = (data) => {
         message: `Sync ${data.order_number} to financial ledger?`,
         header: 'Financial Sync',
         icon: 'pi pi-dollar',
+        acceptLabel: 'Sync',
+        rejectLabel: 'Cancel',
+        rejectClass: 'p-button-secondary p-button-outlined',
         acceptClass: 'p-button-success',
         accept: () => {
             loading.value = true;
@@ -157,7 +160,7 @@ const syncFinance = (data) => {
                     <template #body="slotProps">
                         <div class="flex justify-center gap-1">
                             <!-- new tab -->
-                            <a :href="route('orders.show', slotProps.data.id)" v-tooltip.top="'View Invoice'"
+                            <a :href="route('order.show', slotProps.data.id)" v-tooltip.top="'View Invoice'"
                                 target="_blank">
                                 <Button icon="pi pi-file" text rounded severity="secondary" />
                             </a>
@@ -168,11 +171,13 @@ const syncFinance = (data) => {
                             <i v-else-if="slotProps.data.mutation" class="pi pi-check-circle text-emerald-500 p-2"
                                 v-tooltip.top="'Already Synced'" />
 
-                            <Link :href="route('admin.orders.edit', slotProps.data.id)">
-                                <Button icon="pi pi-pencil" text rounded severity="info" v-tooltip.top="'Edit Order'" />
+                            <Link :href="route('admin.orders.edit', slotProps.data.id)"
+                                v-if="slotProps.data.status !== 'completed' && slotProps.data.payment_status !== 'paid'">
+                            <Button icon="pi pi-pencil" text rounded severity="info" v-tooltip.top="'Edit Order'" />
                             </Link>
                             <Button icon="pi pi-trash" text rounded severity="danger" v-tooltip.top="'Delete Order'"
-                                @click="confirmDeleteOrder(slotProps.data)" />
+                                @click="confirmDeleteOrder(slotProps.data)"
+                                v-if="slotProps.data.payment_status !== 'paid'" />
                         </div>
                     </template>
                 </Column>

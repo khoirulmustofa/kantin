@@ -117,7 +117,7 @@ class PurchaseOrderController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.purchase-orders.index')->with('success', 'Purchase Order created successfully.');
+            return redirect()->route('admin.purchase_orders.index')->with('success', 'Purchase Order created successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to create purchase order: ' . $th->getMessage());
@@ -193,7 +193,7 @@ class PurchaseOrderController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.purchase-orders.index')->with('success', 'Purchase Order updated successfully.');
+            return redirect()->route('admin.purchase_orders.index')->with('success', 'Purchase Order updated successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to update purchase order: ' . $th->getMessage());

@@ -20,8 +20,10 @@ class PurchaseOrderSeeder extends Seeder
     public function run(): void
     {
 
-        $Supplier = Supplier::all();
-        $User = User::all();
+        $products = \App\Models\Product::all();
+        $users = \App\Models\User::all();
+        $suppliers = Supplier::all();
+        $financialAccountId = \App\Models\FinancialAccount::first()->id;
 
         DB::beginTransaction();
 
@@ -29,31 +31,27 @@ class PurchaseOrderSeeder extends Seeder
             $purchaseOrder = PurchaseOrder::create([
                 'po_number' => $this->generatePONumber(),
                 'grand_total' => 0,
-                'financial_account_id' => \App\Models\FinancialAccount::first()->id,
-                'supplier_id' => $Supplier->random()->id,
-                'user_id' => $User->random()->id,
+                'financial_account_id' => $financialAccountId,
+                'supplier_id' => $suppliers->random()->id,
+                'user_id' => $users->random()->id,
                 'status' => 'draft',
                 'payment_status' => 'unpaid',
                 'shipping_cost' => rand(0, 100000),
                 'notes' => 'Notes ' . $i,
             ]);
 
-            for ($j = 1; $j < rand(1, 5); $j++) {
-                $product = Product::all()->random();
-                $quantity = rand(1, 5);
-                $cost_price = $product->cost_price;
-
+            for ($j = 1; $j <= rand(1, 5); $j++) {
                 PurchaseOrderItem::create([
                     'purchase_order_id' => $purchaseOrder->id,
-                    'product_id' => $product->id,
-                    'quantity' => $quantity,
-                    'cost_price' => $cost_price,
+                    'product_id' => $products->random()->id,
+                    'quantity' => rand(1, 5),
+                    'cost_price' => $products->random()->cost_price,
                 ]);
             }
 
             $purchaseOrder->update([
                 'grand_total' => $purchaseOrder->purchaseOrderItems()
-                    ->sum(DB::raw('cost_price * quantity')),
+                    ->sum(DB::raw('cost_price * quantity')) + $purchaseOrder->shipping_cost,
             ]);
         }
 

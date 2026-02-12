@@ -219,7 +219,7 @@ class OrderController extends Controller
             $order = Order::with('mutation')->findOrFail($id);
 
             if ($order->mutation) {
-                return redirect()->back()->with('error', 'Order already synced to finance.');
+                return redirect()->back()->with('warning', 'Order already synced to finance.');
             }
 
             if ($order->payment_status !== 'paid') {

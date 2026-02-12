@@ -3,6 +3,9 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { formatCurrencyIndo } from '@/Utils/formatter';
+import { useConfirm } from "primevue/useconfirm";
+
+const confirm = useConfirm();
 
 const props = defineProps({
     purchaseOrder: Object,
@@ -54,7 +57,18 @@ const addItem = () => {
 };
 
 const removeItem = (index) => {
-    form.items.splice(index, 1);
+    confirm.require({
+        message: 'Are you sure you want to delete this item?',
+        header: 'Confirm Delete',
+        icon: 'pi pi-exclamation-triangle',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Delete',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            form.items.splice(index, 1);
+        }
+    });
 };
 
 const subtotal = computed(() => {
@@ -258,11 +272,11 @@ const paymentOptions = [
                     <h3 class="text-lg font-bold mb-4 opacity-80 uppercase tracking-wider text-xs">PO Summary</h3>
                     <div class="flex justify-between mb-2">
                         <span>Subtotal</span>
-                        <span class="font-medium">{{ formatCurrencyIndo(subtotal) }}</span>
+                        <span class="font-bold text-xl">{{ formatCurrencyIndo(subtotal) }}</span>
                     </div>
                     <div class="flex justify-between mb-4 pb-4 border-b border-blue-400/30">
                         <span>Shipping</span>
-                        <span class="font-medium">{{ formatCurrencyIndo(form.shipping_cost) }}</span>
+                        <span class="font-bold text-xl">{{ formatCurrencyIndo(form.shipping_cost) }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-lg font-bold uppercase text-xs opacity-90">Grand Total</span>

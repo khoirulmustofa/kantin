@@ -117,7 +117,7 @@ class ProductSeeder extends Seeder
                 'name'                => $name,
                 'slug'                => \Illuminate\Support\Str::slug($name),
                 'description'         => 'Keterangan ' . $name,
-                'cost_price'          => 0,
+                'cost_price'          => $item['price'] * 0.7,
                 'selling_price'       => $item['price'],
                 'stock'               => 5,
                 'is_active'           => true,

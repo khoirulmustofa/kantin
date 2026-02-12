@@ -1,10 +1,10 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
+import FrontLayout from '@/Layouts/FrontLayout.vue';
 
 const props = defineProps({
     order: Object,
@@ -25,30 +25,53 @@ const downloadPDF = async () => {
     if (!invoiceRef.value) return;
     isGenerating.value = true;
 
+    // Save current scroll position
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    window.scrollTo(0, 0);
+
     try {
         const canvas = await html2canvas(invoiceRef.value, {
             scale: 2,
             useCORS: true,
             logging: false,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            windowWidth: 1200, // Force consistent width for capture
+            onclone: (clonedDoc) => {
+                // Force light mode on the cloned document for consistent PDF output
+                const element = clonedDoc.querySelector('html');
+                if (element) {
+                    element.classList.remove('my-app-dark');
+                }
+                // Ensure all fonts are loaded in the clone
+                return new Promise((resolve) => {
+                    if (clonedDoc.fonts && clonedDoc.fonts.ready) {
+                        clonedDoc.fonts.ready.then(resolve);
+                    } else {
+                        setTimeout(resolve, 500);
+                    }
+                });
+            }
         });
 
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL('image/png', 1.0);
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: 'a4'
+            format: 'a4',
+            compress: true
         });
 
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        const margin = 10; // 10mm margin
+        const pdfWidth = pdf.internal.pageSize.getWidth() - (margin * 2);
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, 'PNG', margin, margin, pdfWidth, pdfHeight, undefined, 'FAST');
         pdf.save(`Invoice-${props.order.order_number}.pdf`);
     } catch (error) {
         console.error('Error generating PDF:', error);
     } finally {
+        window.scrollTo(scrollX, scrollY);
         isGenerating.value = false;
     }
 };
@@ -57,276 +80,325 @@ const downloadImage = async () => {
     if (!invoiceRef.value) return;
     isGenerating.value = true;
 
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    window.scrollTo(0, 0);
+
     try {
         const canvas = await html2canvas(invoiceRef.value, {
             scale: 2,
             useCORS: true,
             logging: false,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            windowWidth: 1200,
+            onclone: (clonedDoc) => {
+                const element = clonedDoc.querySelector('html');
+                if (element) {
+                    element.classList.remove('my-app-dark');
+                }
+            }
         });
 
         const link = document.createElement('a');
         link.download = `Invoice-${props.order.order_number}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
     } catch (error) {
         console.error('Error generating image:', error);
     } finally {
+        window.scrollTo(scrollX, scrollY);
         isGenerating.value = false;
     }
 };
 
-const getStatusSeverity = (status) => {
-    switch (status) {
-        case 'completed': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
-        case 'processing': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
-        case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
-        case 'cancelled': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
-        default: return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400';
-    }
+const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    page.props.flash.success = 'Link copied to clipboard';
 };
+
+
 </script>
 
 <template>
 
-    <Head :title="`Order ${order.order_number}`" />
+    <Head :title="props.title" />
 
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-950 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-        <div class="max-w-4xl mx-auto mb-10">
-            <!-- Toolbar -->
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-6 no-print">
-                <Link :href="route('admin.orders.index')">
-                    <Button icon="pi pi-arrow-left" label="Back to List" text />
-                </Link>
-                <div class="flex flex-wrap gap-2">
-                    <Button icon="pi pi-print" label="Print" @click="printInvoice" severity="secondary" outlined />
-                    <Button icon="pi pi-image" label="Save as Image" @click="downloadImage" severity="secondary"
-                        outlined :loading="isGenerating" />
-                    <Button icon="pi pi-file-pdf" label="Download PDF" @click="downloadPDF" severity="primary"
-                        :loading="isGenerating" />
-                </div>
-            </div>
+    <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
+        <div class="bg-gray-50 min-h-screen py-12 font-sans">
+            <div class="max-w-4xl mx-auto px-4">
+                <!-- Actions Bar -->
+                <div class="flex justify-between items-center mb-8 no-print">
+                    <Link :href="route('home')"
+                        class="flex items-center  hover:text-gray-900 transition-colors font-bold text-sm  tracking-widest">
+                        <i class="pi pi-arrow-left mr-2"></i>
+                        <span>Back to Home</span>
+                    </Link>
 
-            <!-- Invoice Content -->
-            <div ref="invoiceRef"
-                class="relative bg-white dark:bg-gray-900 shadow-2xl rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors duration-300">
-
-                <!-- Watermark -->
-                <div
-                    class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
-                    <span
-                        class="text-[70px] font-black uppercase tracking-[1em] opacity-[0.3] dark:opacity-[0.05] -rotate-[35deg] transform whitespace-nowrap"
-                        :class="{
-                            'text-green-500': order.payment_status === 'paid',
-                            'text-red-500': order.payment_status === 'failed',
-                            'text-amber-500': order.payment_status === 'unpaid'
-                        }">
-                        {{ order.payment_status }}
-                    </span>
-                </div>
-
-                <!-- Header Section -->
-                <div class="relative pt-5 sm:pt-8 px-4 sm:px-8 overflow-hidden">
-                    <!-- Background Decoration -->
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full -mr-32 -mt-32 blur-3xl">
-                    </div>
-                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/5 rounded-full -ml-24 -mb-24 blur-3xl">
-                    </div>
-
-                    <div class="relative flex flex-col sm:flex-row justify-between items-start gap-8">
-                        <div>
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="p-2.5 bg-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20">
-                                    <svg class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2.5"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                                <span class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Koperasi
-                                    Digital</span>
-                            </div>
-                            <h1
-                                class="text-4xl font-black text-gray-900 dark:text-white mb-2 leading-none uppercase tracking-tighter">
-                                Invoice</h1>
-                            <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400">#{{ order.order_number
-                            }}</p>
-                        </div>
-                        <div class="text-left sm:text-right">
-                            <div class="mb-2">
-                                <p class="font-black dark:text-gray-500 tracking-widest mb-1">
-                                    Status</p>
-                                <span :class="getStatusSeverity(order.status)"
-                                    class="inline-block uppercase font-bold px-3 py-1 rounded-full text-[10px] shadow-sm">
-                                    {{ order.status }}
-                                </span>
-                            </div>
-                            <div>
-                                <p class="font-black dark:text-gray-500 tracking-widest mb-1">
-                                    Order Date</p>
-                                <p class="text-base font-bold text-gray-900 dark:text-gray-100">{{
-                                    formatDateIndonesian(order.created_at) }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-                        <div>
-                            <p class="font-black text-gray-400 dark:text-gray-500 tracking-widest mb-2">
-                                Billed To</p>
-                            <div class="flex items-center gap-4 mb-3">
-                                <Avatar :label="order.user?.name.charAt(0)" shape="circle"
-                                    class="!bg-blue-500 !text-white !font-bold" />
-                                <div>
-                                    <p class="text-lg font-bold text-gray-900 dark:text-white leading-none">{{
-                                        order.user?.name }}</p>
-                                    <p class="text-gray-500 dark:text-gray-400 mt-1">{{ order.user?.email }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="font-black text-gray-400 dark:text-gray-500 tracking-widest mb-2">
-                                Shipping Information</p>
-                            <div class="flex items-start gap-3">
-                                <i class="pi pi-map-marker text-emerald-500 mt-1 text-lg"></i>
-                                <p
-                                    class="text-base font-medium text-gray-700 dark:text-gray-300 leading-relaxed max-w-xs">
-                                    {{ order.shipping_address }}
-                                </p>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="font-black text-gray-400 dark:text-gray-500 tracking-widest mb-2">
-                                Payment Information</p>
-                            <div class="flex flex-col items-start gap-1">
-                                
-                                <p
-                                    class="text-base font-medium text-gray-700 dark:text-gray-300 leading-relaxed max-w-xs">
-                                    <i class="pi pi-wallet text-emerald-500 mt-1 text-lg mr-2"></i>{{ order.financial_account?.name || '-' }}
-                                </p>
-                                <p class="text-base font-medium text-gray-700 dark:text-gray-300 leading-relaxed max-w-xs ml-6">No. Rekening : {{ order.financial_account?.account_number }}</p>
-                            </div>
-                        </div>
+                    <div class="flex gap-2">
+                        <Button icon="pi pi-copy" severity="secondary" @click="copyLink"
+                            v-tooltip.top="'Copy Link'" />
+                        <Button icon="pi pi-print" severity="secondary" @click="printInvoice"
+                            v-tooltip.top="'Print Preview'" />
+                        <Button icon="pi pi-file-pdf" severity="danger" @click="downloadPDF" :loading="isGenerating"
+                            v-tooltip.top="'Download PDF'" />
+                        <Button icon="pi pi-image" severity="info" @click="downloadImage" :loading="isGenerating"
+                            v-tooltip.top="'Download Image'" />
                     </div>
                 </div>
 
-                <!-- Items Table -->
-                <div class="px-4 sm:px-8">
-                    <div class="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-800">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-800/50">
-                                    <th class="px-6 py-4 font-black uppercase tracking-widest">
-                                        Product</th>
-                                    <th class="px-6 py-4 font-black uppercase tracking-widest text-center">
-                                        Qty</th>
-                                    <th class="px-6 py-4 font-black uppercase tracking-widest text-right">
-                                        Price</th>
-                                    <th class="px-6 py-4 font-black uppercase tracking-widest text-right">
-                                        Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-                                <tr v-for="item in order.order_items" :key="item.id"
-                                    class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                                    <td class="px-6 py-5">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="text-base font-bold text-gray-900 dark:text-white capitalize">{{
-                                                    item.product?.name }}</span>
-                                            <span class="text-xs text-gray-400 font-medium mt-0.5">{{
-                                                item.product?.category?.name || 'Category' }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-5 text-center">
-                                        <span
-                                            class="inline-flex items-center justify-center w-8 h-8  text-sm font-bold text-gray-700 dark:text-gray-300">{{
-                                                item.quantity }}</span>
-                                    </td>
-                                    <td class="px-6 py-5 text-right font-medium text-gray-700 dark:text-gray-300">
-                                        {{ formatCurrencyIndo(item.selling_price) }}
-                                    </td>
-                                    <td class="px-6 py-5 text-right font-bold text-gray-900 dark:text-white">
-                                        {{ formatCurrencyIndo(item.selling_price * item.quantity) }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- Invoice Content -->
+                <div ref="invoiceRef"
+                    class="printable-area relative bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden print:shadow-none print:border-none print:rounded-none">
 
-                <!-- Footer Summary -->
-                <div class="p-4 sm:p-8">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-12">
-                        <div class="max-w-xs">
-                            <p class="font-black uppercase tracking-widest mb-3">
-                                Notes</p>
-                            <p
-                                class="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed italic border-l-4 border-blue-500 pl-4 bg-white dark:bg-gray-900 p-4 rounded-r-xl shadow-sm">
-                                Payment Method: {{ order.financial_account?.name || '-' }}
-                                <span v-if="order.financial_account?.account_number" class="text-gray-400"> No: {{
-                                    order.financial_account.account_number }}</span>.
-                                <br />
-                                Please keep this invoice as proof of purchase. Thank you for shopping with us!
-                            </p>
-                        </div>
-                        <div class="w-full sm:w-auto min-w-[400px]">
-                            <div class="flex flex-col gap-4">
-                                <div class="flex justify-between items-center px-4 py-2">
-                                    <span class="text-lg font-bold  uppercase tracking-tighter">Subtotal</span>
-                                    <span class="text-lg font-bold text-gray-900 dark:text-white">{{
-                                        formatCurrencyIndo(order.grand_total - order.shipping_cost) }}</span>
-                                </div>
-                                <div class="flex justify-between items-center px-4 py-2">
-                                    <span class="text-lg font-bold uppercase tracking-tighter">Shipping</span>
-                                    <span class="text-lg font-bold text-gray-900 dark:text-white">{{
-                                        formatCurrencyIndo(order.shipping_cost) }}</span>
-                                </div>
+                    <!-- Watermark -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-50 overflow-hidden">
+                        <span
+                            class="text-[8rem] md:text-[8rem] font-black uppercase tracking-widest opacity-[0.4] -rotate-45 whitespace-nowrap transform select-none"
+                            :class="{
+                                'text-green-600': props.order.payment_status === 'paid',
+                                'text-red-600': props.order.payment_status === 'unpaid' || props.order.payment_status === 'failed',
+                                'text-amber-600': props.order.payment_status === 'failed',
+                                'text-gray-300': !['paid', 'unpaid', 'failed', 'pending'].includes(props.order.payment_status)
+                            }">
+                            {{ props.order.payment_status }}
+                        </span>
+                    </div>
+
+                    <table class="relative z-10 w-full">
+                        <!-- HEADER ROW -->
+                        <tr>
+                            <td colspan="2">
                                 <div
-                                    class="flex justify-between items-center px-6 py-5 rounded-2xl bg-emerald-600 shadow-xl shadow-emerald-600/20 text-white mt-2 ring-4 ring-emerald-500/10">
-                                    <span class="text-sm font-black uppercase tracking-widest">Grand Total</span>
-                                    <span class="text-3xl font-black">{{ formatCurrencyIndo(order.grand_total) }}</span>
+                                    class="px-12 pt-12 pb-2 print:px-12 print:pt-12 print:pb-0 relative overflow-hidden">
+                                    <table class="w-full">
+                                        <tr>
+                                            <td class="align-top">
+                                                <img v-if="page.props.settings.site_logo"
+                                                    :src="`/storage/${page.props.settings.site_logo}`" alt="Logo"
+                                                    class="h-14 w-auto ">
+                                                <h1 class="text-4xl pt-2 font-bold font-black er mb-2 leading-none">
+                                                    INVOICE</h1>
+
+                                            </td>
+                                            <td class="text-right align-top">
+                                                <div class="mb-2">
+                                                    <label class="block  font-bold mb-1">Order
+                                                        Number</label>
+                                                    <p class="text-3xl font-black font-mono text-emerald-400">#{{
+                                                        props.order.order_number }}</p>
+                                                </div>
+                                                <div>
+                                                    <label class="block  font-bold mb-1">Date
+                                                        Issued</label>
+                                                    <p class="">{{
+                                                        formatDateIndonesian(props.order.created_at) }}</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
+
+                        <!-- INFO ROW -->
+                        <tr>
+                            <td class="px-12 pt-0 print:px-12 print:pt-0 print:pb-5 align-top w-1/2">
+                                <h3 class="mb-2 font-bold">
+                                    Customer Details</h3>
+                                <table class="mb-2">
+                                    <tr>
+                                        <td class="w-14 pr-4">
+                                            <div
+                                                class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center  border border-gray-100">
+                                                <i class="pi pi-user text-2xl"></i>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-lg font-black text-gray-900 capitalize leading-none mb-1">{{
+                                                props.order.user?.name }}</p>
+                                            <p class="text-sm ">{{ props.order.user?.username }}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="">
+                                    <label class="block font-bold  mb-1">Shipping
+                                        Address</label>
+                                    <p class="text-sm  leading-relaxed">{{
+                                        props.order.shipping_address }}</p>
+                                </div>
+                            </td>
+                            <td class="px-12 pt-0 print:px-12 print:pt-0 print:pb-5 align-top text-right w-1/2">
+                                <div class="mb-2">
+                                    <label class="block font-bold  mb-2">Order
+                                        Status</label>
+                                    <div>
+                                        <span class="inline-block px-4 py-1.5 rounded-full  " :class="{
+                                            'bg-green-100 text-green-700': props.order.status === 'completed',
+                                            'bg-blue-100 text-blue-700': props.order.status === 'processing',
+                                            'bg-yellow-100 text-yellow-700': props.order.status === 'pending',
+                                            'bg-red-100 text-red-700': props.order.status === 'cancelled',
+                                        }">
+                                            {{ props.order.status }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block font-bold  mb-2">Payment Method</label>
+                                    <p class="font-black">
+                                        {{ props.order.financial_account?.name }}
+                                        <br>
+                                        <span class="text-gray-500">{{ props.order.financial_account?.account_number
+                                            }}</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ITEMS ROW -->
+                        <tr>
+                            <td colspan="2" class="px-8 pb-2  print:px-8 print:pb-2">
+                                <table class="w-full border-collapse">
+                                    <thead>
+                                        <tr class="bg-green-100 print:bg-green-100">
+                                            <th class="text-left pb-2 pt-5 font-black pl-2 border-b border-gray-100">
+                                                No</th>
+                                            <th class="text-left pb-2 pt-5 font-black  border-b border-gray-100">
+                                                Item Details</th>
+                                            <th class="text-center pb-2 pt-5 font-black  border-b border-gray-100">
+                                                Qty</th>
+                                            <th class="text-right pb-2 pt-5 font-black border-b border-gray-100">
+                                                Unit Price</th>
+                                            <th class="text-right pb-2 pt-5 font-black pr-2 border-b border-gray-100">
+                                                Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item, index) in props.order.order_items" :key="item.id" class="border-b border-gray-300 print:border-gray-300">
+                                            <td class="py-1 pl-2">
+                                                {{ index + 1 }}
+                                            </td>
+                                            <td class="py-1 ">
+                                                <table class="w-auto">
+                                                    <tr>
+
+                                                        <td>
+                                                            <p class=" font-black   mb-1">
+                                                                {{ item.product?.name }}</p>
+                                                            <span
+                                                                class="inline-block font-black  text-gray-500 text-sm ">{{
+                                                                    item.product?.category?.name || 'Product' }}</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td
+                                                class="py-1 text-center text-sm font-black text-gray-900">
+                                                {{ item.quantity }}</td>
+                                            <td class="py-1 text-right text-sm font-bold ">
+                                                {{ formatCurrencyIndo(item.selling_price) }}</td>
+                                            <td
+                                                class="py-1 text-right text-sm font-black text-gray-900 pr-2">
+                                                {{ formatCurrencyIndo(item.selling_price * item.quantity) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- FOOTER ROW -->
+                        <tr>
+                            <td
+                                class="ps-8 pt-3 pb-10 print:ps-8 print:pt-3 print:pb-10 footer-row align-bottom  border-t border-gray-100 print:bg-white w-1/2">
+                                <div class="bg-white p-4 rounded-xl border border-gray-200 w-full max-w-sm">
+                                    <h4 class=" font-black  ">
+                                        Notes & Remarks</h4>
+                                    <p class="font-sm wrap-break-word">* Silahkan kirim <span
+                                            class="font-bold">bukti transfer</span> Anda melalui WhatsApp untuk
+                                        mempercepat proses verifikasi pesanan</p>
+                                    <p class="font-bold">WhatsApp: {{ $page.props.settings?.whatsapp }}</p>
+                                </div>
+                            </td>
+                            <td
+                                class="pr-8 pt-3 pb-10 print:pr-8 print:pt-3 print:pb-10 footer-row align-bottom  border-t border-gray-100 print:bg-white w-1/2">
+                                <table class="w-full max-w-xs ml-auto border-collapse">
+                                    <tr>
+                                        <td class="text-left py-2 font-bold ">
+                                            Subtotal</td>
+                                        <td class="text-right py-2 font-bold text-xl">{{
+                                            formatCurrencyIndo(props.order.grand_total - props.order.shipping_cost) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-2 pb-2 font-bold  border-b border-gray-900">
+                                            Shipping Fee</td>
+                                        <td class="text-right py-2 font-bold text-xl border-b border-gray-900">
+                                            {{ formatCurrencyIndo(props.order.shipping_cost) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left pt-4 font-bold  text-emerald-500">
+                                            Grand Total</td>
+                                        <td
+                                            class="text-right pt-4 text-4xl font-black text-emerald-600 er leading-none">
+                                            {{ formatCurrencyIndo(props.order.grand_total) }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="print-copyright hidden print:block text-center mt-8  font-bold  ">
+                        Copyright &copy; {{ new Date().getFullYear() }} {{ $page.props.settings.site_name }} - All
+                        Rights
+                        Reserved
                     </div>
                 </div>
             </div>
-
-            <p
-                class="text-center text-xs font-bold text-gray-400 dark:text-gray-600 mt-12 uppercase tracking-[0.3em] no-print">
-                Generated by Koperasi Digital System &copy; {{ new Date().getFullYear() }}</p>
         </div>
-    </div>
+    </FrontLayout>
 </template>
 
 <style scoped>
 @media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+        visibility: hidden;
+    }
+
+    .printable-area {
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: white;
+        z-index: 9999;
+    }
+
+    .printable-area * {
+        visibility: visible;
+    }
+
     .no-print {
         display: none !important;
     }
 
-    body {
-        background-color: white !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+    /* Force tables to behave */
+    table {
+        page-break-inside: auto;
     }
 
-    .invoice-card {
-        box-shadow: none !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
     }
-}
-
-/* Ensure premium font rendering */
-.font-black {
-    font-weight: 900;
 }
 </style>

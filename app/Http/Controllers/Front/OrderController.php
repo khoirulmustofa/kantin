@@ -11,11 +11,18 @@ class OrderController extends Controller
 {
     public function show($id)
     {
+        try{
         $order = Order::with(['user', 'financialAccount', 'orderItems.product.category'])->findOrFail($id);
         return Inertia::render('Front/Order/Show', [
             'menu' => 'orders',
-            'title' => 'Order Detail',
+            'title' => 'Order Detail ' . $order->order_number,
             'order' => $order,
         ]);
+    }  catch (\Throwable $th) {
+            return Inertia::render('Errors/Error500', [
+                'status' => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
     }
 }

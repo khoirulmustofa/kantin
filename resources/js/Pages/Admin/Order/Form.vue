@@ -3,6 +3,9 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { formatCurrencyIndo } from '@/Utils/formatter';
+import { useConfirm } from "primevue/useconfirm";
+
+const confirm = useConfirm();
 
 const props = defineProps({
     order: Object,
@@ -56,7 +59,18 @@ const addItem = () => {
 };
 
 const removeItem = (index) => {
-    form.items.splice(index, 1);
+    confirm.require({
+        message: 'Are you sure you want to delete this item?',
+        header: 'Confirm Delete',
+        icon: 'pi pi-exclamation-triangle',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Delete',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        acceptClass: 'p-button-danger',
+        accept: () => {
+            form.items.splice(index, 1);
+        }
+    });
 };
 
 const subtotal = computed(() => {
@@ -68,15 +82,40 @@ const grandTotal = computed(() => {
 });
 
 const submit = () => {
-    if (props.isEdit) {
-        form.put(route('admin.orders.update', props.order.id), {
-            onSuccess: () => { },
+    if (form.payment_status === 'paid' && form.status === 'completed') {
+        confirm.require({
+            message: 'Are you sure you want to Status completed and payment paid this order?',
+            header: 'Confirm completed and paid',
+            icon: 'pi pi-exclamation-triangle',
+            rejectLabel: 'Cancel',
+            acceptLabel: 'Complete',
+            rejectClass: 'p-button-secondary ',
+            acceptClass: 'p-button-success',
+            accept: () => {
+                if (props.isEdit) {
+                    form.put(route('admin.orders.update', props.order.id), {
+                        onSuccess: () => { },
+                    });
+                } else {
+                    form.post(route('admin.orders.store'), {
+                        onSuccess: () => { },
+                    });
+                }
+            }
         });
     } else {
-        form.post(route('admin.orders.store'), {
-            onSuccess: () => { },
-        });
+        if (props.isEdit) {
+            form.put(route('admin.orders.update', props.order.id), {
+                onSuccess: () => { },
+            });
+        } else {
+            form.post(route('admin.orders.store'), {
+                onSuccess: () => { },
+            });
+        }
     }
+
+
 };
 
 const statusOptions = [
@@ -260,11 +299,11 @@ const paymentOptions = [
                     <h3 class="text-lg font-bold mb-4 opacity-80 uppercase tracking-wider text-xs">Summary</h3>
                     <div class="flex justify-between mb-2">
                         <span>Subtotal</span>
-                        <span class="font-medium">{{ formatCurrencyIndo(subtotal) }}</span>
+                        <span class="text-xl font-bold">{{ formatCurrencyIndo(subtotal) }}</span>
                     </div>
                     <div class="flex justify-between mb-4 pb-4 border-b border-emerald-400/30">
                         <span>Shipping</span>
-                        <span class="font-medium">{{ formatCurrencyIndo(form.shipping_cost) }}</span>
+                        <span class="text-xl font-bold">{{ formatCurrencyIndo(form.shipping_cost) }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-lg font-bold uppercase text-xs opacity-90">Grand Total</span>

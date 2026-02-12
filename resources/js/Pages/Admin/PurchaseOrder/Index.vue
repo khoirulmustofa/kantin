@@ -93,6 +93,9 @@ const syncFinance = (data) => {
         message: `Sync ${data.po_number} to financial ledger as expense?`,
         header: 'Financial Sync',
         icon: 'pi pi-dollar',
+        rejectLabel: 'Cancel',
+        acceptLabel: 'Sync',
+        rejectClass: 'p-button-secondary p-button-outlined',
         acceptClass: 'p-button-success',
         accept: () => {
             loading.value = true;
@@ -146,7 +149,7 @@ const syncFinance = (data) => {
                 <Column header="Actions" :exportable="false" style="min-width: 10rem" class="text-center">
                     <template #body="slotProps">
                         <div class="flex justify-center gap-1">
-                            <a :href="route('admin.purchase_orders.show', slotProps.data.id)" v-tooltip.top="'View PO'"
+                            <a :href="route('purchase_order.show', slotProps.data.id)" v-tooltip.top="'View PO'"
                                 target="_blank">
                                 <Button icon="pi pi-file" text rounded severity="secondary" />
                             </a>
@@ -157,11 +160,12 @@ const syncFinance = (data) => {
                             <i v-else-if="slotProps.data.mutation" class="pi pi-check-circle text-emerald-500 p-2"
                                 v-tooltip.top="'Already Synced'" />
 
-                            <Link :href="route('admin.purchase_orders.edit', slotProps.data.id)">
+                            <Link :href="route('admin.purchase_orders.edit', slotProps.data.id)"
+                                v-if="slotProps.data.status !== 'received' && slotProps.data.payment_status !== 'paid'">
                                 <Button icon="pi pi-pencil" text rounded severity="info" v-tooltip.top="'Edit PO'" />
                             </Link>
                             <Button icon="pi pi-trash" text rounded severity="danger" v-tooltip.top="'Delete PO'"
-                                @click="confirmDeletePO(slotProps.data)" />
+                                @click="confirmDeletePO(slotProps.data)" v-if="slotProps.data.payment_status !== 'paid'" />
                         </div>
                     </template>
                 </Column>

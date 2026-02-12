@@ -22,8 +22,11 @@ Route::get('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 
 Route::post('/checkout/store', [\App\Http\Controllers\Front\CheckoutController::class, 'store'])
     ->name('checkout.store');
 
-Route::get('/orders/{id}', [\App\Http\Controllers\Front\OrderController::class, 'show'])
-    ->name('orders.show');
+Route::get('/order/{id}', [\App\Http\Controllers\Front\OrderController::class, 'show'])
+    ->name('order.show');
+
+Route::get('/purchase-order/{id}', [\App\Http\Controllers\Front\PurchaseOrderController::class, 'show'])
+    ->name('purchase_order.show');
 
 
 Route::get('/user/permissions', [\App\Http\Controllers\Auth\UserController::class, 'getPermissions'])
@@ -163,8 +166,6 @@ Route::middleware('auth', 'verified')->group(function () {
             ->name('admin.purchase_orders.create');
         Route::post('/purchase-orders', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'store'])
             ->name('admin.purchase_orders.store');
-        Route::get('/purchase-orders/{id}', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'show'])
-            ->name('admin.purchase_orders.show');
         Route::get('/purchase-orders/{id}/edit', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'edit'])
             ->name('admin.purchase_orders.edit');
         Route::put('/purchase-orders/{id}', [\App\Http\Controllers\Admin\PurchaseOrderController::class, 'update'])

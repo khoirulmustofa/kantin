@@ -267,7 +267,7 @@ const menus = ref([
             <div class="container mx-auto px-4 py-12">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2">
-                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="mb-6">
+                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="h-14 w-auto mb-6">
                         <p class="text-gray-500 max-w-sm mb-4">{{ $page.props.settings.site_description }}</p>
                         <div class="flex space-x-4">
                             <a href="#" class="h-8 w-8 transition hover:scale-110"><img

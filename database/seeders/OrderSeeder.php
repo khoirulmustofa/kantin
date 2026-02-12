@@ -17,7 +17,7 @@ class OrderSeeder extends Seeder
         $products = \App\Models\Product::get();
         $users = \App\Models\User::get();
         
-        for($i = 0; $i < 50; $i++) {
+        for($i = 0; $i < 10; $i++) {
             $product = $products->random();
             $user = $users->random();
             
@@ -34,7 +34,7 @@ class OrderSeeder extends Seeder
                 'user_id' => $user->id,               
             ]);
 
-            for($j = 0; $j < rand(1, 5); $j++) {
+            for ($j = 1; $j <= rand(1, 5); $j++) {
                 \App\Models\OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
