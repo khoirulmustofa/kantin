@@ -45,12 +45,12 @@ class GoogleAuthController extends Controller
 
             if ($user->email_verified_at) {
                 Auth::login($user);
-                return redirect()->route('admin.dashboard.index')->with('success', 'Login successful! Welcome back.');
+                return redirect()->route('dashboard')->with('success', 'Login successful! Welcome back.');
             } else {
                 return redirect()->route('home')->with('warning', 'Login module has not been opened.');
             }
         } catch (\Exception $e) {
-            return redirect('/home')->with('error', 'Gagal login dengan Google: ' . $e->getMessage());
+            return redirect()->route('home')->with('error', 'Gagal login dengan Google: ' . $e->getMessage());
         }
     }
 }
