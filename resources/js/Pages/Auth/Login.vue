@@ -1,6 +1,6 @@
 <script setup>
 import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import not_use_GuestLayout from '@/Layouts/not_use_GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -40,7 +40,7 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
+    <not_use_GuestLayout>
 
         <Head title="Log in" />
 
@@ -85,5 +85,5 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
-    </GuestLayout>
+    </not_use_GuestLayout>
 </template>
