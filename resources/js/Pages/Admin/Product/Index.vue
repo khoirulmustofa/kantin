@@ -4,7 +4,6 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ProductForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 
@@ -17,7 +16,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const productDialog = ref(false);
@@ -78,7 +76,6 @@ const confirmDeleteProduct = (data) => {
             loading.value = true;
             router.delete(route('admin.products.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -97,7 +94,6 @@ const duplicateProduct = (data) => {
             loading.value = true;
             router.post(route('admin.products.duplicate', data.id), {}, {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Duplicated', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;

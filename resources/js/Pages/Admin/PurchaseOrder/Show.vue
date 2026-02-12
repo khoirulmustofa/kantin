@@ -92,7 +92,7 @@ const getStatusSeverity = (status) => {
         <div class="max-w-4xl mx-auto mb-10">
             <!-- Toolbar -->
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6 no-print">
-                <Link :href="route('admin.purchase-orders.index')">
+                <Link :href="route('admin.purchase_orders.index')">
                     <Button icon="pi pi-arrow-left" label="Back to List" text />
                 </Link>
                 <div class="flex flex-wrap gap-2">
@@ -149,7 +149,7 @@ const getStatusSeverity = (status) => {
                                 class="text-4xl font-black text-gray-900 dark:text-white mb-2 leading-none uppercase tracking-tighter">
                                 Purchase Order</h1>
                             <p class="text-sm font-bold text-blue-600 dark:text-blue-400">#{{ purchaseOrder.po_number
-                                }}</p>
+                            }}</p>
                         </div>
                         <div class="text-left sm:text-right">
                             <div class="mb-2">
@@ -274,7 +274,7 @@ const getStatusSeverity = (status) => {
                                         class="text-lg font-bold  uppercase tracking-tighter text-gray-400">Subtotal</span>
                                     <span class="text-lg font-bold text-gray-900 dark:text-white">{{
                                         formatCurrencyIndo(purchaseOrder.grand_total - purchaseOrder.shipping_cost)
-                                        }}</span>
+                                    }}</span>
                                 </div>
                                 <div class="flex justify-between items-center px-4 py-2">
                                     <span
@@ -286,7 +286,7 @@ const getStatusSeverity = (status) => {
                                     class="flex justify-between items-center px-6 py-5 rounded-2xl bg-blue-600 shadow-xl shadow-blue-600/20 text-white mt-2 ring-4 ring-blue-500/10">
                                     <span class="text-sm font-black uppercase tracking-widest">Grand Total</span>
                                     <span class="text-3xl font-black">{{ formatCurrencyIndo(purchaseOrder.grand_total)
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </div>
                         </div>

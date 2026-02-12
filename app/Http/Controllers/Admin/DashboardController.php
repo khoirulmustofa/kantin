@@ -10,6 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+
         try {
             $totalIn = \App\Models\FinancialMutation::where('flow', 'in')->sum('amount');
             $totalOut = \App\Models\FinancialMutation::where('flow', 'out')->sum('amount');

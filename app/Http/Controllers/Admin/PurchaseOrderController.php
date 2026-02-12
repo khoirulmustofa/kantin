@@ -48,7 +48,7 @@ class PurchaseOrderController extends Controller
             $purchaseOrders = $query->paginate($rows)->withQueryString();
 
             return Inertia::render('Admin/PurchaseOrder/Index', [
-                'menu' => 'purchase-orders',
+                'menu' => 'purchase_orders',
                 'title' => 'Purchase Order Management',
                 'purchaseOrders' => $purchaseOrders,
                 'financialAccounts' => FinancialAccount::where('is_active', true)->get(),
@@ -65,7 +65,7 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         return Inertia::render('Admin/PurchaseOrder/Form', [
-            'menu' => 'purchase-orders',
+            'menu' => 'purchase_orders',
             'title' => 'Create Purchase Order',
             'suppliers' => Supplier::where('is_active', true)->get(),
             'products' => Product::where('is_active', true)->get(),
@@ -128,7 +128,7 @@ class PurchaseOrderController extends Controller
     {
         $purchaseOrder = PurchaseOrder::with(['supplier', 'financialAccount', 'purchaseOrderItems.product.category', 'user'])->findOrFail($id);
         return Inertia::render('Admin/PurchaseOrder/Show', [
-            'menu' => 'purchase-orders',
+            'menu' => 'purchase_orders',
             'title' => 'Purchase Order Detail',
             'purchaseOrder' => $purchaseOrder,
         ]);
@@ -138,7 +138,7 @@ class PurchaseOrderController extends Controller
     {
         $purchaseOrder = PurchaseOrder::with(['supplier', 'financialAccount', 'purchaseOrderItems.product'])->findOrFail($id);
         return Inertia::render('Admin/PurchaseOrder/Form', [
-            'menu' => 'purchase-orders',
+            'menu' => 'purchase_orders',
             'title' => 'Edit Purchase Order '.$purchaseOrder->po_number,
             'purchaseOrder' => $purchaseOrder,
             'suppliers' => Supplier::where('is_active', true)->get(),

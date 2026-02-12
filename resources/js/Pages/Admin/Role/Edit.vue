@@ -2,7 +2,6 @@
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
     menu: String,
@@ -12,7 +11,6 @@ const props = defineProps({
     rolePermissions: Array, // Names of permissions currently active for this role
 });
 
-const toast = useToast();
 
 const form = useForm({
     name: props.role.name,
@@ -64,7 +62,6 @@ const togglePermission = (name) => {
 const submit = () => {
     form.put(route('admin.roles.update', props.role.id), {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Role updated successfully', life: 3000 });
         },
     });
 };

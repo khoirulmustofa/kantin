@@ -67,7 +67,7 @@ class FinancialCashOutController extends Controller
             });
 
             return Inertia::render('Admin/FinancialCashOut/Index', [
-                'menu' => 'financial-cash-out',
+                'menu' => 'financial_cash_out',
                 'title' => 'Cash Outflow',
                 'mutations' => $mutations,
                 'accounts' => FinancialAccount::where('is_active', true)->get(),

@@ -3,7 +3,6 @@ import { Head, router, Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 
@@ -15,14 +14,13 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const loading = ref(false);
 const multiSortMeta = ref(props.filters.multiSortMeta ? JSON.parse(props.filters.multiSortMeta) : []);
 
 const loadLazyData = (extraParams = {}) => {
-    router.get(route('admin.purchase-orders.index'), {
+    router.get(route('admin.purchase_orders.index'), {
         search: search.value,
         rows: extraParams.rows || props.purchaseOrders.per_page,
         multiSortMeta: multiSortMeta.value.length ? JSON.stringify(multiSortMeta.value) : null,
@@ -59,9 +57,8 @@ const confirmDeletePO = (data) => {
         acceptClass: 'p-button-danger',
         accept: () => {
             loading.value = true;
-            router.delete(route('admin.purchase-orders.destroy', data.id), {
+            router.delete(route('admin.purchase_orders.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Purchase Order Deleted', life: 3000 });
                     loading.value = false;
                 },
                 onError: () => {
@@ -99,9 +96,9 @@ const syncFinance = (data) => {
         acceptClass: 'p-button-success',
         accept: () => {
             loading.value = true;
-            router.post(route('admin.purchase-orders.sync_finance', data.id), {}, {
+            router.post(route('admin.purchase_orders.sync_finance', data.id), {}, {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Synced to Finance', life: 3000 });
+                    // Flash message handled by AdminLayout
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -121,7 +118,7 @@ const syncFinance = (data) => {
             class="card p-2 sm:p-4 bg-white dark:!bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-colors duration-300">
             <Toolbar class="!border-0 !border-b !p-0 !pb-4 mb-4 dark:!bg-gray-800">
                 <template #start>
-                    <Link :href="route('admin.purchase-orders.create')">
+                    <Link :href="route('admin.purchase_orders.create')">
                         <Button label="New Purchase Order" icon="pi pi-plus" severity="primary" />
                     </Link>
                 </template>
@@ -149,7 +146,7 @@ const syncFinance = (data) => {
                 <Column header="Actions" :exportable="false" style="min-width: 10rem" class="text-center">
                     <template #body="slotProps">
                         <div class="flex justify-center gap-1">
-                            <a :href="route('admin.purchase-orders.show', slotProps.data.id)" v-tooltip.top="'View PO'"
+                            <a :href="route('admin.purchase_orders.show', slotProps.data.id)" v-tooltip.top="'View PO'"
                                 target="_blank">
                                 <Button icon="pi pi-file" text rounded severity="secondary" />
                             </a>
@@ -160,7 +157,7 @@ const syncFinance = (data) => {
                             <i v-else-if="slotProps.data.mutation" class="pi pi-check-circle text-emerald-500 p-2"
                                 v-tooltip.top="'Already Synced'" />
 
-                            <Link :href="route('admin.purchase-orders.edit', slotProps.data.id)">
+                            <Link :href="route('admin.purchase_orders.edit', slotProps.data.id)">
                                 <Button icon="pi pi-pencil" text rounded severity="info" v-tooltip.top="'Edit PO'" />
                             </Link>
                             <Button icon="pi pi-trash" text rounded severity="danger" v-tooltip.top="'Delete PO'"

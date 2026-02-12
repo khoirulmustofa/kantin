@@ -5,11 +5,14 @@ import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+
 const props = defineProps({
     order: Object,
     menu: String,
     title: String,
 });
+
+const page = usePage();
 
 const invoiceRef = ref(null);
 const isGenerating = ref(false);

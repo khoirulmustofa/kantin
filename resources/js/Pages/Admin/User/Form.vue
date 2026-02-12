@@ -1,7 +1,6 @@
 <script setup>
 import { watch, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     user: Object,
@@ -11,7 +10,6 @@ const props = defineProps({
 // Sync visibility with Parent
 const visible = defineModel('visible', { type: Boolean, default: false });
 
-const toast = useToast();
 
 const form = useForm({
     name: '',
@@ -50,14 +48,12 @@ const saveUser = () => {
         form.put(route('admin.users.update', props.user.id), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'User Updated', life: 3000 });
             },
         });
     } else {
         form.post(route('admin.users.store'), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'User Created', life: 3000 });
             },
         });
     }

@@ -4,9 +4,8 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import OutflowForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
-import { formatCurrencyIndo ,formatDateIndonesian } from '@/Utils/formatter';
+import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 
 const props = defineProps({
     menu: String,
@@ -18,7 +17,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const outflowDialog = ref(false);
@@ -79,7 +77,6 @@ const confirmDeleteAction = (data) => {
             loading.value = true;
             router.delete(route('admin.financial_cash_out.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Outflow Deleted', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -149,7 +146,8 @@ const confirmDeleteAction = (data) => {
 
                 <Column field="transaction_date" header="Date" sortable style="min-width: 10rem">
                     <template #body="slotProps">
-                        <span class="text-sm font-medium">{{ formatDateIndonesian(slotProps.data.transaction_date) }}</span>
+                        <span class="text-sm font-medium">{{ formatDateIndonesian(slotProps.data.transaction_date)
+                            }}</span>
                     </template>
                 </Column>
 
@@ -158,7 +156,7 @@ const confirmDeleteAction = (data) => {
                         <div class="flex items-center gap-2">
                             <i class="pi pi-wallet text-gray-400"></i>
                             <span class="font-bold text-gray-900 dark:text-white">{{ slotProps.data.account?.name
-                                }}</span>
+                            }}</span>
                         </div>
                     </template>
                 </Column>

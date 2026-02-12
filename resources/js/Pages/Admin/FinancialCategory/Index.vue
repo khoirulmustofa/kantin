@@ -4,7 +4,6 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import CategoryForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
@@ -15,7 +14,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const categoryDialog = ref(false);
@@ -76,7 +74,6 @@ const confirmDeleteCategory = (data) => {
             loading.value = true;
             router.delete(route('admin.financial_categories.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
                 },
                 onFinish: () => { loading.value = false }
             });

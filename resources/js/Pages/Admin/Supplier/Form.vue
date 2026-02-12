@@ -1,7 +1,6 @@
 <script setup>
 import { watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     supplier: Object,
@@ -9,7 +8,6 @@ const props = defineProps({
 });
 
 const visible = defineModel('visible', { type: Boolean, default: false });
-const toast = useToast();
 
 const form = useForm({
     name: '',
@@ -51,14 +49,12 @@ const saveSupplier = () => {
         form.put(route('admin.suppliers.update', props.supplier.id), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Supplier Updated', life: 3000 });
             },
         });
     } else {
         form.post(route('admin.suppliers.store'), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Supplier Created', life: 3000 });
             },
         });
     }

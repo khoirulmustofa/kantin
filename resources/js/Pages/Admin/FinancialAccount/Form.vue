@@ -1,7 +1,6 @@
 <script setup>
 import { watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     account: Object,
@@ -9,7 +8,6 @@ const props = defineProps({
 });
 
 const visible = defineModel('visible', { type: Boolean, default: false });
-const toast = useToast();
 
 const form = useForm({
     name: '',
@@ -41,14 +39,12 @@ const saveAccount = () => {
         form.put(route('admin.financial_accounts.update', props.account.id), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Account Updated', life: 3000 });
             },
         });
     } else {
         form.post(route('admin.financial_accounts.store'), {
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Account Created', life: 3000 });
             },
         });
     }

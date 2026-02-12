@@ -4,7 +4,6 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import CategoryForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
@@ -15,7 +14,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const categoryDialog = ref(false);
@@ -76,7 +74,6 @@ const confirmDeleteCategory = (data) => {
             loading.value = true;
             router.delete(route('admin.product-categories.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Deleted', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -157,13 +154,7 @@ const confirmDeleteCategory = (data) => {
                 <Column field="slug" header="Slug" sortable style="min-width: 15rem"
                     class="text-gray-500 dark:text-gray-400">
                 </Column>
-                <Column field="created_at" header="Created At" sortable style="min-width: 12rem">
-                    <template #body="slotProps">
-                        {{ new Date(slotProps.data.created_at).toLocaleDateString() }}
-                    </template>
-                </Column>
 
-                
             </DataTable>
         </div>
     </AdminLayout>

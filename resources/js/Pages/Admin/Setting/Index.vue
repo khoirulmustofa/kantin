@@ -2,7 +2,7 @@
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
 import axios from 'axios';
 
 // Import Modular Components
@@ -18,7 +18,7 @@ const props = defineProps({
     settings: Object,
 });
 
-const toast = useToast();
+const confirm = useConfirm();
 const activeSection = ref('general');
 const localSettings = ref({ ...props.settings });
 const settings = ref([]);
@@ -118,17 +118,25 @@ const onSliderChange = (e) => {
 };
 
 const deleteSliderImage = async (path) => {
-    if (!confirm('Are you sure you want to delete this slider image?')) return;
+    confirm.require({
+        message: `Are you sure you want to delete this slider image?`,
+        header: 'Confirm Delete',
+        icon: 'pi pi-exclamation-triangle',
+        acceptClass: 'p-button-danger',
+        accept: async () => {
+            try {
+                const response = await axios.post(route('admin.settings.delete-slider'), { image_path: path });
+                if (response.data.status) {
 
-    try {
-        const response = await axios.post(route('admin.settings.delete-slider'), { image_path: path });
-        if (response.data.status) {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Slider image deleted', life: 3000 });
-            await fetchSettings();
+                    await fetchSettings();
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
-    } catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete image', life: 3000 });
-    }
+    });
+
+
 };
 
 const sections = [
@@ -150,7 +158,6 @@ const submit = () => {
         forceFormData: true,
         preserveScroll: true,
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Settings updated successfully', life: 3000 });
             form.front_slider = []; // Clear pending uploads
             fetchSettings(); // Refresh local settings display
         },

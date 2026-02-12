@@ -1,7 +1,6 @@
 <script setup>
 import { watch, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     product: Object,
@@ -10,7 +9,6 @@ const props = defineProps({
 });
 
 const visible = defineModel('visible', { type: Boolean, default: false });
-const toast = useToast();
 const imagePreviews = ref([]);
 
 const form = useForm({
@@ -87,7 +85,6 @@ const saveProduct = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
             },
         });
     } else {
@@ -95,7 +92,6 @@ const saveProduct = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
             },
         });
     }
@@ -161,7 +157,7 @@ const saveProduct = () => {
                     <Textarea id="description" v-model="form.description" rows="5"
                         placeholder="Optional product description..." />
                     <Message v-if="form.errors.description" severity="error" variant="simple">{{ form.errors.description
-                    }}</Message>
+                        }}</Message>
                 </div>
 
                 <div class="flex items-center gap-3">

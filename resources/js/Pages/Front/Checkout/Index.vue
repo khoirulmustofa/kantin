@@ -3,7 +3,6 @@ import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
-import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
     menu: String,
@@ -12,7 +11,6 @@ const props = defineProps({
 });
 
 const cartStore = useCartStore();
-const toast = useToast();
 
 const form = useForm({
     username: '', // WhatsApp number
@@ -29,11 +27,9 @@ const submitCheckout = () => {
     form.post(route('checkout.store'), {
         onSuccess: () => {
             cartStore.clearCart();
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Order placed successfully!', life: 3000 });
         },
         onError: (errors) => {
             console.error(errors);
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong. Please check your details.', life: 3000 });
         }
     });
 };
@@ -51,8 +47,7 @@ const submitCheckout = () => {
             <div v-if="cartStore.items.length > 0" class="flex flex-col lg:flex-row gap-4">
                 <!-- Checkout Form -->
                 <div class="flex-1 space-y-8">
-                    <div
-                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                    <div v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="card p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl shadow-gray-100/50">
                         <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">Shipping &
                             Customer Information</h2>
@@ -75,7 +70,7 @@ const submitCheckout = () => {
                                     class="!rounded-2xl !py-4 !px-6 !border-gray-100 font-bold"
                                     :class="{ 'p-invalid': form.errors.name }" />
                                 <small v-if="form.errors.name" class="text-rose-600 font-bold">{{ form.errors.name
-                                    }}</small>
+                                }}</small>
                             </div>
 
                             <div class="flex flex-col gap-2 w-full">
@@ -106,7 +101,7 @@ const submitCheckout = () => {
                                 </Select>
                                 <small v-if="form.errors.financial_account_id" class="text-rose-600 font-bold">{{
                                     form.errors.financial_account_id
-                                    }}</small>
+                                }}</small>
                             </div>
                         </div>
                     </div>
@@ -116,7 +111,7 @@ const submitCheckout = () => {
                         <h2 class="text-xl font-black text-gray-900 dark:text-white px-4 tracking-tight">Order Items
                         </h2>
                         <div v-for="item in cartStore.items" :key="item.id"
-                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                             class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
@@ -136,7 +131,7 @@ const submitCheckout = () => {
                                             class="text-sm font-black bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">{{
                                                 item.quantity }} x</span>
                                         <span class="text-xs font-black text-gray-900">{{ formatCurrencyIndo(item.price)
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -150,8 +145,7 @@ const submitCheckout = () => {
 
                 <!-- Order Summary & Action -->
                 <div class="w-full lg:w-96">
-                    <div
-                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                    <div v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="sticky top-32 p-5 bg-green-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 text-black">
                         <h2 class="text-2xl font-black tracking-tight mb-8">Order Summary</h2>
 

@@ -3,7 +3,6 @@ import { Head, router, Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 
@@ -15,7 +14,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const loading = ref(false);
@@ -61,7 +59,7 @@ const confirmDeleteOrder = (data) => {
             loading.value = true;
             router.delete(route('admin.orders.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Order Deleted', life: 3000 });
+                    loading.value = false;
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -100,7 +98,7 @@ const syncFinance = (data) => {
             loading.value = true;
             router.post(route('admin.orders.sync_finance', data.id), {}, {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Synced to Finance', life: 3000 });
+                    // Flash message handled by AdminLayout
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -159,7 +157,7 @@ const syncFinance = (data) => {
                     <template #body="slotProps">
                         <div class="flex justify-center gap-1">
                             <!-- new tab -->
-                            <a :href="route('admin.orders.show', slotProps.data.id)" v-tooltip.top="'View Invoice'"
+                            <a :href="route('orders.show', slotProps.data.id)" v-tooltip.top="'View Invoice'"
                                 target="_blank">
                                 <Button icon="pi pi-file" text rounded severity="secondary" />
                             </a>

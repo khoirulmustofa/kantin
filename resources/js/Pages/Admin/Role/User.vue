@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
 import axios from 'axios';
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
@@ -11,7 +10,6 @@ const props = defineProps({
 const visible = defineModel('visible', { type: Boolean });
 const emit = defineEmits(['saved']);
 
-const toast = useToast();
 const users = ref({
     data: [],
     total: 0,
@@ -38,7 +36,6 @@ const loadUsers = async (page = 1, sortMeta = []) => {
         });
         users.value = response.data.users;
     } catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load users', life: 3000 });
     } finally {
         loading.value = false;
     }
@@ -70,16 +67,9 @@ const toggleUser = async (user) => {
 
         if (response.data.status) {
             user.has_role = !user.has_role;
-            toast.add({ severity: 'success', summary: 'Success', detail: response.data.message, life: 2000 });
             emit('saved'); // Refresh parent users_count
         }
     } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: error.response?.data?.message || 'Failed to update user role',
-            life: 3000
-        });
     } finally {
         togglingId.value = null;
     }

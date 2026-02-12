@@ -74,7 +74,7 @@ class FinancialTransactionController extends Controller
             });
 
             return Inertia::render('Admin/FinancialTransaction/Index', [
-                'menu' => 'financial-transactions',
+                'menu' => 'financial_transactions',
                 'title' => 'Financial Transactions',
                 'mutations' => $mutations,
                 'accounts' => FinancialAccount::all(),

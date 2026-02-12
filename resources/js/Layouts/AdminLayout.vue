@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import AppSidebar from '@/Components/AppSidebar.vue';
 import { useConfirm } from "primevue/useconfirm";
@@ -18,6 +18,7 @@ const menuActive = defineModel('menuActive', { type: String });
 const title = defineModel('title', { type: String });
 
 const confirm = useConfirm();
+const toast = useToast();
 
 const toggleUserMenu = (event) => {
     userMenu.value.toggle(event);
@@ -45,13 +46,29 @@ const toggleDarkMode = () => {
     }
 };
 
+const showFlashMessage = (flash) => {
+    if (flash.success) {
+        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 3000 });
+    }
+    if (flash.warning) {
+        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
+    }
+    if (flash.error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
+    }
+};
+
 onMounted(() => {
     // Ambil data auth (user, roles, permissions) dari server ke Pinia Store
     authStore.fetchAuth();
 
+    // Pastikan DOM dan PrimeVue Service siap sebelum menampilkan flash awal
+    nextTick(() => {
+        showFlashMessage(page.props.flash);
+    });
+
     window.addEventListener('resize', handleResize);
     handleResize(); // Initial check
-
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -64,20 +81,9 @@ onMounted(() => {
     }
 });
 
-
-const toast = useToast();
-
-watch(() => page.props.flash, (flash) => {
-    if (flash.success) {
-        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 3000 });
-    }
-    if (flash.warning) {
-        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
-    }
-    if (flash.error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
-    }
-}, { deep: true, immediate: true });
+watch(() => page.props.flash, (newFlash) => {
+    showFlashMessage(newFlash);
+}, { deep: true });
 
 onUnmounted(() => {
     window.removeEventListener('resize', handleResize);
@@ -180,11 +186,11 @@ const confirmLogout = () => {
                         class="flex items-center gap-3 pl-3 pr-1.5 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 group">
                         <div class="flex flex-col items-end hidden lg:flex">
                             <span class="text-xs font-bold text-gray-800 dark:text-gray-100 leading-none">{{
-                                page.props.auth.user.name }}</span>
+                                page.props.auth?.user?.name || 'User' }}</span>
                             <span class="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">{{
-                                page.props.auth.user.role }}</span>
+                                page.props.auth?.user?.role || 'Guest' }}</span>
                         </div>
-                        <Avatar :label="page.props.auth.user.name.charAt(0)"
+                        <Avatar :label="(page.props.auth?.user?.name || 'U').charAt(0)"
                             class="!bg-emerald-500 !text-white !font-bold shadow-sm group-hover:scale-105 transition-transform"
                             shape="circle" />
                     </button>

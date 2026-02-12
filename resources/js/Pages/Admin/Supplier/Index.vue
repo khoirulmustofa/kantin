@@ -4,7 +4,6 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import SupplierForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 
 const props = defineProps({
@@ -15,7 +14,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const supplierDialog = ref(false);
@@ -76,7 +74,6 @@ const confirmDeleteSupplier = (data) => {
             loading.value = true;
             router.delete(route('admin.suppliers.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Supplier Deleted', life: 3000 });
                     loading.value = false;
                 },
                 onError: () => {

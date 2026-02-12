@@ -2,7 +2,6 @@
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
     menu: String,
@@ -10,7 +9,6 @@ const props = defineProps({
     permissions: Object, // Grouped by 'group'
 });
 
-const toast = useToast();
 
 const form = useForm({
     name: '',
@@ -62,7 +60,6 @@ const togglePermission = (name) => {
 const submit = () => {
     form.post(route('admin.roles.store'), {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Role created successfully', life: 3000 });
         },
     });
 };

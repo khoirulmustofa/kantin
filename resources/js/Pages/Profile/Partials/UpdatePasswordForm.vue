@@ -1,11 +1,9 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { useToast } from "primevue/usetoast";
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
-const toast = useToast();
 
 const form = useForm({
     current_password: '',
@@ -18,7 +16,6 @@ const updatePassword = () => {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Password updated successfully', life: 3000 });
         },
         onError: () => {
             if (form.errors.password) {
@@ -82,7 +79,7 @@ const updatePassword = () => {
                             </template>
                         </Password>
                         <small v-if="form.errors.password" class="text-rose-500 font-bold px-4">{{ form.errors.password
-                            }}</small>
+                        }}</small>
                     </div>
 
                     <div class="flex flex-col gap-2">

@@ -1,6 +1,5 @@
 <script setup>
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { useToast } from "primevue/usetoast";
 
 defineProps({
     mustVerifyEmail: {
@@ -12,7 +11,6 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
-const toast = useToast();
 
 const form = useForm({
     name: user.name,
@@ -22,7 +20,6 @@ const form = useForm({
 const submit = () => {
     form.patch(route('profile.update'), {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Profile information updated successfully', life: 3000 });
         },
     });
 };
@@ -44,8 +41,7 @@ const submit = () => {
         <form @submit.prevent="submit" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="flex flex-col gap-2">
-                    <label for="name"
-                        class="text-sm font-black  tracking-widest">FullName</label>
+                    <label for="name" class="text-sm font-black  tracking-widest">FullName</label>
                     <InputText id="name" v-model="form.name" placeholder="Enter your name"
                         class="border-transparent focus:bg-white transition-all shadow-inner"
                         :class="{ 'p-invalid': form.errors.name }" required autofocus />
@@ -73,8 +69,7 @@ const submit = () => {
                     </Link>
                 </p>
 
-                <div v-show="status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-black  text-green-600">
+                <div v-show="status === 'verification-link-sent'" class="mt-2 text-sm font-black  text-green-600">
                     A new verification link has been sent.
                 </div>
             </div>

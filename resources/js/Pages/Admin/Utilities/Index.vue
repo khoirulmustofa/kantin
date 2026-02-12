@@ -2,7 +2,6 @@
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
     menu: String,
@@ -14,7 +13,6 @@ const props = defineProps({
 });
 
 
-const toast = useToast();
 const loadingCache = ref(false);
 const loadingLogs = ref(false);
 const loadingDebug = ref(false);
@@ -24,7 +22,6 @@ const clearCache = () => {
     loadingCache.value = true;
     router.post(route('admin.utilities.clear_cache'), {}, {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'System cache cleared', life: 3000 });
         },
         onFinish: () => loadingCache.value = false
     });
@@ -34,7 +31,6 @@ const clearLogs = () => {
     loadingLogs.value = true;
     router.post(route('admin.utilities.clear_log'), {}, {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Logs cleared', life: 3000 });
         },
         onFinish: () => loadingLogs.value = false
     });
@@ -44,7 +40,6 @@ const toggleDebug = () => {
     loadingDebug.value = true;
     router.post(route('admin.utilities.toggle_debug'), {}, {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Debug mode updated', life: 3000 });
         },
         onFinish: () => loadingDebug.value = false
     });
@@ -52,14 +47,12 @@ const toggleDebug = () => {
 
 const runStorageLink = () => {
     // Just a placeholder for now or we could add another route
-    toast.add({ severity: 'info', summary: 'Info', detail: 'Storage link action triggered', life: 3000 });
 };
 
 const clearSession = () => {
     loadingSession.value = true;
     router.post(route('admin.utilities.clear_session'), {}, {
         onSuccess: () => {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Session cleared', life: 3000 });
         },
         onFinish: () => loadingSession.value = false
     });
@@ -173,8 +166,8 @@ const clearSession = () => {
                     </div>
                 </div>
 
-                 <!-- Clear Session -->
-                 <div
+                <!-- Clear Session -->
+                <div
                     class="relative overflow-hidden group p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:shadow-red-500/10 transition-all duration-300">
                     <div
                         class="absolute top-0 right-0 p-8 opacity-[0.03] dark:opacity-[0.07] group-hover:scale-125 group-hover:-rotate-12 transition-transform duration-500">
@@ -189,7 +182,8 @@ const clearSession = () => {
                     </div>
                     <div class="space-y-4">
                         <h3 class="font-black text-gray-900 dark:text-white tracking-tight ">Clear Session</h3>
-                        <Button @click="clearSession" :loading="loadingSession" label="Clear Session" icon="pi pi-link" severity="danger"
+                        <Button @click="clearSession" :loading="loadingSession" label="Clear Session" icon="pi pi-link"
+                            severity="danger"
                             class="!w-full !rounded-xl !py-3 !font-black !tracking-widest shadow-lg shadow-red-500/20" />
                     </div>
                 </div>
@@ -228,7 +222,7 @@ const clearSession = () => {
                 </div>
             </div>
 
-            
+
         </div>
     </AdminLayout>
 </template>

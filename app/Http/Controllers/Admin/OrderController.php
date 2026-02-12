@@ -145,15 +145,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show($id)
-    {
-        $order = Order::with(['user', 'financialAccount', 'orderItems.product.category'])->findOrFail($id);
-        return Inertia::render('Admin/Order/Show', [
-            'menu' => 'orders',
-            'title' => 'Order Detail',
-            'order' => $order,
-        ]);
-    }
+
 
     public function update(Request $request, $id)
     {

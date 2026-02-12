@@ -39,7 +39,7 @@ class FinancialAccountController extends Controller
             $accounts = $query->paginate($rows)->withQueryString();
 
             return Inertia::render('Admin/FinancialAccount/Index', [
-                'menu' => 'financial-accounts',
+                'menu' => 'financial_accounts',
                 'title' => 'Financial Accounts',
                 'accounts' => $accounts,
                 'filters' => $request->only(['search', 'rows', 'multiSortMeta']),

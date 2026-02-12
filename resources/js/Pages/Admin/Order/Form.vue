@@ -2,7 +2,6 @@
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from 'primevue/usetoast';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 
 const props = defineProps({
@@ -14,7 +13,6 @@ const props = defineProps({
     title: String,
 });
 
-const toast = useToast();
 
 const form = useForm({
     user_id: props.order?.user_id || null,
@@ -37,7 +35,6 @@ const quantityToAdd = ref(1);
 
 const addItem = () => {
     if (!selectedProduct.value) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Please select a product', life: 3000 });
         return;
     }
 
@@ -73,11 +70,11 @@ const grandTotal = computed(() => {
 const submit = () => {
     if (props.isEdit) {
         form.put(route('admin.orders.update', props.order.id), {
-            onSuccess: () => toast.add({ severity: 'success', summary: 'Success', detail: 'Order updated', life: 3000 }),
+            onSuccess: () => { },
         });
     } else {
         form.post(route('admin.orders.store'), {
-            onSuccess: () => toast.add({ severity: 'success', summary: 'Success', detail: 'Order created', life: 3000 }),
+            onSuccess: () => { },
         });
     }
 };
@@ -212,7 +209,7 @@ const paymentOptions = [
                             <Select v-model="form.user_id" :options="users" filter optionLabel="name" optionValue="id"
                                 placeholder="Select Customer" class="w-full mt-2" />
                             <Message v-if="form.errors.user_id" severity="error" variant="simple">{{ form.errors.user_id
-                            }}
+                                }}
                             </Message>
                         </div>
                         <div>

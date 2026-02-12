@@ -1,7 +1,6 @@
 <script setup>
 import { watch, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     mutation: Object,
@@ -11,7 +10,6 @@ const props = defineProps({
 });
 
 const visible = defineModel('visible', { type: Boolean, default: false });
-const toast = useToast();
 const imagePreview = ref(null);
 
 const form = useForm({
@@ -68,7 +66,6 @@ const saveInflow = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Inflow Updated', life: 3000 });
             },
         });
     } else {
@@ -76,7 +73,6 @@ const saveInflow = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Inflow Recorded', life: 3000 });
             },
         });
     }

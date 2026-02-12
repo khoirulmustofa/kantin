@@ -69,7 +69,7 @@ class FinancialCashInController extends Controller
             });
 
             return Inertia::render('Admin/FinancialCashIn/Index', [
-                'menu' => 'financial-cash-in',
+                'menu' => 'financial_cash_in',
                 'title' => 'Cash Inflow',
                 'mutations' => $mutations,
                 'accounts' => FinancialAccount::where('is_active', true)->get(),

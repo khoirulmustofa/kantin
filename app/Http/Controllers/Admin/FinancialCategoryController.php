@@ -39,7 +39,7 @@ class FinancialCategoryController extends Controller
             $categories = $query->paginate($rows)->withQueryString();
 
             return Inertia::render('Admin/FinancialCategory/Index', [
-                'menu' => 'financial-categories',
+                'menu' => 'financial_categories',
                 'title' => 'Financial Categories',
                 'categories' => $categories,
                 'filters' => $request->only(['search', 'rows', 'multiSortMeta']),

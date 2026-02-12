@@ -1,7 +1,6 @@
 <script setup>
 import { watch, ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
     category: Object,
@@ -9,7 +8,6 @@ const props = defineProps({
 });
 
 const visible = defineModel('visible', { type: Boolean, default: false });
-const toast = useToast();
 const imagePreview = ref(null);
 
 const form = useForm({
@@ -59,7 +57,6 @@ const saveCategory = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Updated', life: 3000 });
             },
         });
     } else {
@@ -67,7 +64,6 @@ const saveCategory = () => {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
-                toast.add({ severity: 'success', summary: 'Successful', detail: 'Category Created', life: 3000 });
             },
         });
     }

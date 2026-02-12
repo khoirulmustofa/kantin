@@ -40,7 +40,7 @@ const items = ref([
             {
                 label: 'Category',
                 icon: 'pi pi-list',
-                route: 'admin.product-categories.index',
+                route: 'admin.product_categories.index',
                 menu: 'product-categories'
             },
             {
@@ -58,8 +58,8 @@ const items = ref([
             {
                 label: 'Purchase Order',
                 icon: 'pi pi-file-import',
-                route: 'admin.purchase-orders.index',
-                menu: 'purchase-orders'
+                route: 'admin.purchase_orders.index',
+                menu: 'purchase_orders'
             },
         ]
     },
@@ -71,31 +71,31 @@ const items = ref([
                 label: 'Account',
                 icon: 'pi pi-wallet',
                 route: 'admin.financial_accounts.index',
-                menu: 'financial-accounts'
+                menu: 'financial_accounts'
             },
             {
                 label: 'Category',
                 icon: 'pi pi-tags',
                 route: 'admin.financial_categories.index',
-                menu: 'financial-categories'
+                menu: 'financial_categories'
             },
             {
                 label: 'Cash Inflow',
                 icon: 'pi pi-plus-circle',
                 route: 'admin.financial_cash_in.index',
-                menu: 'financial-cash-in'
+                menu: 'financial_cash_in'
             },
             {
                 label: 'Cash Outflow',
                 icon: 'pi pi-minus-circle',
                 route: 'admin.financial_cash_out.index',
-                menu: 'financial-cash-out'
+                menu: 'financial_cash_out'
             },
             {
                 label: 'Transaction History',
                 icon: 'pi pi-history',
                 route: 'admin.financial_transactions.index',
-                menu: 'financial-transactions'
+                menu: 'financial_transactions'
             },
         ]
     },
@@ -134,7 +134,8 @@ const items = ref([
         <!-- Logo Area -->
         <div class="flex items-center px-8 border-b border-gray-50 dark:border-gray-800 h-16 min-h-[4rem]">
             <Link :href="route('home')" class="flex items-center gap-3 group">
-                <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class=" w-auto"></img>
+                <img v-if="$page.props.settings" :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo"
+                    class=" w-auto"></img>
             </Link>
         </div>
 

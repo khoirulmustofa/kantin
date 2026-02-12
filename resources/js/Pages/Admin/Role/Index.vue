@@ -3,7 +3,6 @@ import { Head, router, Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 import axios from 'axios';
 import UserAssignment from './User.vue';
@@ -17,7 +16,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const displayUserModal = ref(false);
 const selectedRole = ref(null);
@@ -70,10 +68,8 @@ const deleteRole = (data) => {
             loading.value = true;
             router.delete(route('admin.roles.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Role Deleted', life: 3000 });
                 },
                 onError: (errors) => {
-                    toast.add({ severity: 'error', summary: 'Error', detail: errors.message || 'Error deleting role', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;

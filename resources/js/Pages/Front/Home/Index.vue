@@ -15,9 +15,7 @@ import 'swiper/css/pagination';
 import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
-import { useToast } from "primevue/usetoast";
 
-const toast = useToast();
 
 const cartStore = useCartStore();
 
@@ -77,9 +75,6 @@ const updateSliderImages = () => {
     }
 };
 
-const testToast = () => {
-    toast.add({ severity: 'success', summary: 'Success', detail: 'This is a success message', life: 3000 });
-}
 
 </script>
 
@@ -172,7 +167,7 @@ const testToast = () => {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div v-for="product in products" :key="product.id"
-                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="group bg-white p-4 rounded-3xl border border-gray-100 hover:border-green-100 transition-all duration-500 hover:shadow-2xl hover:shadow-green-200">
                         <div
                             class="relative aspect-[4/5] overflow-hidden rounded-3xl mb-6 bg-gray-50 border border-gray-100">
@@ -220,7 +215,9 @@ const testToast = () => {
 
 
         <!-- Banner section -->
-        <section id="banner" v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }" class="relative bg-gray-100 py-16">
+        <section id="banner"
+            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+            class="relative bg-gray-100 py-16">
             <div class="container mx-auto px-4 py-20 rounded-lg relative bg-cover bg-center"
                 style="background-image: url('assets/images/banner1.jpg');">
                 <div class="absolute inset-0 bg-black opacity-40 rounded-lg"></div>
@@ -241,8 +238,9 @@ const testToast = () => {
         </section>
 
         <!-- Subscribe section -->
-        <section id="subscribe" v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-        class="py-6 lg:py-24 bg-white border-t border-gray-line">
+        <section id="subscribe"
+            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+            class="py-6 lg:py-24 bg-white border-t border-gray-line">
             <div class="container mx-auto">
                 <div class="flex flex-col items-center rounded-lg p-4 sm:p-0 ">
                     <div class="mb-8">

@@ -4,7 +4,6 @@ import { ref, watch } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import AccountForm from './Form.vue';
 import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import debounce from 'lodash/debounce';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 
@@ -16,7 +15,6 @@ const props = defineProps({
 });
 
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref(props.filters.search || '');
 const accountDialog = ref(false);
@@ -77,7 +75,6 @@ const confirmDeleteAccount = (data) => {
             loading.value = true;
             router.delete(route('admin.financial_accounts.destroy', data.id), {
                 onSuccess: () => {
-                    toast.add({ severity: 'success', summary: 'Successful', detail: 'Account Deleted', life: 3000 });
                 },
                 onFinish: () => {
                     loading.value = false;
@@ -153,7 +150,7 @@ const confirmDeleteAccount = (data) => {
                 <Column field="account_number" header="Account Number" sortable style="min-width: 12rem">
                     <template #body="slotProps">
                         <span class="text-gray-500 dark:text-gray-400 font-mono">{{ slotProps.data.account_number || '-'
-                            }}</span>
+                        }}</span>
                     </template>
                 </Column>
 

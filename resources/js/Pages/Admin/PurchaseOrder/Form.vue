@@ -2,7 +2,6 @@
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { useToast } from 'primevue/usetoast';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 
 const props = defineProps({
@@ -14,7 +13,6 @@ const props = defineProps({
     title: String,
 });
 
-const toast = useToast();
 
 const form = useForm({
     supplier_id: props.purchaseOrder?.supplier_id || null,
@@ -36,7 +34,6 @@ const quantityToAdd = ref(1);
 
 const addItem = () => {
     if (!selectedProduct.value) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Please select a product', life: 3000 });
         return;
     }
 
@@ -70,12 +67,12 @@ const grandTotal = computed(() => {
 
 const submit = () => {
     if (props.isEdit) {
-        form.put(route('admin.purchase-orders.update', props.purchaseOrder.id), {
-            onSuccess: () => toast.add({ severity: 'success', summary: 'Success', detail: 'Purchase Order updated', life: 3000 }),
+        form.put(route('admin.purchase_orders.update', props.purchaseOrder.id), {
+            onSuccess: () => { },
         });
     } else {
-        form.post(route('admin.purchase-orders.store'), {
-            onSuccess: () => toast.add({ severity: 'success', summary: 'Success', detail: 'Purchase Order created', life: 3000 }),
+        form.post(route('admin.purchase_orders.store'), {
+            onSuccess: () => { },
         });
     }
 };
@@ -278,7 +275,7 @@ const paymentOptions = [
                     <Button :label="isEdit ? 'Update PO' : 'Create PO'" :icon="isEdit ? 'pi pi-save' : 'pi pi-check'"
                         severity="primary" size="large" @click="submit" :loading="form.processing"
                         class="shadow-lg shadow-blue-500/20" />
-                    <Link :href="route('admin.purchase-orders.index')" class="w-full">
+                    <Link :href="route('admin.purchase_orders.index')" class="w-full">
                         <Button label="Cancel" severity="secondary" variant="text" class="w-full" />
                     </Link>
                 </div>
