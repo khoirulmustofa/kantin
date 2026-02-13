@@ -21,17 +21,17 @@ class FinancialCategorySeeder extends Seeder
             'name' => 'Transfer Masuk',
             'type' => 'income',
         ]);
+        
         \App\Models\FinancialCategory::create([
-            'name' => 'Biaya Operasional',
+            'name' => 'Belaja Toko',
             'type' => 'expense',
         ]);
+
+
         \App\Models\FinancialCategory::create([
             'name' => 'Gaji Pegawai',
             'type' => 'expense',
         ]);
-        \App\Models\FinancialCategory::create([
-            'name' => 'Pajak',
-            'type' => 'expense',
-        ]);
+        
     }
 }

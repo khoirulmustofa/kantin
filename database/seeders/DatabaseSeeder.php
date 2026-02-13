@@ -18,19 +18,21 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            UserSeeder::class,
+            // UserSeeder::class,
+
             ProductCategorySeeder::class,
             ProductSeeder::class,
             FinancialAccountSeeder::class,
             FinancialCategorySeeder::class,
-            FinancialMutationSeeder::class,
-            OrderSeeder::class,
-            SupplierSeeder::class,
-            PurchaseOrderSeeder::class,
+
+            // FinancialMutationSeeder::class,
+            // OrderSeeder::class,
+            // SupplierSeeder::class,
+            // PurchaseOrderSeeder::class,
 
             PermissionSeeder::class,
             RoleSeeder::class,
-            
+
         ]);
     }
 }
