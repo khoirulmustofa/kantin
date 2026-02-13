@@ -6,6 +6,10 @@ const props = defineProps({
     status: {
         type: Number,
         default: 404
+    },
+    message: {
+        type: String,
+        default: ''
     }
 });
 
@@ -88,6 +92,9 @@ const goBack = () => {
                     </h2>
                     <p class="text-base sm:text-lg text-gray-600  mx-auto leading-relaxed">
                         {{ errorMessage }}
+                    </p>
+                    <p v-if="message" class="text-base sm:text-lg text-gray-600  mx-auto leading-relaxed">
+                        {{ message }}
                     </p>
                 </div>
 

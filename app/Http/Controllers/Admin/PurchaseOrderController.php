@@ -55,8 +55,8 @@ class PurchaseOrderController extends Controller
                 'filters' => $request->only(['search', 'rows', 'multiSortMeta']),
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
                 'message' => $th->getMessage(),
             ]);
         }
@@ -139,7 +139,7 @@ class PurchaseOrderController extends Controller
         $purchaseOrder = PurchaseOrder::with(['supplier', 'financialAccount', 'purchaseOrderItems.product'])->findOrFail($id);
         return Inertia::render('Admin/PurchaseOrder/Form', [
             'menu' => 'purchase_orders',
-            'title' => 'Edit Purchase Order '.$purchaseOrder->po_number,
+            'title' => 'Edit Purchase Order ' . $purchaseOrder->po_number,
             'purchaseOrder' => $purchaseOrder,
             'suppliers' => Supplier::where('is_active', true)->get(),
             'products' => Product::where('is_active', true)->get(),

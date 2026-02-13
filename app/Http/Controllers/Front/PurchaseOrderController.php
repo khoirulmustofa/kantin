@@ -12,7 +12,6 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
         try {
-            $this->fungsiYangTidakPernahAda();
             $purchaseOrder = PurchaseOrder::with([
                 'supplier',
                 'financialAccount',

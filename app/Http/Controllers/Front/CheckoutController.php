@@ -24,10 +24,10 @@ class CheckoutController extends Controller
                 'menu' => 'checkout',
                 'title' => 'Checkout',
                 'financialAccounts' => FinancialAccount::where('is_active', true)->get(),
-             ])->rootView('front');
+            ])->rootView('front');
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
                 'message' => $th->getMessage(),
             ]);
         }

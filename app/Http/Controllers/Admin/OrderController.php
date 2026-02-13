@@ -61,8 +61,8 @@ class OrderController extends Controller
                 'filters' => $request->only(['search', 'rows', 'multiSortMeta']),
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
                 'message' => $th->getMessage(),
             ]);
         }
@@ -253,7 +253,10 @@ class OrderController extends Controller
             return redirect()->back()->with('success', 'Order synced to finance successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to sync: ' . $th->getMessage());
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
+                'message' => $th->getMessage(),
+            ]);
         }
     }
 

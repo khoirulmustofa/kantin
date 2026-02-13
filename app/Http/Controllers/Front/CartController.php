@@ -16,8 +16,8 @@ class CartController extends Controller
                 'title' => 'Shopping Cart',
             ])->rootView('front');
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
                 'message' => $th->getMessage(),
             ]);
         }

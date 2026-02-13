@@ -81,8 +81,8 @@ class FinancialTransactionController extends Controller
                 'filters' => $request->only(['search', 'rows', 'multiSortMeta', 'flow', 'account_id']),
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
                 'message' => $th->getMessage(),
             ]);
         }
