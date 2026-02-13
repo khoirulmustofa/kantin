@@ -23,14 +23,14 @@ const loading = ref(false);
 const multiSortMeta = ref(props.filters.multiSortMeta ? JSON.parse(props.filters.multiSortMeta) : []);
 
 const loadLazyData = (extraParams = {}) => {
-    router.get(route('admin.product-categories.index'), {
+    router.get(route('admin.product_categories.index'), {
         search: search.value,
         rows: extraParams.rows || props.categories.per_page,
+        page: extraParams.page || 1,
         multiSortMeta: multiSortMeta.value.length ? JSON.stringify(multiSortMeta.value) : null,
         ...extraParams
     }, {
         preserveState: true,
-        replace: true,
         onBefore: () => { loading.value = true },
         onFinish: () => { loading.value = false }
     });

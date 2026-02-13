@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Client\Response;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,5 +24,21 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->respond(function (\Symfony\Component\HttpFoundation\Response $response, Throwable $exception, Request $request) {
+            if (!app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
+                return Inertia::render('Errors/NotFound', [
+                    'status' => $response->getStatusCode()
+                ])
+                    ->toResponse($request)
+                    ->setStatusCode($response->getStatusCode());
+            } elseif (in_array($response->getStatusCode(), [500, 503, 404, 403])) {
+                return Inertia::render('Errors/NotFound', [
+                    'status' => $response->getStatusCode()
+                ])
+                    ->toResponse($request)
+                    ->setStatusCode($response->getStatusCode());
+            }
+
+            return $response;
+        });
     })->create();

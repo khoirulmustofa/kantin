@@ -74,6 +74,9 @@ const confirmDeleteCategory = (data) => {
             loading.value = true;
             router.delete(route('admin.financial_categories.destroy', data.id), {
                 onSuccess: () => {
+                    setTimeout(() => {
+                        page.props.flash.success = null;
+                    }, 500);
                 },
                 onFinish: () => { loading.value = false }
             });

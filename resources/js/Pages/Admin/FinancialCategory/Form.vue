@@ -40,12 +40,18 @@ const saveCategory = () => {
         form.put(route('admin.financial_categories.update', props.category.id), {
             onSuccess: () => {
                 hideDialog();
+                setTimeout(() => {
+                    page.props.flash.success = null;
+                }, 500);
             },
         });
     } else {
         form.post(route('admin.financial_categories.store'), {
             onSuccess: () => {
                 hideDialog();
+                setTimeout(() => {
+                    page.props.flash.success = null;
+                }, 500);
             },
         });
     }

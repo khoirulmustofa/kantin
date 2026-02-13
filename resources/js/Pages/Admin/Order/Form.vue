@@ -94,11 +94,19 @@ const submit = () => {
             accept: () => {
                 if (props.isEdit) {
                     form.put(route('admin.orders.update', props.order.id), {
-                        onSuccess: () => { },
+                        onSuccess: () => {
+                            setTimeout(() => {
+                                page.props.flash.success = null;
+                            }, 500);
+                        },
                     });
                 } else {
                     form.post(route('admin.orders.store'), {
-                        onSuccess: () => { },
+                        onSuccess: () => {
+                            setTimeout(() => {
+                                page.props.flash.success = null;
+                            }, 500);
+                        },
                     });
                 }
             }
@@ -106,11 +114,19 @@ const submit = () => {
     } else {
         if (props.isEdit) {
             form.put(route('admin.orders.update', props.order.id), {
-                onSuccess: () => { },
+                onSuccess: () => {
+                    setTimeout(() => {
+                        page.props.flash.success = null;
+                    }, 500);
+                },
             });
         } else {
             form.post(route('admin.orders.store'), {
-                onSuccess: () => { },
+                onSuccess: () => {
+                    setTimeout(() => {
+                        page.props.flash.success = null;
+                    }, 500);
+                },
             });
         }
     }
@@ -248,7 +264,7 @@ const paymentOptions = [
                             <Select v-model="form.user_id" :options="users" filter optionLabel="name" optionValue="id"
                                 placeholder="Select Customer" class="w-full mt-2" />
                             <Message v-if="form.errors.user_id" severity="error" variant="simple">{{ form.errors.user_id
-                                }}
+                            }}
                             </Message>
                         </div>
                         <div>

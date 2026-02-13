@@ -53,14 +53,14 @@ const saveCategory = () => {
         form.transform((data) => ({
             ...data,
             _method: 'PUT',
-        })).post(route('admin.product-categories.update', props.category.id), {
+        })).post(route('admin.product_categories.update', props.category.id), {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();
             },
         });
     } else {
-        form.post(route('admin.product-categories.store'), {
+        form.post(route('admin.product_categories.store'), {
             forceFormData: true,
             onSuccess: () => {
                 hideDialog();

@@ -101,7 +101,9 @@ const syncFinance = (data) => {
             loading.value = true;
             router.post(route('admin.orders.sync_finance', data.id), {}, {
                 onSuccess: () => {
-                    // Flash message handled by AdminLayout
+                    setTimeout(() => {
+                        page.props.flash.success = null;
+                    }, 500);
                 },
                 onFinish: () => {
                     loading.value = false;

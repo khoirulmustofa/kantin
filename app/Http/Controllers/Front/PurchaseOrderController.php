@@ -12,6 +12,7 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
         try {
+            $this->fungsiYangTidakPernahAda();
             $purchaseOrder = PurchaseOrder::with([
                 'supplier',
                 'financialAccount',
@@ -25,9 +26,9 @@ class PurchaseOrderController extends Controller
                 'purchaseOrder' => $purchaseOrder,
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error500', [
-                'status' => false,
-                'message' => $th->getMessage(),
+            // set error 500
+            return Inertia::render('Errors/NotFound', [
+                'status' => 500,
             ]);
         }
     }
