@@ -154,6 +154,9 @@ const confirmDeleteCategory = (data) => {
                 <Column field="slug" header="Slug" sortable style="min-width: 15rem"
                     class="text-gray-500 dark:text-gray-400">
                 </Column>
+                <Column field="products_count" header="Products Count" sortable style="min-width: 15rem"
+                    class="text-gray-500 dark:text-gray-400">
+                </Column>
 
             </DataTable>
         </div>

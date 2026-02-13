@@ -14,7 +14,7 @@ class ProductCategoryController extends Controller
     {
         try {
             $rows = $request->input('rows', 10);
-            $query = ProductCategory::query();
+            $query = ProductCategory::withCount('products');
 
             // Handle Search
             $query->when($request->search, function ($q, $search) {
