@@ -134,15 +134,8 @@ const menus = ref([
                 </nav>
 
                 <div class="hidden lg:flex items-center space-x-4 relative">
-                    <template v-if="!$page.props.auth.user">
-                        <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
-                            class="w-full flex items-center justify-center gap-3 !border-red-400 !border-2 !py-3 !rounded-2xl">
-                            <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
-                            <span class="font-bold tracking-tight">Masuk dengan Google</span>
-                        </Button>
-                    </template>
-
-                    <template v-else>
+                    
+                    <template v-if="$page.props.auth.user">
                         <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
                             <div
                                 class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
@@ -236,15 +229,8 @@ const menus = ref([
 
                     </ul>
 
-                    <template v-if="!$page.props.auth.user">
-                        <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
-                            class="w-full flex items-center justify-center gap-3 !bg-red-400 !border-red-400 !py-3 !rounded-2xl">
-                            <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
-                            <span class="font-bold text-white tracking-tight">Masuk dengan Google</span>
-                        </Button>
-                    </template>                  
-
-                    <template v-else>
+                    <
+                    <template v-if="$page.props.auth.user">
                         <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
                             <div
                                 class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">

@@ -20,7 +20,16 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Errors/NotFound', [
+            'status' => 404,
+            'message' => 'Sorry, the register function is not yet open to the public.'
+        ]);
+
+
+        // return Inertia::render('Auth/Register', [
+        //     'menu' => 'register',
+        //     'title' => 'Register'
+        // ]);
     }
 
     /**
