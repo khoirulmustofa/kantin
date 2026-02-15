@@ -133,11 +133,11 @@ const submit = () => {
                         </div>
 
                         <!-- Google Login Button -->
-                        <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
+                        <!-- <Button as="a" href="/auth/google" severity="secondary" variant="outlined"
                             class="w-full flex items-center justify-center gap-3 !border-red-400 !border-2 !py-3 !rounded-2xl hover:!bg-red-50 transition-all">
                             <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5" alt="Google Logo">
                             <span class="font-bold tracking-tight">Sign up with Google</span>
-                        </Button>
+                        </Button> -->
 
                         <!-- Login Link -->
                         <div class="text-center">

@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { formatCurrencyIndo, formatDateIndonesian } from '@/Utils/formatter';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -121,6 +121,19 @@ const copyLink = () => {
 };
 
 
+const whatsappUrl = computed(() => {
+    const phone = page.props.settings?.whatsapp_number || '';
+    const name = page.props.settings?.site_name || 'Admin';
+    const orderNumber = props.order.order_number;
+    
+    // Gunakan \n untuk enter
+    const message = encodeURIComponent(
+        `Assalamualaikum ${name},\n\n Saya sudah melakukan pembayaran untuk pesanan nomor ${orderNumber}. Berikut adalah bukti transfernya.`
+    );
+    
+    return `https://wa.me/${phone}?text=${message}`;
+});
+
 </script>
 
 <template>
@@ -213,7 +226,7 @@ const copyLink = () => {
 
                                 <!-- INFO ROW -->
                                 <tr>
-                                    <td class="px-12 pt-0 print:px-12 print:pt-0 print:pb-5 align-top w-1/2">
+                                    <td class="px-12 pt-0 pb-4 print:px-12 print:pt-0 print:pb-5 align-top w-1/2">
                                         <h3 class="mb-2 font-bold">
                                             Customer Details</h3>
                                         <table class="mb-2">
@@ -242,12 +255,12 @@ const copyLink = () => {
                                                 props.order.shipping_address }}</p>
                                         </div>
                                     </td>
-                                    <td class="px-12 pt-0 print:px-12 print:pt-0 print:pb-5 align-top text-right w-1/2">
+                                    <td class="px-12 pt-0 pb-4 print:px-12 print:pt-0 print:pb-5 align-top text-right w-1/2">
                                         <div class="mb-2">
-                                            <label class="block font-bold  mb-2">Order
+                                            <label class="block font-bold">Order
                                                 Status</label>
                                             <div>
-                                                <span class="inline-block px-4 py-1.5 rounded-full  " :class="{
+                                                <span class="inline-block px-4 py-1.5 rounded-full uppercase  " :class="{
                                                     'bg-green-100 text-green-700': props.order.status === 'completed',
                                                     'bg-blue-100 text-blue-700': props.order.status === 'processing',
                                                     'bg-yellow-100 text-yellow-700': props.order.status === 'pending',
@@ -258,13 +271,13 @@ const copyLink = () => {
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block font-bold  mb-2">Payment Method</label>
+                                            <label class="block font-bold">Payment Method</label>
                                             <p class="font-black">
                                                 {{ props.order.financial_account?.name }}
                                                 <br>
                                                 <span class="text-gray-500">{{
                                                     props.order.financial_account?.account_number
-                                                    }}</span>
+                                                }}</span>
                                             </p>
                                         </div>
                                     </td>
@@ -272,24 +285,24 @@ const copyLink = () => {
 
                                 <!-- ITEMS ROW -->
                                 <tr>
-                                    <td colspan="2" class="px-8 pb-2  print:px-8 print:pb-2">
+                                    <td colspan="2" class="px-8 print:px-8 ">
                                         <table class="w-full border-collapse">
                                             <thead>
-                                                <tr class="bg-green-100 print:bg-green-100">
+                                                <tr class="bg-green-100 print:!bg-green-100">
                                                     <th
-                                                        class="text-left pb-2 pt-5 font-black pl-2 border-b border-gray-100">
+                                                        class="text-left font-bold py-2 pl-2 border-b border-gray-100">
                                                         No</th>
                                                     <th
-                                                        class="text-left pb-2 pt-5 font-black  border-b border-gray-100">
+                                                        class="text-left font-bold py-2  border-b border-gray-100">
                                                         Item Details</th>
                                                     <th
-                                                        class="text-center pb-2 pt-5 font-black  border-b border-gray-100">
+                                                        class="text-center font-bold py-2  border-b border-gray-100">
                                                         Qty</th>
                                                     <th
-                                                        class="text-right pb-2 pt-5 font-black border-b border-gray-100">
+                                                        class="text-right font-bold py-2 border-b border-gray-100">
                                                         Unit Price</th>
                                                     <th
-                                                        class="text-right pb-2 pt-5 font-black pr-2 border-b border-gray-100">
+                                                        class="text-right font-bold py-2 pr-2 border-b border-gray-100">
                                                         Amount</th>
                                                 </tr>
                                             </thead>
@@ -339,7 +352,9 @@ const copyLink = () => {
                                             <p class="font-sm wrap-break-word">* Silahkan kirim <span
                                                     class="font-bold">bukti transfer</span> Anda melalui WhatsApp untuk
                                                 mempercepat proses verifikasi pesanan</p>
-                                            <p class="font-bold">WhatsApp: {{ $page.props.settings?.whatsapp }}</p>
+                                            <p class="font-bold ">WhatsApp: <a
+                                                    :href="whatsappUrl"
+                                                    target="_blank" class="border border-2x px-2 py-1 rounded-xl border-green-500 bg-green-500 text-white hover:bg-green-600 hover:text-white print:text-black"><i class="pi pi-whatsapp"></i> {{ page.props.settings?.whatsapp_number }}</a></p>
                                         </div>
                                     </td>
                                     <td
@@ -352,7 +367,7 @@ const copyLink = () => {
                                                     <td class="text-right py-2 font-bold text-xl">{{
                                                         formatCurrencyIndo(props.order.grand_total -
                                                             props.order.shipping_cost)
-                                                        }}
+                                                    }}
                                                     </td>
                                                 </tr>
                                                 <tr>

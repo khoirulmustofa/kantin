@@ -37,10 +37,10 @@ const confirmClearCart = () => {
 
             <div v-if="cartStore.items.length > 0" class="flex flex-col lg:flex-row gap-12">
                 <!-- Cart Items -->
-                <div class="lg:w-2/3 space-y-4">
+                <div class="lg:w-2/3 space-y-2">
                     <div v-for="item in cartStore.items" :key="item.id"
-                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                        class="flex flex-col sm:flex-row items-center justify-between p-6 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-gray-100/50 transition-all duration-500">
+                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                        class="flex flex-col sm:flex-row items-center justify-between p-2 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-gray-100/50 transition-all duration-500">
 
 
                         <div class="flex items-center gap-8 w-full sm:w-auto mb-6 sm:mb-0">
@@ -61,7 +61,7 @@ const confirmClearCart = () => {
                                 </Link>
                                 <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">{{
                                     item.category }}</p>
-                                <span class="text-rose-600 font-black">{{ formatCurrencyIndo(item.price) }}</span>
+                                <span class="text-green-800 font-black">{{ formatCurrencyIndo(item.price) }}</span>
                             </div>
                         </div>
 
@@ -102,8 +102,7 @@ const confirmClearCart = () => {
                 <!-- Order Summary -->
                 <div class="lg:w-1/3">
 
-                    <div
-                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+                    <div v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="sticky top-32 p-5 bg-green-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 text-black">
                         <h2 class="text-2xl font-black tracking-tight mb-8">Order Summary</h2>
 
@@ -122,7 +121,7 @@ const confirmClearCart = () => {
                             <div class="pt-8 mt-8 border-t border-gray-100 flex justify-between items-baseline">
                                 <span class="text-sm font-black  tracking-[0.2em]">Total</span>
                                 <div class="text-right">
-                                    <span class="text-3xl font-black tracking-tighter text-rose-500">
+                                    <span class="text-3xl font-black tracking-tighter text-green-800">
                                         {{ formatCurrencyIndo(cartStore.totalPrice) }}
                                     </span>
                                 </div>
@@ -145,18 +144,37 @@ const confirmClearCart = () => {
             </div>
 
             <!-- Empty Cart State -->
-            <div v-else
-                class="flex flex-col items-center justify-center py-32 bg-gray-50 dark:bg-gray-900/50 rounded-[3rem] border border-dashed border-gray-200 dark:border-gray-800">
+            <div v-else class="relative overflow-hidden">
                 <div
-                    class="w-32 h-32 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-8 shadow-xl">
-                    <i class="pi pi-shopping-bag text-5xl text-gray-200"></i>
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-96 bg-indigo-50/50 dark:bg-indigo-900/10 blur-[100px] rounded-full">
                 </div>
-                <h2 class="text-3xl font-black text-gray-900 dark:text-white mb-4  tracking-tighter">Your cart
-                    is empty
-                </h2>
-                <Link :href="route('product.index')"
-                    class="bg-gray-900 text-white px-12 py-5 rounded-2xl font-black text-xs  tracking-[0.2em] hover:bg-black transition-all">
-                    Explore Products</Link>
+
+                <div
+                    class="relative flex flex-col items-center justify-center py-10 bg-white dark:bg-gray-900/40 rounded-[3rem] border border-gray-100 dark:border-gray-800 shadow-sm">
+
+                    <div class="relative mb-10 animate-bounce duration-[3000ms]">
+                        <div
+                            class="w-40 h-40 bg-gradient-to-tr from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center shadow-2xl shadow-gray-200/50 dark:shadow-none border border-white dark:border-gray-700">
+                            <i class="pi pi-shopping-cart !text-6xl text-indigo-500/30"></i>
+                        </div>
+                    </div>
+
+                    <div class="text-center max-w-sm px-6">
+                        <h2 class="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tighter">
+                            Keranjang Kosong
+                        </h2>
+                        <p class="text-gray-500 dark:text-gray-400 font-medium leading-relaxed mb-10">
+                            Sepertinya Anda belum memilih seragam atau kebutuhan santri lainnya. Mari mulai belanja
+                            sekarang!
+                        </p>
+                    </div>
+
+                    <Link :href="route('product.index')"
+                        class="group relative inline-flex items-center gap-3 bg-green-600 text-white px-10 py-5 rounded-2xl font-black text-xs tracking-[0.2em] uppercase transition-all hover:scale-105 active:scale-95 shadow-xl shadow-gray-200 dark:shadow-indigo-900/20">
+                        <i class="pi pi-arrow-left text-[10px] transition-transform group-hover:-translate-x-1"></i>
+                        Jelajahi Produk
+                    </Link>
+                </div>
             </div>
         </div>
     </FrontLayout>

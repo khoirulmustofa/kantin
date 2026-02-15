@@ -103,12 +103,17 @@ const menus = ref([
             <div class="container mx-auto flex justify-between items-center py-2 px-4 lg:px-0">
                 <Link href="/" class="flex items-center">
                     <div>
-                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="h-14 w-auto mr-4">
+
+                        <img v-if="$page.props.settings?.site_logo" :src="`/storage/${$page.props.settings?.site_logo}`"
+                            alt="Logo" class="h-14 w-auto mr-4">
+                        <span v-else class="text-2xl font-bold text-blue-800">{{ $page.props.settings?.site_name ?? "Title"
+                            }}</span>   
                     </div>
                 </Link>
 
                 <div class="flex lg:hidden">
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="text-blue-700 font-bold focus:outline-none">
+                    <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+                        class="text-blue-700 font-bold focus:outline-none">
                         <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -134,7 +139,7 @@ const menus = ref([
                 </nav>
 
                 <div class="hidden lg:flex items-center space-x-4 relative">
-                    
+
                     <template v-if="$page.props.auth.user">
                         <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
                             <div
@@ -144,6 +149,19 @@ const menus = ref([
                             <span
                                 class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
                                 {{ $page.props.auth.user.name }}
+                            </span>
+                        </Link>
+                    </template>
+                    <template v-else>
+                        <Link :href="route('login')"
+                            class="flex items-center border border-primary/20 rounded-full px-4 py-2 bg-primary/10 space-x-2 group cursor-pointer">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
+                                <i class="pi pi-user text-xs"></i>
+                            </div>
+                            <span
+                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
+                                Login
                             </span>
                         </Link>
                     </template>
@@ -180,7 +198,7 @@ const menus = ref([
                                                 {{ item.name }}</p>
                                             <div class="flex items-center gap-2">
                                                 <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="w-1 h-1 rounded-full bg-gray-200"></span>
                                                 <span class="text-xs font-black text-green-600">{{
                                                     formatCurrencyIndo(item.price) }}</span>
@@ -201,8 +219,8 @@ const menus = ref([
                                             formatCurrencyIndo(cartStore.totalPrice) }}</span>
                                     </div>
                                     <Link :href="route('cart.index')"
-                                        class="block text-center bg-gray-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black hover:shadow-xl hover:shadow-gray-200 transition-all active:scale-95">
-                                        Go to Checkout</Link>
+                                        class="block text-center bg-primary text-white py-4 rounded-2xl font-black !text-sm uppercase tracking-widest hover:bg-black hover:shadow-xl hover:shadow-gray-200 transition-all active:scale-95">
+                                        Go to Cart</Link>
                                 </div>
                             </div>
 
@@ -223,22 +241,34 @@ const menus = ref([
                     <ul class="w-full text-center">
                         <li v-for="menu in menus" :key="menu.href">
                             <Link :href="menu.href" class="hover:text-secondary font-bold block py-2">{{ menu.label
-                            }}</Link>
+                                }}</Link>
                         </li>
-
-
                     </ul>
 
-                    <
-                    <template v-if="$page.props.auth.user">
-                        <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
+
+                    <template v-if="page.props.auth.user">
+                        <Link href="/admin/dashboard"
+                            class="flex items-center border border-white rounded-full px-4 py-2 !bg-green-600 text-white space-x-2 group cursor-pointer !hover:bg-green-900 transition-colors">
                             <div
                                 class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
                                 <i class="pi pi-user text-xs"></i>
                             </div>
                             <span
-                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
-                                {{ $page.props.auth.user.name }}
+                                class="font-bold text-sm text-white dark:text-gray-200 group-hover:text-primary transition-colors">
+                                {{ page.props.auth.user.name }}
+                            </span>
+                        </Link>
+                    </template>
+                    <template v-else>
+                        <Link href="/login"
+                            class="flex items-center border border-white rounded-full px-4 py-2 !bg-green-600 text-white space-x-2 group cursor-pointer !hover:bg-green-900 transition-colors">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
+                                <i class="pi pi-user text-xs"></i>
+                            </div>
+                            <span
+                                class="font-bold text-white dark:text-gray-200 group-hover:text-primary transition-colors">
+                                Login
                             </span>
                         </Link>
                     </template>
@@ -248,13 +278,16 @@ const menus = ref([
 
         <slot />
 
-        <footer v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }" 
-        class="bg-white border-t border-gray-200 pt-20">
+        <footer
+            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
+            class="bg-white border-t border-gray-200 pt-20">
             <div class="container mx-auto px-4 py-12">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     <div class="lg:col-span-2">
-                        <img :src="`/storage/${$page.props.settings.site_logo}`" alt="Logo" class="h-14 w-auto mb-6">
-                        <p class="text-gray-500 max-w-sm mb-4">{{ $page.props.settings.site_description }}</p>
+                        <img v-if="$page.props.settings?.site_logo" :src="`/storage/${$page.props.settings?.site_logo}`" alt="Logo" class="h-14 w-auto mb-6">
+                        <span v-else class="text-2xl font-bold text-blue-800">{{ $page.props.settings?.site_name ?? "Title"
+                            }}</span>
+                        <p class="text-gray-500 max-w-sm mb-4">{{ $page.props.settings?.site_description }}</p>
                         <div class="flex space-x-4">
                             <a href="#" class="h-8 w-8 transition hover:scale-110"><img
                                     src="/assets/images/social_icons/facebook.svg" alt="FB"></a>
@@ -320,6 +353,21 @@ const menus = ref([
                 </div>
             </div>
         </footer>
+
+        <!-- Floating Mobile Cart Icon -->
+        <Link :href="route('cart.index')" class="lg:hidden fixed top-1/2 right-1 -translate-y-1/2 z-[100] group"
+            v-if="cartStore.totalItems > 0">
+            <div
+                class="relative bg-white/80 backdrop-blur-xl border-y border-l !border-blue-100 !shadow-2xl rounded-l-[30px] p-4 flex items-center justify-center hover:bg-white transition-all active:scale-95 group-hover:pr-6">
+                <div class="relative">
+                    <i class="pi pi-shopping-cart !text-3xl !text-blue-700 animate-pulse"></i>
+                    <span v-if="cartStore.totalItems > 0"
+                        class="absolute -top-3 -right-3 bg-yellow-400 text-black text-[12px] font-black px-2 py-0.5 rounded-full border-2 border-white shadow-md">
+                        {{ cartStore.totalItems }}
+                    </span>
+                </div>
+            </div>
+        </Link>
     </div>
 </template>
 

@@ -3,6 +3,7 @@ import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
+import { useConfirm } from "primevue/useconfirm";
 
 const props = defineProps({
     menu: String,
@@ -11,6 +12,7 @@ const props = defineProps({
 });
 
 const cartStore = useCartStore();
+const confirm = useConfirm();
 
 const form = useForm({
     username: '', // WhatsApp number
@@ -24,12 +26,28 @@ const form = useForm({
 });
 
 const submitCheckout = () => {
-    form.post(route('checkout.store'), {
-        onSuccess: () => {
-            cartStore.clearCart();
+    confirm.require({
+        message: 'Are you sure you want to place this order?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
         },
-        onError: (errors) => {
-            console.error(errors);
+        acceptProps: {
+            label: 'Yes, Place Order',
+            severity: 'success',
+        },
+        accept: () => {
+            form.post(route('checkout.store'), {
+                onSuccess: () => {
+                    cartStore.clearCart();
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                }
+            });
         }
     });
 };
@@ -136,7 +154,7 @@ const submitCheckout = () => {
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-sm font-black text-gray-900">{{ formatCurrencyIndo(item.price *
+                                <span class=" font-black text-gray-900">{{ formatCurrencyIndo(item.price *
                                     item.quantity) }}</span>
                             </div>
                         </div>
@@ -171,8 +189,9 @@ const submitCheckout = () => {
                         </div>
 
                         <Button @click="submitCheckout" :loading="form.processing"
-                            class="block w-full text-center bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-rose-600 hover:-translate-y-1 transition-all active:scale-95"
-                            label="Complete Purchase" />
+                            class="!block !w-full !text-center !bg-green-600 !text-white !py-4 !rounded-2xl !font-bold !shadow-lg !shadow-gray-200 hover:!bg-rose-600 hover:!border-rose-600 hover:!text-white hover:!-translate-y-1 !transition-all active:scale-95">
+                            Complete Purchase
+                        </Button>
 
                         <p class="text-[10px] text-center mt-6 text-white/40 font-bold  tracking-widest">Secure
                             encrypted

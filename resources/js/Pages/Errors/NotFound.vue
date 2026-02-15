@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -49,6 +49,8 @@ const goBack = () => {
 </script>
 
 <template>
+
+    <Head :title="errorTitle" />
     <div
         class="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 flex items-center justify-center px-4 sm:px-6 relative overflow-hidden">
         <!-- Animated Background Elements -->

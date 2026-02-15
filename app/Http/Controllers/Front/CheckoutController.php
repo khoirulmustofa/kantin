@@ -53,7 +53,7 @@ class CheckoutController extends Controller
                 $user = User::create([
                     'name' => $validated['name'],
                     'username' => $validated['username'],
-                    'email' => $validated['username'] . '@wa.com', // Dummy email if needed
+                    'email' => $validated['username'] . '@koperasi.com', // Dummy email if needed
                     'password' => Hash::make($validated['username']), // Default password
                     'role' => 'user',
                 ]);
@@ -95,7 +95,7 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('home')->with('success', 'Order #' . $orderNumber . ' placed successfully!');
+            return redirect()->route('order.show', $order->id)->with('success', 'Order #' . $orderNumber . ' placed successfully!');
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());

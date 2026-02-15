@@ -97,7 +97,7 @@ class ProductSeeder extends Seeder
         ];
 
         $catSmpPutra = \App\Models\ProductCategory::where('slug', 'seragam-smp-putra')->first()->id;
-        $catSmpPutri = \App\Models\ProductCategory::where('slug', 'seragam-smp-putri')->first()->id;       
+        $catSmpPutri = \App\Models\ProductCategory::where('slug', 'seragam-smp-putri')->first()->id;
         $catPerlengkapanSeragam = \App\Models\ProductCategory::where('slug', 'perlengkapan-seragam')->first()->id;
 
         foreach ($products as $item) {
@@ -106,7 +106,7 @@ class ProductSeeder extends Seeder
             // 2. Logika Penentuan Kategori Otomatis
             if (\Illuminate\Support\Str::contains($name, ['Putra'])) {
                 $categoryId = $catSmpPutra;
-            } elseif (\Illuminate\Support\Str::contains($name, ['Putri','Rok','Jilbab'])) {
+            } elseif (\Illuminate\Support\Str::contains($name, ['Putri', 'Rok', 'Jilbab'])) {
                 $categoryId = $catSmpPutri;
             } elseif (\Illuminate\Support\Str::contains($name, ['Topi', 'Dasi'])) {
                 $categoryId = $catPerlengkapanSeragam;
@@ -115,7 +115,7 @@ class ProductSeeder extends Seeder
             // 3. Simpan ke Database
             \App\Models\Product::create([
                 'name'                => $name,
-                'slug'                => \Illuminate\Support\Str::slug($name),
+                'slug'                => $this->slugName($name),
                 'description'         => 'Keterangan ' . $name,
                 'cost_price'          => $item['price'] * 0.7,
                 'selling_price'       => $item['price'],
@@ -124,5 +124,22 @@ class ProductSeeder extends Seeder
                 'product_category_id' => $categoryId,
             ]);
         }
+    }
+
+    private function slugName($name)
+    {
+        $slugBase = \Illuminate\Support\Str::slug($name);
+
+        // Coba buat slug unik
+        do {
+            // Generate 5 digit acak angka dan huruf kecil
+            $randomCode = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5));
+            $finalSlug = $slugBase . '-' . $randomCode;
+
+            // Cek apakah slug ini sudah ada di tabel products
+            $exists = \App\Models\Product::where('slug', $finalSlug)->exists();
+        } while ($exists); // Jika ada yang sama, ulangi generate
+
+        return $finalSlug;
     }
 }

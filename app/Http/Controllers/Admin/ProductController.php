@@ -88,7 +88,7 @@ class ProductController extends Controller
         try {
             $product = Product::create([
                 'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
+                'slug' => $this->slugName($validated['name']),
                 'description' => $validated['description'] ?? '',
                 'cost_price' => $validated['cost_price'],
                 'selling_price' => $validated['selling_price'],
@@ -129,9 +129,13 @@ class ProductController extends Controller
         ]);
 
         try {
+            $oldName = $product->name;
+            $newName = $validated['name'];
             $product->update([
-                'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
+                'name' => $newName,
+                'slug' => ($newName !== $oldName)
+                    ? $this->slugName($newName)
+                    : $product->slug,
                 'description' => $validated['description'] ?? '',
                 'cost_price' => $validated['cost_price'],
                 'selling_price' => $validated['selling_price'],
@@ -205,7 +209,7 @@ class ProductController extends Controller
 
             $newProduct = $product->replicate();
             $newProduct->name = $newName;
-            $newProduct->slug = \Illuminate\Support\Str::slug($newName);
+            $newProduct->slug = $this->slugName($newName);
             $newProduct->save();
 
             // Duplicate images
@@ -229,5 +233,22 @@ class ProductController extends Controller
             \Illuminate\Support\Facades\DB::rollBack();
             return redirect()->back()->with('error', 'Failed to duplicate product: ' . $th->getMessage());
         }
+    }
+
+    private function slugName($name)
+    {
+        $slugBase = \Illuminate\Support\Str::slug($name);
+
+        // Coba buat slug unik
+        do {
+            // Generate 5 digit acak angka dan huruf kecil
+            $randomCode = \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5));
+            $finalSlug = $slugBase . '-' . $randomCode;
+
+            // Cek apakah slug ini sudah ada di tabel products
+            $exists = \App\Models\Product::where('slug', $finalSlug)->exists();
+        } while ($exists); // Jika ada yang sama, ulangi generate
+
+        return $finalSlug;
     }
 }

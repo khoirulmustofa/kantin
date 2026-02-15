@@ -75,6 +75,18 @@ const updateSliderImages = () => {
     }
 };
 
+const whatsappUrl = computed(() => {
+    const phone = page.props.settings?.whatsapp_number || '';
+    const name = page.props.settings?.site_name || 'Admin';
+    
+    // Gunakan \n untuk enter
+    const message = encodeURIComponent(
+        `Assalamualaikum ${name},\n\nSaya ingin menawarkan kerja sama sebagai vendor/supplier.`
+    );
+    
+    return `https://wa.me/${phone}?text=${message}`;
+});
+
 
 </script>
 
@@ -238,25 +250,34 @@ const updateSliderImages = () => {
         </section>
 
         <!-- Subscribe section -->
-        <section id="subscribe"
+        <section id="cooperation"
             v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-            class="py-6 lg:py-24 bg-white border-t border-gray-line">
-            <div class="container mx-auto">
-                <div class="flex flex-col items-center rounded-lg p-4 sm:p-0 ">
-                    <div class="mb-8">
-                        <h2 class="text-center text-xl font-bold sm:text-2xl lg:text-left lg:text-3xl">Join our
-                            newsletter
-                            and <span class="text-primary">get $50 discount</span> for your first order
+            class="py-12 lg:py-24 bg-white border-t border-gray-100">
+            <div class="container mx-auto px-4">
+                <div
+                    class="flex flex-col items-center bg-indigo-50/50 dark:bg-gray-900/40 rounded-[3rem] p-8 md:p-16 border border-indigo-50">
+
+                    <div class="mb-10 max-w-2xl">
+                        <h2 class="text-center text-2xl md:text-3xl font-black text-gray-900 tracking-tighter mb-4">
+                            Jalin Kerja Sama <span class="text-primary">Saling Menguntungkan</span>
                         </h2>
+                        <p class="text-center text-gray-600 leading-relaxed">
+                            Kami membuka peluang bagi para vendor, supplier, atau pelaku UMKM untuk berkolaborasi
+                            bersama
+                            <strong>{{ $page.props.settings?.site_name || 'Koperasi NFBS Bogor' }}</strong>.
+                        </p>
                     </div>
-                    <div class="flex flex-col items-center w-96 ">
-                        <form class="flex w-full gap-2">
-                            <input placeholder="Enter your email address"
-                                class="w-full flex-1 rounded-full px-3 py-2 border border-gray-300 text-gray-700 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary" />
-                            <button
-                                class="bg-primary border border-primary hover:bg-transparent hover:border-primary text-white hover:text-primary font-semibold py-2 px-4 rounded-full">Subscribe</button>
-                        </form>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <a :href="whatsappUrl"
+                            target="_blank"
+                            class="group flex items-center gap-3 bg-green-500 border-2 border-green-500 hover:bg-green-600 hover:border-green-600 text-white font-black py-4 px-8 rounded-full transition-all shadow-xl shadow-green-200">
+                            <i class="pi pi-whatsapp text-2xl"></i>
+                            <span class="text-lg">Hubungi via WhatsApp</span>
+                            <i class="pi pi-arrow-right transition-transform group-hover:translate-x-2"></i>
+                        </a>
                     </div>
+
                 </div>
             </div>
         </section>

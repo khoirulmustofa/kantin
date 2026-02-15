@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -20,16 +21,22 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Errors/NotFound', [
-            'status' => 404,
-            'message' => 'Sorry, the register function is not yet open to the public.'
+
+        $settings = Cache::get('app_settings');
+        
+        if($settings['register_open'] == 0){
+            return Inertia::render('Errors/NotFound', [
+                'menu' => 'register',
+                'title' => 'Register',
+                'status' => 404,
+                'message' => 'Sorry, the register function is not yet open to the public.'
+            ]);
+        }
+        
+        return Inertia::render('Auth/Register', [
+            'menu' => 'register',
+            'title' => 'Register',
         ]);
-
-
-        // return Inertia::render('Auth/Register', [
-        //     'menu' => 'register',
-        //     'title' => 'Register'
-        // ]);
     }
 
     /**

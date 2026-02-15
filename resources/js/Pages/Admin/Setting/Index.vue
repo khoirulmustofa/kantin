@@ -37,7 +37,7 @@ const form = useForm({
     currency: settings.value.currency || 'IDR',
     min_order: settings.value.min_order || '0',
     store_open: settings.value.store_open === '1',
-    maintenance_mode: settings.value.maintenance_mode === '1',
+    register_open: settings.value.register_open === '1',
     front_heading: settings.value.front_heading || '',
     front_sub_heading: settings.value.front_sub_heading || '',
     front_slider: settings.value.front_slider || [], // For new uploads
@@ -91,7 +91,7 @@ const fetchSettings = async () => {
             form.currency = settings.value.currency || 'IDR';
             form.min_order = settings.value.min_order || '0';
             form.store_open = settings.value.store_open === '1';
-            form.maintenance_mode = settings.value.maintenance_mode === '1';
+            form.register_open = settings.value.register_open === '1';
             form.front_heading = settings.value.front_heading || '';
             form.front_sub_heading = settings.value.front_sub_heading || '';
         }
@@ -151,7 +151,7 @@ const submit = () => {
     const data = {
         ...form.data(),
         store_open: form.store_open ? '1' : '0',
-        maintenance_mode: form.maintenance_mode ? '1' : '0',
+        register_open: form.register_open ? '1' : '0',
     };
 
     form.post(route('admin.settings.update'), {

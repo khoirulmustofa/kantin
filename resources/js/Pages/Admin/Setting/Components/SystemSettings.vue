@@ -24,18 +24,19 @@ defineProps({
                     <div class="flex items-center gap-4">
                         <div
                             class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 rounded-xl flex items-center justify-center text-rose-600">
-                            <i class="pi pi-lock"></i>
+                            <i class="pi pi-user-plus"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-black text-gray-900 dark:text-white">Maintenance
-                                Mode</h4>
-                            <p class="text-[10px] text-gray-500 font-medium">Show maintenance page
+                            <h4 class="text-sm font-black text-gray-900 dark:text-white">Register</h4>
+                            <p class="text-[10px] text-gray-500 font-medium">Show register page
                                 to visitors</p>
                         </div>
                     </div>
-                    <ToggleSwitch v-model="form.maintenance_mode" severity="danger" />
+                    <ToggleSwitch v-model="form.register_open" severity="danger" />
                 </div>
             </div>
+
+
         </div>
     </div>
 </template>

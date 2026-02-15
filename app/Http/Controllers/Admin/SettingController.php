@@ -86,6 +86,13 @@ class SettingController extends Controller
                 }
             }
 
+            // delete untuk untuk key yang tidak ada di request
+            $keys = array_keys($data);
+            $settings = \App\Models\Setting::whereNotIn('key', $keys)->get();
+            foreach ($settings as $setting) {
+                $setting->delete();
+            }
+
             Cache::forget('app_settings');
 
             return redirect()->back()->with('success', 'Settings updated successfully');

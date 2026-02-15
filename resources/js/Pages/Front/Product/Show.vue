@@ -7,10 +7,6 @@ import { useCartStore } from '@/Stores/cart';
 
 const cartStore = useCartStore();
 
-// PrimeVue Components
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import InputNumber from 'primevue/inputnumber';
 
 const props = defineProps({
     product: Object,
@@ -20,10 +16,10 @@ const props = defineProps({
 });
 
 const quantity = ref(1);
-const activeImage = ref(props.product.images.length > 0 ? props.product.images[0].image : null);
+const activeImage = ref(props.product.images?.length > 0 ? props.product.images[0].image : null);
 
 const selectImage = (img) => {
-    activeImage.value = img;
+    if (img) activeImage.value = img;
 };
 
 </script>
@@ -33,7 +29,8 @@ const selectImage = (img) => {
     <Head :title="props.title" />
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }">
             <!-- Breadcrumbs -->
             <nav class="flex mb-8 font-black text-gray-400">
                 <Link :href="route('home')" class="hover:text-green-600 transition-colors">Home</Link>
@@ -50,7 +47,7 @@ const selectImage = (img) => {
                         class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-gray-100 border border-gray-100 dark:border-gray-800 shadow-2xl shadow-gray-200/50">
                         <img v-if="activeImage" :src="`/storage/${activeImage}`" :alt="product.name"
                             class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
-                        <img v-else src="\assets\images\placeholder.webp" :alt="product.name"
+                        <img v-else src="/assets/images/placeholder.webp" :alt="product.name"
                             class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
                     </div>
 
@@ -58,7 +55,8 @@ const selectImage = (img) => {
                         <button v-for="(img, idx) in product.images" :key="idx" @click="selectImage(img.image)"
                             class="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-300"
                             :class="activeImage === img.image ? 'border-green-600 ring-4 ring-green-50' : 'border-transparent hover:border-gray-200'">
-                            <img :src="`/storage/${img.image}`" class="w-full h-full object-cover" />
+                            <img v-if="img.image" :src="`/storage/${img.image}`" class="w-full h-full object-cover" />
+                            <img v-else src="/assets/images/placeholder.webp" class="w-full h-full object-cover" />
                         </button>
                     </div>
                 </div>
@@ -74,11 +72,6 @@ const selectImage = (img) => {
                         <div class="flex items-center gap-4 mb-8">
                             <span class="text-4xl font-black text-green-600 tracking-tighter">{{
                                 formatCurrencyIndo(product.selling_price) }}</span>
-                            <span class="text-lg text-gray-400 line-through font-bold opacity-50">{{
-                                formatCurrencyIndo(product.selling_price * 1.2) }}</span>
-                            <span
-                                class="bg-emerald-50 text-emerald-600 text-[10px] font-black px-2 py-1 rounded-lg uppercase">-20%
-                                OFF</span>
                         </div>
 
                         <div
@@ -103,7 +96,7 @@ const selectImage = (img) => {
                                 <span class="hidden sm:block font-black text-transparent mb-2">Spacer</span>
                                 <Button @click="cartStore.addItem(product, quantity)" label="Add to Cart"
                                     icon="pi pi-shopping-cart" size="large"
-                                    class="!w-full !rounded-2xl !bg-gray-900 !border-gray-900 hover:!bg-black !py-4 !font-black !text-sm !uppercase !tracking-widest shadow-2xl shadow-gray-900/20 transition-all duration-300 active:scale-95" />
+                                    class="!w-full !rounded-2xl !bg-green-600 !border-green-600 hover:!bg-green-700 !py-4 !font-black !text-sm !uppercase !tracking-widest shadow-2xl shadow-green-600/20 transition-all duration-300 active:scale-95" />
                             </div>
                         </div>
                     </div>
@@ -125,13 +118,14 @@ const selectImage = (img) => {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div v-for="rel in related_products" :key="rel.id"
+                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
                         class="group relative bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-2">
                         <Link :href="route('product.show', rel.slug)">
                             <div class="aspect-[4/5] overflow-hidden bg-gray-100 relative">
-                                <img v-if="rel.images.length > 0" :src="`/storage/${rel.images[0].image}`"
-                                    :alt="rel.name"
+                                <img v-if="rel.images?.length > 0 && rel.images[0]?.image"
+                                    :src="`/storage/${rel.images[0].image}`" :alt="rel.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <img v-else src="\assets\images\placeholder.webp" :alt="rel.name"
+                                <img v-else src="/assets/images/placeholder.webp" :alt="rel.name"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                 <div
                                     class="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
@@ -144,7 +138,7 @@ const selectImage = (img) => {
                                     class="text-sm font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight truncate">
                                     {{ rel.name }}</h3>
                                 <span class="text-lg font-black text-green-600">{{ formatCurrencyIndo(rel.selling_price)
-                                }}</span>
+                                    }}</span>
                             </div>
                         </Link>
                     </div>
