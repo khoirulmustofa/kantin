@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
@@ -44,46 +44,35 @@ const cartStore = useCartStore();
 
 // State untuk UI
 const isMobileMenuOpen = ref(false);
-const isSearchOpen = ref(false);
-
-// State untuk Dropdown Desktop
-const activeDropdown = ref(null); // 'men', 'women', atau null
-
-// State untuk Dropdown Mobile
-const mobileMenOpen = ref(false);
-const mobileWomenOpen = ref(false);
-
-// Fungsi Helper
-const closeAll = () => {
-    isMobileMenuOpen.value = false;
-    activeDropdown.value = null;
-    isSearchOpen.value = false;
-};
 
 const menuActive = defineModel('menuActive');
 const title = defineModel('title');
 
 
 onUnmounted(() => {
-
     window.removeEventListener('scroll', handleScroll);
 });
 
-const menus = ref([
+const menus = computed(() => [
     {
         label: 'Home',
         href: '/',
+        icon: 'pi pi-home',
         active: menuActive.value === 'home'
     },
     {
         label: 'Product',
         href: '/product',
+        icon: 'pi pi-th-large',
         active: menuActive.value === 'products'
     },
     {
-        label: 'Checkout',
-        href: '/checkout',
-        active: menuActive.value === 'checkout'
+        label: 'Cart',
+        href: '/cart',
+        icon: 'pi pi-shopping-cart',
+        active: menuActive.value === 'cart',
+        // badge tetap reaktif karena cartStore ada di dalam computed
+        badge: cartStore.totalItems
     }
 ]);
 
@@ -91,341 +80,95 @@ const menus = ref([
 </script>
 
 <template>
-    <Toast />
+    <Toast position="top-center" />
     <ConfirmDialog></ConfirmDialog>
-    <div class="min-h-screen flex flex-col font-sans text-gray-900">
-        <header :class="[
-            'sticky top-0 z-50 transition-all',
-            isScrolled
-                ? 'bg-gray-100/50 backdrop-blur-xl border-b border-white/10 py-2 shadow-lg rounded-b-[50px]'
-                : 'bg-gray-100 py-2'
-        ]">
-            <div class="container mx-auto flex justify-between items-center py-2 px-4 lg:px-0">
-                <Link href="/" class="flex items-center">
-                    <div>
 
+    <!-- Main App Container -->
+    <div class="min-h-screen bg-gray-100 flex justify-center font-sans text-gray-900">
+
+        <!-- Mobile Width Wrapper -->
+        <div class="w-full max-w-md bg-white min-h-screen shadow-2xl relative flex flex-col">
+
+            <!-- Sticky Header -->
+            <header :class="[
+                'sticky top-0 z-50 transition-all duration-300',
+                isScrolled ? 'bg-white/40 backdrop-blur-sm shadow-sm border-b border-gray-100 rounded-b-2xl' : 'bg-white'
+            ]">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <!-- Logo / Brand -->
+                    <Link href="/" class="flex items-center gap-2">
                         <img v-if="$page.props.settings?.site_logo" :src="`/storage/${$page.props.settings?.site_logo}`"
-                            alt="Logo" class="h-14 w-auto mr-4">
-                        <span v-else class="text-2xl font-bold text-blue-800">{{ $page.props.settings?.site_name ?? "Title"
-                            }}</span>   
+                            alt="Logo" class="h-8 w-auto">
+                        <span v-else class="text-xl font-black text-blue-600 tracking-tight">
+                            {{ $page.props.settings?.site_name ?? "Kantin" }}
+                        </span>
+                    </Link>
+
+                    <!-- Header Actions -->
+                    <div class="flex items-center gap-3">
+                        <Link v-if="$page.props.auth.user" href="/admin/dashboard"
+                            class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100">
+                            {{ $page.props.auth.user.name.charAt(0) }}
+                        </Link>
+                        <Link v-else :href="route('login')"
+                            class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-full shadow-lg shadow-blue-200">
+                            Login
+                        </Link>
+
                     </div>
-                </Link>
-
-                <div class="flex lg:hidden">
-                    <button @click="isMobileMenuOpen = !isMobileMenuOpen"
-                        class="text-blue-700 font-bold focus:outline-none">
-                        <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                        <svg v-else class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
                 </div>
+            </header>
 
-                <nav class="hidden lg:flex md:flex-grow justify-center">
-                    <ul class="flex justify-center space-x-2 text-gray-900 p-1">
-                        <li v-for="menu in menus" :key="menu.href">
-                            <Link :href="menu.href"
-                                class="px-4 py-2 transition-all duration-300 font-semibold flex items-center"
-                                :class="menu.active ? 'text-blue-800 rounded-b-lg border-b-2 border-blue-800' : 'hover:text-lg text-gray-900/70 hover:text-blue-800'">
+            <!-- Main Content Area -->
+            <main class="flex-grow pb-24">
+                <slot />
+            </main>
+
+            <!-- Bottom Navigation Bar -->
+            <nav
+                class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-green-500 border-t-2 z-50 px-6 py-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.03)] rounded-t-[20px]">
+                <ul class="flex justify-between items-center">
+                    <li v-for="menu in menus" :key="menu.href">
+                        <Link :href="menu.label === 'Account' && $page.props.auth.user ? '/admin/dashboard' : menu.href"
+                            class="flex flex-col items-center gap-1 group relative p-2"
+                            :class="menu.active ? '!bg-green-100 !text-green-900 !rounded-2xl w-16 h-16' : ''">
+                            <div class="relative transition-all duration-300 transform group-active:scale-95"
+                                :class="menu.active ? '-translate-y-1' : ''">
+                                <i
+                                    :class="[menu.icon, 'text-2xl transition-colors duration-300', menu.active ? 'text-green-600' : 'text-gray-400 group-hover:text-blue-500']"></i>
+
+                                <!-- Badge for Cart -->
+                                <span v-if="menu.label === 'Cart' && cartStore.totalItems > 0"
+                                    class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border border-white">
+                                    {{ cartStore.totalItems }}
+                                </span>
+                            </div>
+
+                            <span class="text-[11px] font-bold tracking-wide transition-colors duration-300"
+                                :class="menu.active ? 'text-green-600' : 'text-gray-400 group-hover:text-blue-500'">
                                 {{ menu.label }}
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-
-                <div class="hidden lg:flex items-center space-x-4 relative">
-
-                    <template v-if="$page.props.auth.user">
-                        <Link href="/admin/dashboard" class="flex items-center space-x-2 group cursor-pointer">
-                            <div
-                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
-                                <i class="pi pi-user text-xs"></i>
-                            </div>
-                            <span
-                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
-                                {{ $page.props.auth.user.name }}
                             </span>
+
+                            <!-- Active Indicator Dot -->
+                            <span v-if="menu.active" class="absolute -bottom-2 w-1 h-1 bg-blue-600 rounded-full"></span>
                         </Link>
-                    </template>
-                    <template v-else>
-                        <Link :href="route('login')"
-                            class="flex items-center border border-primary/20 rounded-full px-4 py-2 bg-primary/10 space-x-2 group cursor-pointer">
-                            <div
-                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
-                                <i class="pi pi-user text-xs"></i>
-                            </div>
-                            <span
-                                class="font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">
-                                Login
-                            </span>
-                        </Link>
-                    </template>
+                    </li>
+                </ul>
+            </nav>
 
-                    <div class="relative group">
-                        <Link :href="route('cart.index')" class="relative">
-                            <i class="pi pi-shopping-cart !animate-bounce !text-4xl !text-blue-700 !text-gray-700"></i>
-                            <span v-if="cartStore.totalItems > 0"
-                                class="absolute -top-2 -right-2 bg-yellow-300 text-black text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-yellow-500 shadow-lg">
-                                {{ cartStore.totalItems }}
-                            </span>
-                        </Link>
-                        <!-- Mini Cart Dropdown -->
-                        <div
-                            class="absolute right-0 mt-1 w-80 bg-white shadow-2xl p-6 rounded-3xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 text-black border-t-4 border-green-600 z-[60] translate-y-2 group-hover:translate-y-0">
-                            <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 px-1">My Cart
-                            </h3>
-
-                            <div v-if="cartStore.items.length > 0"
-                                class="space-y-6 max-h-96 overflow-y-auto pr-2 no-scrollbar">
-                                <div v-for="item in cartStore.items" :key="item.id"
-                                    class="flex items-center justify-between group/item">
-                                    <div class="flex items-center gap-4">
-                                        <div
-                                            class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-                                            <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
-                                                class="w-full h-full object-cover">
-                                            <img v-else src="\assets\images\placeholder.webp" :alt="item.name"
-                                                class="w-full h-full object-cover">
-                                        </div>
-                                        <div>
-                                            <p
-                                                class="font-black text-xs uppercase tracking-tight text-gray-900 line-clamp-1 mb-1">
-                                                {{ item.name }}</p>
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-[10px] font-bold text-gray-400">Qty: {{ item.quantity
-                                                    }}</span>
-                                                <span class="w-1 h-1 rounded-full bg-gray-200"></span>
-                                                <span class="text-xs font-black text-green-600">{{
-                                                    formatCurrencyIndo(item.price) }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button @click="cartStore.removeItem(item.id)"
-                                        class="text-gray-300 hover:text-green-600 transition-colors opacity-0 group-hover/item:opacity-100">
-                                        <i class="pi pi-times text-xs"></i>
-                                    </button>
-                                </div>
-
-                                <div class="pt-6 border-t border-gray-100">
-                                    <div class="flex items-center justify-between mb-6">
-                                        <span
-                                            class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total</span>
-                                        <span class="text-xl font-black text-gray-900 tracking-tighter">{{
-                                            formatCurrencyIndo(cartStore.totalPrice) }}</span>
-                                    </div>
-                                    <Link :href="route('cart.index')"
-                                        class="block text-center bg-primary text-white py-4 rounded-2xl font-black !text-sm uppercase tracking-widest hover:bg-black hover:shadow-xl hover:shadow-gray-200 transition-all active:scale-95">
-                                        Go to Cart</Link>
-                                </div>
-                            </div>
-
-                            <div v-else class="flex flex-col items-center justify-center py-10 opacity-50 italic">
-                                <i class="pi pi-shopping-cart text-4xl mb-4"></i>
-                                <p class="text-xs font-bold uppercase tracking-widest text-center">Cart is empty</p>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-
-            <transition name="mobile-slide">
-                <nav v-if="isMobileMenuOpen"
-                    class="mobile-menu flex flex-col items-center space-y-4 lg:hidden bg-blue-900/80 backdrop-blur-xl text-white p-6 pb-10">
-                    <ul class="w-full text-center">
-                        <li v-for="menu in menus" :key="menu.href">
-                            <Link :href="menu.href" class="hover:text-secondary font-bold block py-2">{{ menu.label
-                                }}</Link>
-                        </li>
-                    </ul>
-
-
-                    <template v-if="page.props.auth.user">
-                        <Link href="/admin/dashboard"
-                            class="flex items-center border border-white rounded-full px-4 py-2 !bg-green-600 text-white space-x-2 group cursor-pointer !hover:bg-green-900 transition-colors">
-                            <div
-                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
-                                <i class="pi pi-user text-xs"></i>
-                            </div>
-                            <span
-                                class="font-bold text-sm text-white dark:text-gray-200 group-hover:text-primary transition-colors">
-                                {{ page.props.auth.user.name }}
-                            </span>
-                        </Link>
-                    </template>
-                    <template v-else>
-                        <Link href="/login"
-                            class="flex items-center border border-white rounded-full px-4 py-2 !bg-green-600 text-white space-x-2 group cursor-pointer !hover:bg-green-900 transition-colors">
-                            <div
-                                class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
-                                <i class="pi pi-user text-xs"></i>
-                            </div>
-                            <span
-                                class="font-bold text-white dark:text-gray-200 group-hover:text-primary transition-colors">
-                                Login
-                            </span>
-                        </Link>
-                    </template>
-                </nav>
-            </transition>
-        </header>
-
-        <slot />
-
-        <footer
-            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-            class="bg-white border-t border-gray-200 pt-20">
-            <div class="container mx-auto px-4 py-12">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-                    <div class="lg:col-span-2">
-                        <img v-if="$page.props.settings?.site_logo" :src="`/storage/${$page.props.settings?.site_logo}`" alt="Logo" class="h-14 w-auto mb-6">
-                        <span v-else class="text-2xl font-bold text-blue-800">{{ $page.props.settings?.site_name ?? "Title"
-                            }}</span>
-                        <p class="text-gray-500 max-w-sm mb-4">{{ $page.props.settings?.site_description }}</p>
-                        <div class="flex space-x-4">
-                            <a href="#" class="h-8 w-8 transition hover:scale-110"><img
-                                    src="/assets/images/social_icons/facebook.svg" alt="FB"></a>
-                            <a href="#" class="h-8 w-8 transition hover:scale-110"><img
-                                    src="/assets/images/social_icons/instagram.svg" alt="IG"></a>
-                            <a href="#" class="h-8 w-8 transition hover:scale-110"><img
-                                    src="/assets/images/social_icons/twitter.svg" alt="TW"></a>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-4">Shop</h3>
-                        <ul class="text-gray-600 space-y-2">
-                            <li>
-                                <Link href="/shop" class="hover:text-amber-500">Men</Link>
-                            </li>
-                            <li>
-                                <Link href="/shop" class="hover:text-amber-500">Women</Link>
-                            </li>
-                            <li>
-                                <Link href="/shop" class="hover:text-amber-500">Accessories</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-4">Account</h3>
-                        <ul class="text-gray-600 space-y-2">
-                            <li>
-                                <Link href="/login" class="hover:text-amber-500">My Account</Link>
-                            </li>
-                            <li>
-                                <Link :href="route('cart.index')" class="hover:text-amber-500">Cart</Link>
-                            </li>
-                            <li>
-                                <Link href="/checkout" class="hover:text-amber-500">Checkout</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-4">Support</h3>
-                        <ul class="text-gray-600 space-y-2">
-                            <li>
-                                <Link href="/faq" class="hover:text-amber-500">FAQ</Link>
-                            </li>
-                            <li>
-                                <Link href="/privacy" class="hover:text-amber-500">Privacy Policy</Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" class="hover:text-amber-500">Contact Us</Link>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 py-6 border-t border-gray-100">
-                <div
-                    class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                    <p>&copy; {{ new Date().getFullYear() }} {{ $page.props.settings.site_name }}. All rights reserved.
-                    </p>
-                    <div class="flex space-x-4 mt-4 md:mt-0">
-
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-        <!-- Floating Mobile Cart Icon -->
-        <Link :href="route('cart.index')" class="lg:hidden fixed top-1/2 right-1 -translate-y-1/2 z-[100] group"
-            v-if="cartStore.totalItems > 0">
-            <div
-                class="relative bg-white/80 backdrop-blur-xl border-y border-l !border-blue-100 !shadow-2xl rounded-l-[30px] p-4 flex items-center justify-center hover:bg-white transition-all active:scale-95 group-hover:pr-6">
-                <div class="relative">
-                    <i class="pi pi-shopping-cart !text-3xl !text-blue-700 animate-pulse"></i>
-                    <span v-if="cartStore.totalItems > 0"
-                        class="absolute -top-3 -right-3 bg-yellow-400 text-black text-[12px] font-black px-2 py-0.5 rounded-full border-2 border-white shadow-md">
-                        {{ cartStore.totalItems }}
-                    </span>
-                </div>
-            </div>
-        </Link>
+        </div>
     </div>
 </template>
 
 <style scoped>
-/* Animasi Fade untuk Dropdown */
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.2s, transform 0.2s;
+/* Safe area for mobile devices with notches/home bars */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-    transform: translateY(10px);
-}
-
-/* Animasi Slide untuk Search */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-    transition: all 0.3s ease;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-    transform: translateY(-10px);
-    opacity: 0;
-}
-
-/* Animasi Slide Menu Mobile */
-.mobile-slide-enter-active,
-.mobile-slide-leave-active {
-    transition: max-height 0.4s ease-in-out, opacity 0.3s;
-    max-height: 600px;
-    overflow: hidden;
-}
-
-.mobile-slide-enter-from,
-.mobile-slide-leave-to {
-    max-height: 0;
-    opacity: 0;
-}
-
-/* Warna tambahan jika belum didefinisikan di Tailwind */
-.bg-gray-dark {
-    background-color: #1a1a1a;
-}
-
-.text-secondary {
-    color: #fbbf24;
-}
-
-/* Ganti dengan hex warna secondary Anda */
-.bg-primary {
-    background-color: #3b82f6;
-}
-
-/* Ganti dengan hex warna primary Anda */
-.border-primary {
-    border-color: #3b82f6;
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }
 </style>

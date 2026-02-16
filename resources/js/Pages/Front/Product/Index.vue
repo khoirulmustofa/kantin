@@ -37,6 +37,20 @@ const selectCategory = (slug) => {
     selectedCategory.value = selectedCategory.value === slug ? null : slug;
     filterProducts();
 };
+
+const catContainer = ref(null);
+
+const scrollCategories = (direction) => {
+    const container = catContainer.value;
+    // Jarak scroll disesuaikan dengan kebutuhan (misal 200px)
+    const scrollAmount = 200;
+
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+};
 </script>
 
 <template>
@@ -44,139 +58,153 @@ const selectCategory = (slug) => {
     <Head :title="props.title" />
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Sidebar -->
-                <aside class="w-full lg:w-64 flex-shrink-0">
-                    <div class="sticky top-24 space-y-8">
-                        <!-- Search -->
-                        <div>
-                            <h3 class="text-sm font-black  tracking-widest text-gray-900 dark:text-white mb-4">
-                                Cari Produk</h3>
-                            <IconField class="w-full">
-                                <InputIcon><i class="pi pi-search" /></InputIcon>
-                                <InputText v-model="search" placeholder="Cari nama produk...."
-                                    class="w-full !rounded-xl" />
-                            </IconField>
-                        </div>
 
-                        <!-- Categories -->
-                        <div>
-                            <h3 class="text-sm font-black  tracking-widest text-gray-900 dark:text-white mb-4">
-                                Kategori</h3>
-                            <div class="flex flex-col gap-2">
-                                <button v-for="cat in categories" :key="cat.id" @click="selectCategory(cat.slug)"
-                                    v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-t-12 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                                    class="group flex items-center justify-between p-3 rounded-xl border transition-all duration-300 text-left"
-                                    :class="selectedCategory === cat.slug
-                                        ? 'bg-green-600 border-green-600 text-white shadow-lg shadow-green-200'
-                                        : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-green-400'">
-                                    <span class="font-bold  tracking-wider">{{ cat.name }}</span>
-                                    <span class="text-sm px-2 py-0.5 rounded-full"
-                                        :class="selectedCategory === cat.slug ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700'">
-                                        {{ cat.products_count }}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
+        <!-- Sticky Search & Filter Header -->
+        <div class="sticky top-[60px] z-40 bg-white pb-2 shadow-sm">
+            <div class="px-4 py-3">
+                <IconField>
+                    <InputIcon class="pi pi-search text-gray-400" />
 
-                <!-- Product Grid -->
-                <main class="flex-1">
-                    <div class="flex items-center justify-between mb-8">
-                        <div class="flex flex-col">
-                            <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{{
-                                props.title }}</h1>
-                            <p class="text-xs text-gray-500 font-bold  tracking-widest">Menampilkan {{
-                                products.from || 0 }} - {{ products.to || 0 }} dari {{ products.total }} hasil</p>
-                        </div>
-                    </div>
+                    <InputText v-model="search" placeholder="Cari di Kantin..."
+                        class="w-full pl-10 pr-10 py-2 bg-gray-100 border-none rounded-2xl text-sm focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-400 font-medium" />
 
-                    <div v-if="products.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                        <div v-for="product in products.data" :key="product.id"
-                            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                            class="group relative bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-2">
-                            <!-- Image Area -->
-                            <div class="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                    <InputIcon v-if="search" @click="search = ''"
+                        class="pi pi-times-circle right-3 cursor-pointer text-gray-400 hover:text-red-500 transition-colors" />
+                </IconField>
+            </div>
+
+            <!-- Horizontal Category Filter -->
+            <div
+                class="relative group px-4 py-4 bg-gradient-to-r from-blue-50 via-green-50 to-white rounded-2xl border border-white/50 shadow-sm">
+
+                <Button icon="pi pi-chevron-left" rounded outlined severity="secondary"
+                    @click="scrollCategories('left')"
+                    class="!absolute left-2 top-1/2 -translate-y-1/2 !z-10 !w-8 !h-8 !bg-white/90 !border-gray-100 !shadow-md opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex" />
+
+                <div ref="catContainer"
+                    class="flex overflow-x-auto gap-2 no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing px-2">
+
+                    <Button label="Semua" rounded size="small" :variant="!selectedCategory ? 'primary' : 'outlined'"
+                        :severity="!selectedCategory ? 'success' : 'secondary'" @click="selectCategory(null)"
+                        class="whitespace-nowrap !text-[12px] !font-bold !px-5 !shrink-0"
+                        :class="{ 'shadow-md shadow-green-200': !selectedCategory }" />
+
+                    <Button v-for="cat in categories" :key="cat.id" :label="cat.name" rounded size="small"
+                        :variant="selectedCategory === cat.slug ? 'primary' : 'outlined'"
+                        :severity="selectedCategory === cat.slug ? 'success' : 'secondary'"
+                        @click="selectCategory(cat.slug)"
+                        class="whitespace-nowrap !text-[12px] !font-bold !px-5 !shrink-0"
+                        :class="{ 'shadow-md shadow-green-200': selectedCategory === cat.slug }" />
+                </div>
+
+                <Button icon="pi pi-chevron-right" rounded outlined severity="secondary"
+                    @click="scrollCategories('right')"
+                    class="!absolute right-2 top-1/2 -translate-y-1/2 !z-10 !w-8 !h-8 !bg-white/90 !border-gray-100 !shadow-md opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex" />
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="px-4 py-4 min-h-[60vh] bg-gradient-to-r from-green-50 via-gray-50 to-white  rounded-2xl">
+
+            <!-- Result Count (Optional) -->
+            <div class="mb-4 text-xs font-medium text-gray-500" v-if="search || selectedCategory">
+                Menampilkan {{ products.total }} produk
+            </div>
+
+            <!-- Product Grid -->
+            <div v-if="products.data.length > 0" class="grid grid-cols-2 gap-4">
+                <div v-for="product in products.data" :key="product.id">
+                    <Card
+                        class="h-full overflow-hidden border border-surface-100 shadow-sm hover:shadow-md transition-shadow group relative flex flex-col">
+                        <template #header>
+                            <Link :href="route('product.show', product.slug)"
+                                class="relative aspect-square block bg-surface-50">
                                 <img v-if="product.images.length > 0" :src="`/storage/${product.images[0].image}`"
                                     :alt="product.name"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <img v-else src="assets/images/placeholder.webp" :alt="product.name"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div class="absolute top-4 left-4">
-                                    <Tag v-if="product.category" :value="product.category.name" rounded
-                                        class="!bg-white/90 !text-gray-900 !text-[10px] font-black  tracking-widest backdrop-blur-sm px-3" />
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+
+                                <img v-else src="/assets/images/placeholder.webp"
+                                    class="w-full h-full object-cover grayscale opacity-50" />
+
+                                <Badge :value="product.category?.name" severity="success"
+                                    class="absolute top-2 right-2 !text-[10px] !px-2" />
+                            </Link>
+                        </template>
+
+                        <template #title>
+                            <Link :href="route('product.show', product.slug)">
+                                <h3 class="text-xs font-bold text-surface-900  leading-relaxed h-8 mb-0">
+                                    {{ product.name }}
+                                </h3>
+                            </Link>
+                        </template>
+
+                        <template #content>
+                            <div class="flex flex-col gap-1">
+                                <p class="text-sm font-black text-green-600">
+                                    {{ formatCurrencyIndo(product.selling_price) }}
+                                </p>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-surface-400 line-through">
+                                        {{ formatCurrencyIndo(product.selling_price * 1.1) }}
+                                    </span>
                                 </div>
-                                <div
-                                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                    <Button @click="cartStore.addItem(product)" label="Tambah ke Keranjang"
-                                        icon="pi pi-shopping-cart"
-                                        class="!rounded-full !bg-green-600 !border-green-600 !px-6 !font-black !text-xs ! shadow-xl" />
-                                </div>
-                            </div>
+                            </div>                           
+                        </template>
 
-                            <!-- Content Area -->
-                            <div class="p-6">
-                                <Link :href="route('product.show', product.slug)">
-                                    <h3
-                                        class="text-lg font-black text-gray-900 dark:text-white mb-1 group-hover:text-green-600 transition-colors  tracking-tight">
-                                        {{ product.name }}
-                                    </h3>
-                                </Link>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xl font-black text-green-600">{{
-                                        formatCurrencyIndo(product.selling_price)
-                                        }}</span>
-                                    <!-- Placeholder for original price if needed -->
-                                    <span class="text-xs text-gray-400 line-through font-bold">{{
-                                        formatCurrencyIndo(product.selling_price * 1.2) }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Empty State -->
-                    <div v-else
-                        class="flex flex-col items-center justify-center py-20 bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700">
-                        <div
-                            class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                            <i class="pi pi-search text-3xl text-gray-300"></i>
-                        </div>
-                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2  tracking-tighter">Produk Tidak
-                            Ditemukan.</h3>
-                        <p class="text-gray-500 text-sm italic">Coba sesuaikan filter atau istilah pencarian.</p>
-                        <Button label="Hapus Semua Filter" text severity="info"
-                            class="mt-4 font-black text-xs  underline"
-                            @click="search = ''; selectedCategory = null; filterProducts();" />
-                    </div>
-
-                    <!-- Pagination -->
-                    <div v-if="products.links.length > 3" class="mt-12 flex justify-center">
-                        <nav class="flex items-center gap-2 flex-wrap justify-center">
-                            <template v-for="(link, k) in products.links" :key="k">
-
-                                <Link v-if="link.url" :href="link.url"
-                                    class="flex items-center justify-center transition-all duration-300 border font-bold text-sm  tracking-tighter"
-                                    :class="[
-                                        // Jika label mengandung 'Next' atau 'Previous', buat padding lebih lebar (w-auto)
-                                        link.label.includes('Next') || link.label.includes('Previous') ? 'px-6 h-10 rounded-2xl' : 'w-10 h-10 rounded-xl',
-
-                                        link.active
-                                            ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30'
-                                            : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-white/5 text-gray-500 hover:border-green-400 hover:text-green-500'
-                                    ]" v-html="link.label" />
-
-                                <span v-else
-                                    class="flex items-center justify-center text-sm font-bold text-gray-300 select-none border border-transparent"
-                                    :class="link.label.includes('Next') || link.label.includes('Previous') ? 'px-6 h-10' : 'w-10 h-10'"
-                                    v-html="link.label" />
-
-                            </template>
-                        </nav>
-                    </div>
-                </main>
+                        <template #footer>
+                            <Button @click.prevent="cartStore.addItem(product)" :disabled="product.stock === 0"
+                                icon="pi pi-plus" label="Keranjang" outlined severity="success" fluid
+                                class="!py-1.5 !text-[12px] !font-bold" />
+                        </template>
+                    </Card>
+                </div>
             </div>
+
+
+
+            <!-- Empty State -->
+            <div v-else class="flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <i class="pi pi-search text-3xl text-gray-300"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-1">Produk tidak ditemukan</h3>
+                <p class="text-xs text-gray-500 max-w-[200px] mb-4">Coba kata kunci lain atau cek kategori yang berbeda.
+                </p>
+                <button @click="search = ''; selectedCategory = null; filterProducts();"
+                    class="px-4 py-2 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors">
+                    Reset Filter
+                </button>
+            </div>
+
+            <!-- Pagination -->
+            <div v-if="products.links.length > 3" class="mt-8 flex justify-center pb-8">
+                <nav class="flex items-center gap-1">
+                    <template v-for="(link, k) in products.links" :key="k">
+                        <Link v-if="link.url" :href="link.url"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all"
+                            :class="[
+                                link.active
+                                    ? 'bg-green-600 text-white shadow-md shadow-green-200'
+                                    : 'bg-white text-gray-500 border border-gray-100 hover:bg-gray-50'
+                            ]" v-html="link.label.replace('Previous', '&laquo;').replace('Next', '&raquo;')" />
+                        <span v-else class="w-8 h-8 flex items-center justify-center text-xs text-gray-300"
+                            v-html="link.label.replace('Previous', '&laquo;').replace('Next', '&raquo;')" />
+                    </template>
+                </nav>
+            </div>
+
         </div>
     </FrontLayout>
 </template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>

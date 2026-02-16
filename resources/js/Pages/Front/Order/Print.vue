@@ -1,11 +1,3 @@
-
-## Copy .env.kantin to /home/nfbsb/.env/.env.kantin
-```
-scp /home/nfbs/php/kantin2/.env.kantin root@192.168.100.125:/home/nfbsb/.env/.env.kantin
-
-```
-
-```
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -147,8 +139,7 @@ const whatsappUrl = computed(() => {
 <template>
 
     <Head :title="props.title" />
-
-    <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
+    
         <div class="bg-gray-50 min-h-screen py-12 font-sans">
             <div class="max-w-4xl mx-auto px-4">
                 <!-- Actions Bar -->
@@ -408,7 +399,6 @@ const whatsappUrl = computed(() => {
                 </div>
             </div>
         </div>
-    </FrontLayout>
 </template>
 
 <style scoped>
@@ -456,4 +446,3 @@ const whatsappUrl = computed(() => {
     }
 }
 </style>
-```

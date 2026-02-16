@@ -1,13 +1,17 @@
 <script setup>
 import FrontLayout from '@/Layouts/FrontLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link, usePage, router } from '@inertiajs/vue3';
+import { ref, onMounted, nextTick } from 'vue';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 import { useCartStore } from '@/Stores/cart';
 
+// Swiper
+import Swiper from 'swiper';
+import { Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 const cartStore = useCartStore();
-
-
 const props = defineProps({
     product: Object,
     related_products: Array,
@@ -16,12 +20,51 @@ const props = defineProps({
 });
 
 const quantity = ref(1);
-const activeImage = ref(props.product.images?.length > 0 ? props.product.images[0].image : null);
+const showFullDescription = ref(false);
 
-const selectImage = (img) => {
-    if (img) activeImage.value = img;
+onMounted(async () => {
+    await nextTick();
+    new Swiper('.product-slider', {
+        modules: [Pagination],
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+});
+
+const scrollContainer = ref(null);
+
+const scroll = (direction) => {
+    const container = scrollContainer.value;
+    const scrollAmount = 280; // Sesuaikan jarak scroll (misal 2 kartu)
+
+    if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
 };
 
+
+const responsiveOptions = ref([
+    {
+        breakpoint: '1024px',
+        numVisible: 3,
+        numScroll: 3
+    },
+    {
+        breakpoint: '768px',
+        numVisible: 2,
+        numScroll: 2
+    },
+    {
+        breakpoint: '576px',
+        numVisible: 1,
+        numScroll: 1
+    }
+]);
 </script>
 
 <template>
@@ -29,122 +72,132 @@ const selectImage = (img) => {
     <Head :title="props.title" />
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }">
-            <!-- Breadcrumbs -->
-            <nav class="flex mb-8 font-black text-gray-400">
-                <Link :href="route('home')" class="hover:text-green-600 transition-colors">Home</Link>
-                <span class="mx-2">/</span>
-                <Link :href="route('product.index')" class="hover:text-green-600 transition-colors">Products</Link>
-                <span class="mx-2">/</span>
-                <span class="text-gray-900 dark:text-white">{{ product.name }}</span>
-            </nav>
+        <div class="pb-24 bg-gray-100 min-h-screen">
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-                <!-- Product Gallery -->
-                <div class="space-y-4">
-                    <div
-                        class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-gray-100 border border-gray-100 dark:border-gray-800 shadow-2xl shadow-gray-200/50">
-                        <img v-if="activeImage" :src="`/storage/${activeImage}`" :alt="product.name"
-                            class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
-                        <img v-else src="/assets/images/placeholder.webp" :alt="product.name"
-                            class="w-full h-full object-cover transition-all duration-700 hover:scale-110" />
+            <!-- Image Slider -->
+            <div class="bg-white mb-2">
+                <div class="product-slider swiper w-full aspect-square md:aspect-video relative bg-white">
+                    <div class="swiper-wrapper">
+                        <!-- Main Image -->
+                        <div class="swiper-slide" v-if="product.images?.length > 0" v-for="(img, idx) in product.images"
+                            :key="idx">
+                            <img :src="`/storage/${img.image}`" class="w-full h-full object-contain"
+                                :alt="product.name">
+                        </div>
+                        <!-- Fallback -->
+                        <div class="swiper-slide" v-else>
+                            <img src="/assets/images/placeholder.webp" class="w-full h-full object-contain"
+                                :alt="product.name">
+                        </div>
                     </div>
+                    <div class="swiper-pagination !bottom-4"></div>
 
-                    <div v-if="product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-                        <button v-for="(img, idx) in product.images" :key="idx" @click="selectImage(img.image)"
-                            class="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-300"
-                            :class="activeImage === img.image ? 'border-green-600 ring-4 ring-green-50' : 'border-transparent hover:border-gray-200'">
-                            <img v-if="img.image" :src="`/storage/${img.image}`" class="w-full h-full object-cover" />
-                            <img v-else src="/assets/images/placeholder.webp" class="w-full h-full object-cover" />
-                        </button>
-                    </div>
+                    <!-- Back Button Overlay (Mobile) -->
+                    <Link :href="route('product.index')"
+                        class="absolute top-4 left-4 z-10 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white">
+                        <i class="pi pi-arrow-left"></i>
+                    </Link>
+                </div>
+            </div>
+
+
+
+            <!-- Main Info -->
+            <div class="bg-white p-4 mb-2">
+                <div class="flex items-baseline gap-2 mb-1">
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{
+                        formatCurrencyIndo(product.selling_price) }}</h1>
+                    <span class="text-xs text-gray-400 line-through">{{ formatCurrencyIndo(product.selling_price * 1.25)
+                        }}</span>
+                    <span class="text-xs text-red-500 font-bold bg-red-50 px-1 py-0.5 rounded">-20%</span>
                 </div>
 
-                <!-- Product Info -->
-                <div class="flex flex-col justify-center">
-                    <div class="mb-6">
-                        <Tag v-if="product.category" :value="product.category.name" rounded
-                            class="!bg-green-50 !text-green-600 !text-[10px] font-black uppercase tracking-widest px-4 mb-4" />
-                        <h1 class="text-5xl font-black text-gray-900 dark:text-white tracking-tighter mb-4 uppercase">
-                            {{ product.name }}
-                        </h1>
-                        <div class="flex items-center gap-4 mb-8">
-                            <span class="text-4xl font-black text-green-600 tracking-tighter">{{
-                                formatCurrencyIndo(product.selling_price) }}</span>
-                        </div>
+                <h2 class="text-sm font-medium text-gray-800 leading-snug mb-2">{{ product.name }}</h2>
 
-                        <div
-                            class="pgreen pgreen-green dark:pgreen-invert max-w-none text-gray-500 dark:text-gray-400 leading-relaxed mb-10 italic">
-                            {{ product.description || 'No description available for this masterpiece.' }}
-                        </div>
-                    </div>
 
-                    <div class="flex flex-col gap-8">
-                        <!-- Actions -->
-                        <div class="flex flex-col sm:flex-row items-center gap-4">
-                            <div class="w-full sm:w-auto">
-                                <span class="font-black text-gray-400 block mb-2 px-1">Quantity</span>
-                                <InputNumber v-model="quantity" showButtons buttonLayout="horizontal" :min="1"
-                                    :max="product.stock"
-                                    class="!w-full !rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700"
-                                    incrementButtonClass="!bg-gray-50 dark:!bg-gray-800 !text-gray-600 !border-none"
-                                    decrementButtonClass="!bg-gray-50 dark:!bg-gray-800 !text-gray-600 !border-none"
-                                    inputClass="!w-16 !text-center !font-black !border-none !bg-white dark:!bg-gray-900" />
-                            </div>
-                            <div class="flex-1 w-full">
-                                <span class="hidden sm:block font-black text-transparent mb-2">Spacer</span>
-                                <Button @click="cartStore.addItem(product, quantity)" label="Add to Cart"
-                                    icon="pi pi-shopping-cart" size="large"
-                                    class="!w-full !rounded-2xl !bg-green-600 !border-green-600 hover:!bg-green-700 !py-4 !font-black !text-sm !uppercase !tracking-widest shadow-2xl shadow-green-600/20 transition-all duration-300 active:scale-95" />
-                            </div>
-                        </div>
+            </div>
+
+            <!-- Variant / Quantity -->
+            <div class="bg-white p-4">
+                <h3 class="font-bold text-sm mb-3">Jumlah</h3>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center border border-gray-200 rounded-lg">
+                        <button
+                            class="w-8 h-11 flex items-center font-bold justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                            @click="quantity > 1 ? quantity-- : null" :disabled="quantity <= 1"><i class="pi pi-minus"></i></button>
+                        <input type="number" v-model="quantity"
+                            class="w-12 text-center text-sm font-bold border-none focus:ring-0 p-0" readonly>
+                        <button class="w-8 h-11 flex items-center font-bold justify-center text-green-600 hover:bg-gray-50"
+                            @click="quantity < product.stock ? quantity++ : null"><i class="pi pi-plus"></i> </button>
                     </div>
+                    <button
+                    class="w-full flex-1 justify-center items-center py-3 bg-green-600 text-white font-bold text-sm rounded-lg shadow-lg shadow-green-200 active:scale-95 transition-transform"
+                    @click="cartStore.addItem(product, quantity);">
+                    Tambahkan ke Keranjang
+                </button>
                 </div>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-white p-4 mb-2">
+                <h3 class="font-bold text-sm mb-3">Deskripsi Barang</h3>
+                <div class="text-sm text-gray-600 leading-relaxed overflow-hidden relative"
+                    :class="{ 'max-h-32': !showFullDescription }">
+                    <div v-html="product.description || 'Tidak ada deskripsi.'"></div>
+
+                    <div v-if="!showFullDescription"
+                        class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white to-transparent"></div>
+                </div>
+                <button @click="showFullDescription = !showFullDescription"
+                    class="text-green-600 text-sm font-bold mt-2">
+                    {{ showFullDescription ? 'Lihat Lebih Sedikit' : 'Baca Selengkapnya' }}
+                </button>
             </div>
 
             <!-- Related Products -->
-            <div v-if="related_products.length > 0">
-                <div class="flex items-center justify-between mb-10">
-                    <div class="flex flex-col">
-                        <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">Produk
-                            Lainnya</h2>
-                    </div>
-                    <Link :href="route('product.index')"
-                        class="text-xs font-black tracking-widest border-b-2 border-green-600 pb-1 hover:text-green-600 transition-colors">
-                        Lihat Semua
-                    </Link>
+
+          
+            <div class="bg-white p-4 mb-20" v-if="related_products.length > 0">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-sm">Produk Lainnya</h3>
+                    <Link :href="route('product.index')" class="text-xs font-bold text-green-600">Lihat Semua</Link>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div v-for="rel in related_products" :key="rel.id"
-                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                        class="group relative bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-2">
-                        <Link :href="route('product.show', rel.slug)">
-                            <div class="aspect-[4/5] overflow-hidden bg-gray-100 relative">
-                                <img v-if="rel.images?.length > 0 && rel.images[0]?.image"
-                                    :src="`/storage/${rel.images[0].image}`" :alt="rel.name"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <img v-else src="/assets/images/placeholder.webp" :alt="rel.name"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div
-                                    class="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
-                                    <Button label="View Detail"
-                                        class="w-full !rounded-xl !bg-white !text-gray-900 !border-none !font-black !text-[10px] !uppercase !tracking-widest" />
-                                </div>
+                <div class="relative group"> 
+                    <button @click="scroll('left')"
+                        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 p-3 rounded-full -ml-4  md:flex items-center justify-center hover:bg-green-600 hover:text-white transition-all">
+                        <i class="pi pi-chevron-left text-xs"></i>
+                    </button>
+
+                    <div ref="scrollContainer"
+                        class="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-4 px-4 cursor-grab active:cursor-grabbing select-none scroll-smooth">
+                        <Link v-for="rel in related_products" :key="rel.id" :href="route('product.show', rel.slug)"
+                            class="min-w-[140px] w-[140px] bg-white border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                            <div class="aspect-square bg-gray-50">
+                                <img v-if="rel?.images?.[0]?.image" :src="`/storage/${rel.images[0].image}`"
+                                    class="w-full h-full object-cover">
+                                <img v-else src="/assets/images/placeholder.webp" class="w-full h-full object-cover">
                             </div>
-                            <div class="p-6">
-                                <h3
-                                    class="text-sm font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight truncate">
-                                    {{ rel.name }}</h3>
-                                <span class="text-lg font-black text-green-600">{{ formatCurrencyIndo(rel.selling_price)
-                                    }}</span>
+                            <div class="p-2">
+                                <p class="text-xs h-8 line-clamp-2 leading-tight mb-1 text-gray-800">{{ rel.name }}</p>
+                                <p class="text-xs font-bold text-gray-900">{{ formatCurrencyIndo(rel.selling_price) }}
+                                </p>
                             </div>
                         </Link>
                     </div>
+
+                    <button @click="scroll('right')"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 p-3 rounded-full -mr-4  md:flex items-center justify-center hover:bg-green-600 hover:text-white transition-all">
+                        <i class="pi pi-chevron-right text-xs"></i>
+                    </button>
                 </div>
             </div>
+
         </div>
+
+        <!-- Sticky Bottom Action Bar -->
+
+
     </FrontLayout>
 </template>
 
@@ -156,5 +209,9 @@ const selectImage = (img) => {
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 12px);
 }
 </style>

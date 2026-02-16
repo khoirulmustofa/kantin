@@ -57,7 +57,7 @@ class ProductController extends Controller
                 ->where('id', '!=', $product->id)
                 ->where('is_active', true)
                 ->latest()
-                ->take(4)
+                ->take(6)
                 ->get();
 
             return Inertia::render('Front/Product/Show', [

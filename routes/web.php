@@ -24,6 +24,8 @@ Route::post('/checkout/store', [\App\Http\Controllers\Front\CheckoutController::
 
 Route::get('/order/{id}', [\App\Http\Controllers\Front\OrderController::class, 'show'])
     ->name('order.show');
+Route::get('/order/{id}/print', [\App\Http\Controllers\Front\OrderController::class, 'print'])
+    ->name('order.print');
 
 Route::get('/purchase-order/{id}', [\App\Http\Controllers\Front\PurchaseOrderController::class, 'show'])
     ->name('purchase_order.show');

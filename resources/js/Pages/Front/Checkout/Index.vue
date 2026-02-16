@@ -27,16 +27,16 @@ const form = useForm({
 
 const submitCheckout = () => {
     confirm.require({
-        message: 'Are you sure you want to place this order?',
-        header: 'Confirmation',
-        icon: 'pi pi-exclamation-triangle',
+        message: 'Pastikan data pesanan sudah benar. Lanjutkan pembayaran?',
+        header: 'Konfirmasi Pesanan',
+        icon: 'pi pi-check-circle',
         rejectProps: {
-            label: 'Cancel',
+            label: 'Batal',
             severity: 'secondary',
             outlined: true
         },
         acceptProps: {
-            label: 'Yes, Place Order',
+            label: 'Ya, Buat Pesanan',
             severity: 'success',
         },
         accept: () => {
@@ -57,174 +57,137 @@ const submitCheckout = () => {
 
     <Head :title="props.title" />
 
-    <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
-        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title" :hideBottomNav="true">
+        <div class="px-4 py-6 pb-32 min-h-[80vh]">
 
-            <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-10 tracking-tighter">{{ title }}</h1>
+            <h1 class="text-xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">Checkout Pesanan</h1>
 
-            <div v-if="cartStore.items.length > 0" class="flex flex-col lg:flex-row gap-4">
-                <!-- Checkout Form -->
-                <div class="flex-1 space-y-8">
-                    <div v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                        class="card p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl shadow-gray-100/50">
-                        <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">Shipping &
-                            Customer Information</h2>
+            <div v-if="cartStore.items.length > 0">
 
-                        <div class="flex flex-col md:flex-row flex-wrap gap-6">
-                            <div class="flex flex-col gap-2 flex-1">
-                                <label class="text-xs font-black  tracking-widest text-gray-700">WhatsApp
-                                    Number</label>
-                                <InputText v-model="form.username" placeholder="e.g. 08123456789"
-                                    class="!rounded-2xl !py-4 !px-6 !border-gray-100 font-bold"
-                                    :class="{ 'p-invalid': form.errors.username }" />
-                                <small v-if="form.errors.username" class="text-rose-600 font-bold">{{
-                                    form.errors.username }}</small>
-                            </div>
-
-                            <div class="flex flex-col gap-2 flex-1">
-                                <label class="text-xs font-black  tracking-widest text-gray-700">Full
-                                    Name</label>
-                                <InputText v-model="form.name" placeholder="Your full name"
-                                    class="!rounded-2xl !py-4 !px-6 !border-gray-100 font-bold"
-                                    :class="{ 'p-invalid': form.errors.name }" />
-                                <small v-if="form.errors.name" class="text-rose-600 font-bold">{{ form.errors.name
-                                }}</small>
-                            </div>
-
-                            <div class="flex flex-col gap-2 w-full">
-                                <label class="text-xs font-black  tracking-widest text-gray-700">Shipping
-                                    Address</label>
-                                <Textarea v-model="form.shipping_address" rows="3"
-                                    placeholder="Full address details. ex: NFBS Bogor, Asrama 1, Kelas 7A"
-                                    class="!rounded-2xl !py-4 !px-6 !border-gray-100 font-bold"
-                                    :class="{ 'p-invalid': form.errors.shipping_address }" />
-                                <small v-if="form.errors.shipping_address" class="text-rose-600 font-bold">{{
-                                    form.errors.shipping_address }}</small>
-                            </div>
-
-                            <div class="flex flex-col gap-2 w-full">
-                                <label class="text-xs font-black  tracking-widest text-gray-700">Payment
-                                    Method</label>
-                                <Select v-model="form.financial_account_id" :options="financialAccounts"
-                                    optionLabel="name" optionValue="id" placeholder="Select payment method"
-                                    class="!rounded-2xl !border-gray-100 font-bold"
-                                    :class="{ 'p-invalid': form.errors.financial_account_id }">
-                                    <template #option="slotProps">
-                                        <div class="flex flex-col">
-                                            <span class="font-black text-rose-600">{{ slotProps.option.name }}</span>
-                                            <span class="text-[10px] text-gray-700 tracking-widest ">{{
-                                                slotProps.option.account_number }}</span>
-                                        </div>
-                                    </template>
-                                </Select>
-                                <small v-if="form.errors.financial_account_id" class="text-rose-600 font-bold">{{
-                                    form.errors.financial_account_id
-                                }}</small>
-                            </div>
+                <!-- 1. Customer Info -->
+                <section class="mb-6">
+                    <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="pi pi-user text-green-600"></i> Informasi Pemesan
+                    </h2>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Nama Lengkap</label>
+                            <InputText v-model="form.name" placeholder="Contoh: Ahmad Fulan"
+                                class="w-full !text-sm !rounded-lg" :class="{ 'p-invalid': form.errors.name }" />
+                            <small v-if="form.errors.name" class="text-red-500 text-[10px]">{{ form.errors.name
+                            }}</small>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Nomor WhatsApp</label>
+                            <InputText v-model="form.username" placeholder="Contoh: 08123456789"
+                                class="w-full !text-sm !rounded-lg" :class="{ 'p-invalid': form.errors.username }" />
+                            <small v-if="form.errors.username" class="text-red-500 text-[10px]">{{ form.errors.username
+                            }}</small>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Alamat / Lokasi Pengiriman</label>
+                            <Textarea v-model="form.shipping_address" rows="2"
+                                placeholder="Contoh: Asrama Putra Lt. 2, Kamar B10" class="w-full !text-sm !rounded-lg"
+                                :class="{ 'p-invalid': form.errors.shipping_address }" />
+                            <small v-if="form.errors.shipping_address" class="text-red-500 text-[10px]">{{
+                                form.errors.shipping_address }}</small>
                         </div>
                     </div>
+                </section>
 
-                    <!-- Items Preview -->
-                    <div class="space-y-2">
-                        <h2 class="text-xl font-black text-gray-900 dark:text-white px-4 tracking-tight">Order Items
-                        </h2>
-                        <div v-for="item in cartStore.items" :key="item.id"
-                            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                            class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-                            <div class="flex items-center gap-4">
-                                <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
-                                    <img v-if="item.image" :src="`/storage/${item.image}`" :alt="item.name"
-                                        class="w-full h-full object-cover">
-                                    <img v-else src="\assets\images\placeholder.webp" :alt="item.name"
-                                        class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <h3 class="font-black text-gray-900 dark:text-white  text-xs tracking-tight">
-                                        {{ item.name }}
-                                    </h3>
-                                    <p class="text-sm font-bold text-gray-700  tracking-widest">{{
-                                        item.category }}</p>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span
-                                            class="text-sm font-black bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">{{
-                                                item.quantity }} x</span>
-                                        <span class="text-xs font-black text-gray-900">{{ formatCurrencyIndo(item.price)
-                                        }}</span>
-                                    </div>
-                                </div>
+                <!-- 2. Items -->
+                <section class="mb-6">
+                    <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="pi pi-box text-green-600"></i> Rincian Pesanan
+                    </h2>
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100">
+                        <div v-for="item in cartStore.items" :key="item.id" class="flex items-center gap-3 p-3">
+                            <div class="w-12 h-12 rounded-lg bg-gray-50 flex-shrink-0 overflow-hidden">
+                                <img v-if="item.image" :src="`/storage/${item.image}`"
+                                    class="w-full h-full object-cover">
+                                <img v-else src="/assets/images/placeholder.webp"
+                                    class="w-full h-full object-cover opacity-50">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-gray-900 truncate">{{ item.name }}</h4>
+                                <p class="text-[10px] text-gray-500">{{ item.category }}</p>
                             </div>
                             <div class="text-right">
-                                <span class=" font-black text-gray-900">{{ formatCurrencyIndo(item.price *
-                                    item.quantity) }}</span>
+                                <p class="text-xs font-bold text-gray-900">{{ formatCurrencyIndo(item.price *
+                                    item.quantity) }}</p>
+                                <p class="text-[10px] text-gray-500">{{ item.quantity }} x {{
+                                    formatCurrencyIndo(item.price) }}</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-gray-50 flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-600">Subtotal</span>
+                            <span class="text-sm font-black text-gray-900">{{ formatCurrencyIndo(cartStore.totalPrice)
+                            }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Payment Method -->
+                <section class="mb-6">
+                    <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="pi pi-wallet text-green-600"></i> Metode Pembayaran
+                    </h2>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div v-for="account in financialAccounts" :key="account.id"
+                            @click="form.financial_account_id = account.id"
+                            class="relative p-3 rounded-xl border-2 transition-all cursor-pointer flex items-center gap-3"
+                            :class="form.financial_account_id === account.id ? 'border-green-500 bg-green-50' : 'border-gray-100 bg-white hover:border-gray-200'">
+
+                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                :class="form.financial_account_id === account.id ? 'border-green-600' : 'border-gray-300'">
+                                <div v-if="form.financial_account_id === account.id"
+                                    class="w-2.5 h-2.5 rounded-full bg-green-600"></div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">{{ account.name }}</h4>
+                                <p class="text-xs text-gray-500">{{ account.account_number }}</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <small v-if="form.errors.financial_account_id" class="text-red-500 text-[10px] mt-1 block">{{
+                        form.errors.financial_account_id }}</small>
+                </section>
 
-                <!-- Order Summary & Action -->
-                <div class="w-full lg:w-96">
-                    <div v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                        class="sticky top-32 p-5 bg-green-50 border border-gray-100 rounded-2xl shadow-xl shadow-gray-200/50 text-black">
-                        <h2 class="text-2xl font-black tracking-tight mb-8">Order Summary</h2>
-
-                        <div class="space-y-4 mb-10">
-                            <div class="flex justify-between items-center opacity-60">
-                                <span class="text-sm font-bold  tracking-widest">Subtotal</span>
-                                <span class="font-black">{{ formatCurrencyIndo(cartStore.totalPrice) }}</span>
-                            </div>
-
-                            <div class="flex justify-between items-center opacity-60">
-                                <span class="text-sm font-bold  tracking-widest">Shipping</span>
-                                <span class="text-emerald-400 font-black">FREE</span>
-                            </div>
-
-                            <div class="pt-8 mt-8 border-t border-white/10 flex justify-between items-baseline">
-                                <span class="text-sm font-black  tracking-[0.2em]">Total</span>
-                                <div class="text-right">
-                                    <span class="text-3xl font-black tracking-tighter text-rose-500">
-                                        {{ formatCurrencyIndo(cartStore.totalPrice) }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <Button @click="submitCheckout" :loading="form.processing"
-                            class="!block !w-full !text-center !bg-green-600 !text-white !py-4 !rounded-2xl !font-bold !shadow-lg !shadow-gray-200 hover:!bg-rose-600 hover:!border-rose-600 hover:!text-white hover:!-translate-y-1 !transition-all active:scale-95">
-                            Complete Purchase
-                        </Button>
-
-                        <p class="text-[10px] text-center mt-6 text-white/40 font-bold  tracking-widest">Secure
-                            encrypted
-                            transactions</p>
+                <!-- Sticky Bottom Action -->
+                <div
+                    class="fixed bottom-[80px] left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-100 p-4 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-2xl">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-gray-500">Total Tagihan</span>
+                        <span class="text-lg font-black text-green-700">{{ formatCurrencyIndo(cartStore.totalPrice)
+                        }}</span>
                     </div>
+
+                    <Button @click="submitCheckout" :loading="form.processing" label="Buat Pesanan Sekarang"
+                        icon="pi pi-check" iconPos="right"
+                        class="!w-full !rounded-xl !bg-green-600 !border-none !font-bold !py-3.5 shadow-lg shadow-green-200 !mb-2" />
                 </div>
+
             </div>
 
             <!-- Empty Cart State -->
-            <div v-else
-                class="flex flex-col items-center justify-center py-32 bg-gray-50 dark:bg-gray-900/50 rounded-[3rem] border border-dashed border-gray-200 dark:border-gray-800">
-                <div
-                    class="w-32 h-32 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mb-8 shadow-xl">
-                    <i class="pi pi-shopping-bag text-5xl text-gray-200"></i>
+            <div v-else class="flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <i class="pi pi-shopping-cart text-3xl text-gray-300"></i>
                 </div>
-                <h2 class="text-3xl font-black text-gray-900 dark:text-white mb-4  tracking-tighter">Your cart
-                    is empty
-                </h2>
-                <Link :href="route('product.index')"
-                    class="bg-gray-900 text-white px-12 py-5 rounded-2xl font-black text-xs  tracking-[0.2em] hover:bg-black transition-all">
-                    Explore Products</Link>
+                <h3 class="text-lg font-bold text-gray-900 mb-1">Keranjang Kosong</h3>
+                <p class="text-xs text-gray-500 max-w-[200px] mb-6">Anda belum memilih item apapun untuk di checkout.
+                </p>
+                <Link :href="route('product.index')" class="text-green-600 font-bold text-sm">Belanja Sekarang</Link>
             </div>
+
         </div>
     </FrontLayout>
 </template>
 
 <style scoped>
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 </style>

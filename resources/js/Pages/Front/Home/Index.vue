@@ -2,12 +2,11 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed, onMounted, ref, nextTick } from 'vue';
 
-
 // Import Swiper core and required modules
 import Swiper from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
-// Import Swiper styles (WAJIB)
+// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -16,11 +15,8 @@ import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { useCartStore } from '@/Stores/cart';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 
-
 const cartStore = useCartStore();
-
 const page = usePage();
-
 
 const props = defineProps({
     menu: String,
@@ -30,10 +26,7 @@ const props = defineProps({
 });
 
 const sliderImages = ref([]);
-
-// Menggunakan computed agar reaktif jika data berubah
 const settings = computed(() => page.props.settings);
-
 
 onMounted(async () => {
     updateSliderImages();
@@ -46,18 +39,12 @@ onMounted(async () => {
         autoplay: {
             delay: 5000,
         },
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
         pagination: {
             el: '.swiper-pagination',
             clickable: true,
         },
     });
 });
-
-
 
 const updateSliderImages = () => {
     try {
@@ -70,7 +57,6 @@ const updateSliderImages = () => {
             sliderImages.value = [];
         }
     } catch (e) {
-
         sliderImages.value = [];
     }
 };
@@ -78,15 +64,11 @@ const updateSliderImages = () => {
 const whatsappUrl = computed(() => {
     const phone = page.props.settings?.whatsapp_number || '';
     const name = page.props.settings?.site_name || 'Admin';
-    
-    // Gunakan \n untuk enter
     const message = encodeURIComponent(
         `Assalamualaikum ${name},\n\nSaya ingin menawarkan kerja sama sebagai vendor/supplier.`
     );
-    
     return `https://wa.me/${phone}?text=${message}`;
 });
-
 
 </script>
 
@@ -97,189 +79,111 @@ const whatsappUrl = computed(() => {
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
 
         <!-- Slider -->
-        <section id="product-slider" class="relative overflow-hidden">
-            <div class="main-slider swiper h-full overflow-hidden">
+        <section id="product-slider" class="relative overflow-hidden mb-4">
+            <div class="main-slider swiper h-48 md:h-64 rounded-b-[2rem] shadow-sm overflow-hidden bg-white">
                 <div v-if="sliderImages.length > 0" class="swiper-wrapper h-full">
                     <div v-for="(img, index) in sliderImages" :key="index" class="swiper-slide relative h-full">
                         <img :src="`/storage/${img}`" alt="Slider Image" class="w-full h-full object-cover">
-
-                        <div
-                            class="swiper-slide-content absolute inset-0 flex flex-col justify-center items-center text-center">
-                            <h2 class="text-3xl md:text-7xl font-bold text-white mb-2 md:mb-4  tracking-tighter">
-                                {{ settings.front_heading }}</h2>
-                            <p class="mb-4 text-white md:text-2xl font-medium">{{ settings.front_sub_heading }}</p>
-                            <Link :href="route('product.index')"
-                                class="bg-green-600 hover:bg-white text-white hover:text-green-600 font-black px-10 py-4 rounded-2xl  text-xs tracking-widest transition-all shadow-2xl shadow-green-500/30">
-                                Beli Sekarang
-                            </Link>
-                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     </div>
-
                 </div>
-
-                <div class="swiper-button-prev !text-white opacity-50 hover:opacity-100 transition-all"></div>
-                <div class="swiper-button-next !text-white opacity-50 hover:opacity-100 transition-all"></div>
-                <div class="swiper-pagination"></div>
+                <div class="swiper-pagination !bottom-4"></div>
             </div>
         </section>
 
-        <!-- Product banner section (Categories) -->
-        <section id="product-banners" class="bg-white">
-            <div class="container mx-auto py-20 px-4">
-                <div class="flex flex-col items-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter">Kategori</h2>
-                </div>
-                <div class="flex flex-wrap -mx-4 justify-center">
-                    <div v-for="category in categories" :key="category.id"
-                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 zoom-in-50 animate-duration-1000' }"
-                        class="w-full sm:w-1/2 lg:w-1/4 px-4 mb-8">
+        <!-- Categories (Mobile Horizontal Scroll) -->
+        <section id="categories" class="mb-4 px-4 bg-gradient-to-r from-blue-50 via-gray-50 to-white rounded-2xl py-4">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-black text-gray-900 tracking-tighter">Kategori</h2>
+                <Link :href="route('product.index')"
+                    class="text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                    Lihat Semua
+                </Link>
+            </div>
 
-                        <Link :href="route('product.index', { category: category.slug })"
-                            class="group relative block overflow-hidden rounded-[2.5rem] aspect-[4/5] shadow-2xl shadow-gray-200/50 border border-gray-100">
-
+            <div class="grid grid-cols-3 sm:grid-cols-3 gap-y-8 gap-x-2 justify-items-center ">
+                <Link v-for="category in categories" :key="category.id"
+                    :href="route('product.index', { category: category.slug })"
+                    class="flex flex-col items-center gap-3 w-full group">
+                    <div class="relative">
+                        <div
+                            class="w-16 h-16 sm:w-20 sm:h-20 rounded-[2rem] bg-green-50 flex items-center justify-center p-4 transition-all duration-300 group-hover:bg-green-200 group-hover:border-green-100 group-hover:-translate-y-1">
                             <img :src="category.image ? `/storage/${category.image}` : '/assets/images/placeholder.webp'"
                                 :alt="category.name"
-                                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity">
-                            </div>
-
-                            <div
-                                class="absolute inset-0 flex flex-col items-center justify-end p-8 text-center text-white">
-
-                                <h3
-                                    class="text-xl font-black mb-4 tracking-tighter  group-hover:scale-105 transition-transform">
-                                    {{ category.name }}
-                                </h3>
-
-                                <div
-                                    class="w-10 h-1 bg-green-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full">
-                                </div>
-                            </div>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Popular product section -->
-        <section id="popular-products" class="bg-gray-50 py-24">
-            <div class="container mx-auto px-4">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
-                    <div class="flex flex-col">
-                        <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter">Produk Pilihan
-                        </h2>
-                    </div>
-                    <Link :href="route('product.index')"
-                        class="text-xs font-black  tracking-widest text-gray-400 hover:text-green-600 transition-colors flex items-center gap-2">
-                        Lihat Semua <i class="pi pi-arrow-right text-[10px]"></i>
-                    </Link>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div v-for="product in products" :key="product.id"
-                        v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-                        class="group bg-white p-4 rounded-3xl border border-gray-100 hover:border-green-100 transition-all duration-500 hover:shadow-2xl hover:shadow-green-200">
-                        <div
-                            class="relative aspect-[4/5] overflow-hidden rounded-3xl mb-6 bg-gray-50 border border-gray-100">
-                            <img v-if="product.images && product.images.length > 0"
-                                :src="`/storage/${product.images[0].image}`" :alt="product.name"
-                                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                            <img v-else src="/assets/images/placeholder.webp" :alt="product.name"
-                                class="w-full h-full object-cover grayscale opacity-50">
-                            <div
-                                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-                                <Link :href="route('product.show', product.slug)"
-                                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-black hover:bg-green-600 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 shadow-xl">
-                                    <i class="pi pi-eye text-lg"></i>
-                                </Link>
-                                <button @click="cartStore.addItem(product)" :disabled="product.stock === 0"
-                                    class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-black hover:bg-green-600 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-700 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
-                                    <i class="pi pi-cart-plus text-lg"></i>
-                                </button>
-                            </div>
+                                class="w-full h-full object-contain filter drop-shadow-sm transition-transform group-hover:scale-110">
                         </div>
+                    </div>
 
-                        <Link :href="route('product.show', product.slug)">
-                            <h3
-                                class="font-black text-gray-900 group-hover:text-green-600 transition-colors text-lg tracking-tight mb-2 ">
-                                {{ product.name }}</h3>
-                            <div class="flex"> <span
-                                    class="inline-flex items-center bg-green-600/10 text-green-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider mb-4 border border-green-600/20">
-                                    {{ product.category?.name }}
-                                </span>
-                            </div>
-                            <div
-                                class="text-2xl font-black flex justify-between items-center py-2 border-t border-gray-50">
-                                <span class="font-black text-gray-900 tracking-tighter">{{
-                                    formatCurrencyIndo(product.selling_price) }}</span>
+                    <span
+                        class="text-[11px] font-bold text-gray-700 text-center leading-tight line-clamp-2 px-1 break-words w-full transition-colors group-hover:text-green-600">
+                        {{ category.name }}
+                    </span>
+                </Link>
+            </div>
+        </section>
 
-                            </div>
+        <!-- Popular Products -->
+        <section id="popular-products" class="bg-gradient-to-r from-blue-50 via-gray-50 to-white px-4 py-4 rounded-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-900">Produk Pilihan</h2>
+            </div>
+
+            <!-- Grid 2 Columns for Mobile -->
+            <div class="grid grid-cols-2 gap-4">
+                <div v-for="product in products" :key="product.id"
+                    class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full hover:shadow-md transition-shadow">
+
+                    <Link :href="route('product.show', product.slug)" class="relative aspect-square block bg-gray-50">
+                        <img v-if="product.images && product.images.length > 0"
+                            :src="`/storage/${product.images[0].image}`" :alt="product.name"
+                            class="w-full h-full object-cover">
+                        <img v-else src="/assets/images/placeholder.webp" :alt="product.name"
+                            class="w-full h-full object-cover grayscale opacity-50">
+
+                        <!-- Discount Badge (Example) -->
+                        <span
+                            class="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-sm">
+                            {{ product.category?.name }}
+                        </span>
+                    </Link>
+
+                    <div class="p-3 flex flex-col flex-grow">
+                        <Link :href="route('product.show', product.slug)" class="mb-1">
+                            <h3 class="text-xs font-bold text-gray-900 line-clamp-2 leading-snug">
+                                {{ product.name }}
+                            </h3>
                         </Link>
 
+                        <div class="mt-auto">
+                            <p class="text-sm font-black text-gray-900 text-green-600">
+                                {{ formatCurrencyIndo(product.selling_price) }}
+                            </p>
+                            <p class="text-[10px] text-gray-400 line-through">
+                                {{ formatCurrencyIndo(product.selling_price * 1.1) }}
+                            </p>
+
+                            <button @click.prevent="cartStore.addItem(product)" :disabled="product.stock === 0"
+                                class="w-full mt-3 bg-green-50 text-green-700 hover:bg-green-600 hover:text-white border border-green-200 text-xs font-bold py-2 rounded-xl transition-colors flex items-center justify-center gap-1 disabled:opacity-50">
+                                <i class="pi pi-plus text-[10px]"></i> Keranjang
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-
-
-
-        <!-- Banner section -->
-        <section id="banner"
-            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-            class="relative bg-gray-100 py-16">
-            <div class="container mx-auto px-4 py-20 rounded-lg relative bg-cover bg-center"
-                style="background-image: url('assets/images/banner1.jpg');">
-                <div class="absolute inset-0 bg-black opacity-40 rounded-lg"></div>
-                <div class="relative flex flex-col items-center justify-center h-full text-center text-white py-20">
-                    <h2 class="text-4xl font-bold mb-4">Welcome to Our Shop</h2>
-                    <div class="flex space-x-4">
-                        <a href="#"
-                            class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block">Shop
-                            Now</a>
-                        <a href="#"
-                            class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block">New
-                            Arrivals</a>
-                        <a href="#"
-                            class="bg-primary hover:bg-transparent text-white hover:text-primary border border-transparent hover:border-primary font-semibold px-4 py-2 rounded-full inline-block">Sale</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Subscribe section -->
-        <section id="cooperation"
-            v-animateonscroll="{ enterClass: 'animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000', leaveClass: 'animate-leave fade-out-0' }"
-            class="py-12 lg:py-24 bg-white border-t border-gray-100">
-            <div class="container mx-auto px-4">
-                <div
-                    class="flex flex-col items-center bg-indigo-50/50 dark:bg-gray-900/40 rounded-[3rem] p-8 md:p-16 border border-indigo-50">
-
-                    <div class="mb-10 max-w-2xl">
-                        <h2 class="text-center text-2xl md:text-3xl font-black text-gray-900 tracking-tighter mb-4">
-                            Jalin Kerja Sama <span class="text-primary">Saling Menguntungkan</span>
-                        </h2>
-                        <p class="text-center text-gray-600 leading-relaxed">
-                            Kami membuka peluang bagi para vendor, supplier, atau pelaku UMKM untuk berkolaborasi
-                            bersama
-                            <strong>{{ $page.props.settings?.site_name || 'Koperasi NFBS Bogor' }}</strong>.
-                        </p>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row items-center gap-4">
-                        <a :href="whatsappUrl"
-                            target="_blank"
-                            class="group flex items-center gap-3 bg-green-500 border-2 border-green-500 hover:bg-green-600 hover:border-green-600 text-white font-black py-4 px-8 rounded-full transition-all shadow-xl shadow-green-200">
-                            <i class="pi pi-whatsapp text-2xl"></i>
-                            <span class="text-lg">Hubungi via WhatsApp</span>
-                            <i class="pi pi-arrow-right transition-transform group-hover:translate-x-2"></i>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
     </FrontLayout>
 </template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+</style>
