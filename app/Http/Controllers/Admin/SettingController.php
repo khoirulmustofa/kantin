@@ -61,6 +61,7 @@ class SettingController extends Controller
                         $value = json_encode(array_values($images));
                     } else {
                         // Skip updating front_slider if no new files are uploaded
+                        // This prevents overwriting existing slider images with an empty value
                         continue;
                     }
                 }
@@ -78,19 +79,16 @@ class SettingController extends Controller
                     $value = $path;
                 }
 
+                // Convert 'true'/'false' strings to '1'/'0' for boolean settings if needed
+                if ($value === 'true') $value = '1';
+                if ($value === 'false') $value = '0';
+
                 if ($value !== null) {
                     \App\Models\Setting::updateOrCreate(
                         ['key' => $key],
                         ['value' => $value]
                     );
                 }
-            }
-
-            // delete untuk untuk key yang tidak ada di request
-            $keys = array_keys($data);
-            $settings = \App\Models\Setting::whereNotIn('key', $keys)->get();
-            foreach ($settings as $setting) {
-                $setting->delete();
             }
 
             Cache::forget('app_settings');

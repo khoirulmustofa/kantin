@@ -1,7 +1,7 @@
 <script setup>
 import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { Head, Link, usePage, router } from '@inertiajs/vue3';
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 import { formatCurrencyIndo } from '@/Utils/formatter';
 import { useCartStore } from '@/Stores/cart';
 
@@ -10,6 +10,7 @@ import Swiper from 'swiper';
 import { Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+
 
 const cartStore = useCartStore();
 const props = defineProps({
@@ -47,24 +48,36 @@ const scroll = (direction) => {
     }
 };
 
-
-const responsiveOptions = ref([
-    {
-        breakpoint: '1024px',
-        numVisible: 3,
-        numScroll: 3
-    },
-    {
-        breakpoint: '768px',
-        numVisible: 2,
-        numScroll: 2
-    },
-    {
-        breakpoint: '576px',
-        numVisible: 1,
-        numScroll: 1
+const productImages = computed(() => {
+    if (!props.product.images || props.product.images.length === 0) {
+        return [{
+            itemImageSrc: '/assets/images/placeholder.webp',
+            thumbnailImageSrc: '/assets/images/placeholder.webp'
+        }];
     }
-]);
+    return props.product.images.map(img => ({
+        itemImageSrc: `/storage/${img.image}`,
+        thumbnailImageSrc: `/storage/${img.image}`,
+        alt: props.product.name
+    }));
+});
+
+
+const responsiveOptions = [
+    {
+        breakpoint: '991px',
+        numVisible: 4
+    },
+    {
+        breakpoint: '767px',
+        numVisible: 3,
+        showThumbnails: false // Sembunyikan thumbnail di HP agar mirip Swiper
+    }
+];
+
+const addToCart = () => {
+    cartStore.addItem(product, quantity.value);
+};
 </script>
 
 <template>
@@ -73,30 +86,24 @@ const responsiveOptions = ref([
 
     <FrontLayout v-model:menuActive="props.menu" v-model:title="props.title">
         <div class="pb-24 bg-gray-100 min-h-screen">
-
             <!-- Image Slider -->
             <div class="bg-white mb-2">
-                <div class="product-slider swiper w-full aspect-square md:aspect-video relative bg-white">
-                    <div class="swiper-wrapper">
-                        <!-- Main Image -->
-                        <div class="swiper-slide" v-if="product.images?.length > 0" v-for="(img, idx) in product.images"
-                            :key="idx">
-                            <img :src="`/storage/${img.image}`" class="w-full h-full object-contain"
-                                :alt="product.name">
-                        </div>
-                        <!-- Fallback -->
-                        <div class="swiper-slide" v-else>
-                            <img src="/assets/images/placeholder.webp" class="w-full h-full object-contain"
-                                :alt="product.name">
-                        </div>
-                    </div>
-                    <div class="swiper-pagination !bottom-4"></div>
+                <div class="bg-white overflow-hidden shadow-sm">
+                    <Galleria :value="productImages" :responsiveOptions="responsiveOptions" :numVisible="5"
+                        containerClass="w-full" :showThumbnails="true" :showIndicators="false" :circular="true"
+                        :autoPlay="true" :transitionInterval="3000">
+                        <template #item="slotProps">
+                            <div class="w-full aspect-square bg-gray-50 flex items-center justify-center p-2">
+                                <img :src="slotProps.item.itemImageSrc" :alt="product.name"
+                                    class="!w-full object-contain rounded-b-2xl" />
+                            </div>
+                        </template>
 
-                    <!-- Back Button Overlay (Mobile) -->
-                    <Link :href="route('product.index')"
-                        class="absolute top-4 left-4 z-10 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white">
-                        <i class="pi pi-arrow-left"></i>
-                    </Link>
+                        <template #thumbnail="slotProps">
+                            <img :src="slotProps.item.thumbnailImageSrc" :alt="product.name"
+                                class="w-16 h-16 object-cover rounded-lg" />
+                        </template>
+                    </Galleria>
                 </div>
             </div>
 
@@ -124,17 +131,19 @@ const responsiveOptions = ref([
                     <div class="flex items-center border border-gray-200 rounded-lg">
                         <button
                             class="w-8 h-11 flex items-center font-bold justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                            @click="quantity > 1 ? quantity-- : null" :disabled="quantity <= 1"><i class="pi pi-minus"></i></button>
+                            @click="quantity > 1 ? quantity-- : null" :disabled="quantity <= 1"><i
+                                class="pi pi-minus"></i></button>
                         <input type="number" v-model="quantity"
                             class="w-12 text-center text-sm font-bold border-none focus:ring-0 p-0" readonly>
-                        <button class="w-8 h-11 flex items-center font-bold justify-center text-green-600 hover:bg-gray-50"
+                        <button
+                            class="w-8 h-11 flex items-center font-bold justify-center text-green-600 hover:bg-gray-50"
                             @click="quantity < product.stock ? quantity++ : null"><i class="pi pi-plus"></i> </button>
                     </div>
                     <button
-                    class="w-full flex-1 justify-center items-center py-3 bg-green-600 text-white font-bold text-sm rounded-lg shadow-lg shadow-green-200 active:scale-95 transition-transform"
-                    @click="cartStore.addItem(product, quantity);">
-                    Tambahkan ke Keranjang
-                </button>
+                        class="w-full flex-1 justify-center items-center py-3 bg-green-600 text-white font-bold text-sm rounded-lg shadow-lg shadow-green-200 active:scale-95 transition-transform"
+                        @click="cartStore.addItem(product, quantity);">
+                        Tambahkan ke Keranjang
+                    </button>
                 </div>
             </div>
 
@@ -156,14 +165,16 @@ const responsiveOptions = ref([
 
             <!-- Related Products -->
 
-          
+
             <div class="bg-white p-4 mb-20" v-if="related_products.length > 0">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-bold text-sm">Produk Lainnya</h3>
                     <Link :href="route('product.index')" class="text-xs font-bold text-green-600">Lihat Semua</Link>
                 </div>
 
-                <div class="relative group"> 
+              
+
+                <div class="relative group">
                     <button @click="scroll('left')"
                         class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md shadow-lg border border-gray-100 p-3 rounded-full -ml-4  md:flex items-center justify-center hover:bg-green-600 hover:text-white transition-all">
                         <i class="pi pi-chevron-left text-xs"></i>

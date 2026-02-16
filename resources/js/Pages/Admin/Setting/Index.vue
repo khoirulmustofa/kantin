@@ -148,17 +148,11 @@ const sections = [
 ];
 
 const submit = () => {
-    const data = {
-        ...form.data(),
-        store_open: form.store_open ? '1' : '0',
-        register_open: form.register_open ? '1' : '0',
-    };
-
     form.post(route('admin.settings.update'), {
         forceFormData: true,
         preserveScroll: true,
         onSuccess: () => {
-            form.front_slider = []; // Clear pending uploads
+            form.front_slider = [];
             fetchSettings(); // Refresh local settings display
         },
     });
