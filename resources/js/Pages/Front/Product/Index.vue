@@ -29,6 +29,21 @@ const filterProducts = () => {
     });
 };
 
+const onPageChange = (event) => {
+    // PrimeVue event.page dimulai dari 0, Laravel dari 1
+    const newPage = event.page + 1;
+
+    router.get(route('product.index'), {
+        // Pertahankan filter lain saat pindah halaman
+        ...props.filters,
+        page: newPage
+    }, {
+        preserveState: true,
+        preserveScroll: true, // Sangat penting agar layar tidak melompat ke atas
+        only: ['products'],   // Hanya update data products (Partial Reload)
+    });
+};
+
 watch(search, debounce(() => {
     filterProducts();
 }, 300));
@@ -149,7 +164,7 @@ const scrollCategories = (direction) => {
                                         {{ formatCurrencyIndo(product.selling_price * 1.1) }}
                                     </span>
                                 </div>
-                            </div>                           
+                            </div>
                         </template>
 
                         <template #footer>
@@ -178,20 +193,22 @@ const scrollCategories = (direction) => {
             </div>
 
             <!-- Pagination -->
-            <div v-if="products.links.length > 3" class="mt-8 flex justify-center pb-8">
-                <nav class="flex items-center gap-1">
-                    <template v-for="(link, k) in products.links" :key="k">
-                        <Link v-if="link.url" :href="link.url"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all"
-                            :class="[
-                                link.active
-                                    ? 'bg-green-600 text-white shadow-md shadow-green-200'
-                                    : 'bg-white text-gray-500 border border-gray-100 hover:bg-gray-50'
-                            ]" v-html="link.label.replace('Previous', '&laquo;').replace('Next', '&raquo;')" />
-                        <span v-else class="w-8 h-8 flex items-center justify-center text-xs text-gray-300"
-                            v-html="link.label.replace('Previous', '&laquo;').replace('Next', '&raquo;')" />
-                    </template>
-                </nav>
+            <div class="card mt-8 overflow-hidden">
+                <Paginator :rows="products.per_page" :totalRecords="products.total"
+                    :first="(products.current_page - 1) * products.per_page" @page="onPageChange" :pageLinkSize="2"
+                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" :pt="{
+                        root: { class: 'justify-center !bg-transparent !flex-nowrap !gap-1' },
+                        pages: { class: '!flex-nowrap' },
+                        pageButton: ({ context }) => ({
+                            class: [
+                                '!min-w-[2rem] !h-8 !p-0 !text-xs !rounded-lg transition-all',
+                                context.active ? '!bg-green-700 !text-white shadow-md' : '!bg-white border border-gray-100'
+                            ]
+                        }),
+                        action: ({ context }) => ({
+                            class: '!min-w-[2rem] !h-8 !p-0 !rounded-lg border border-transparent hover:border-gray-200'
+                        })
+                    }" />
             </div>
 
         </div>

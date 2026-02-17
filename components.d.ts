@@ -31,6 +31,7 @@ declare module 'vue' {
     InputText: typeof import('primevue/inputtext')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
+    Paginator: typeof import('primevue/paginator')['default']
     Password: typeof import('primevue/password')['default']
     Rating: typeof import('primevue/rating')['default']
     Select: typeof import('primevue/select')['default']

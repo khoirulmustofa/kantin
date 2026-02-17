@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
         $categories = \App\Models\ProductCategory::get();
 
         $products = [
-            // --- KATEGORI Putra ---
+            // --- KATEGORI SMP Putra ---
             ['name' => 'Kemeja Putih SMP Putra (S,M,L)', 'price' => 210000],
             ['name' => 'Kemeja Putih SMP Putra (XL,XXL)', 'price' => 215000],
             ['name' => 'Kemeja Putih SMP Putra (XXXL)', 'price' => 225000],
@@ -56,7 +56,54 @@ class ProductSeeder extends Seeder
             ['name' => 'Celana Pramuka SMP Putra (XL,XXL)', 'price' => 190000],
             ['name' => 'Celana Pramuka SMP Putra (XXXL)', 'price' => 200000],
 
-            // --- KATEGORI Putri ---
+            // --- KATEGORI SMA Putra ---
+
+            ['name' => 'Kemeja Putih SMA Putra (S,M,L)', 'price' => 210000],
+            ['name' => 'Kemeja Putih SMA Putra (XL,XXL)', 'price' => 215000],
+            ['name' => 'Kemeja Putih SMA Putra (XXXL)', 'price' => 225000],
+
+            ['name' => 'Kemeja Abu Lengan Panjang SMA Putra (S,M,L)', 'price' => 210000],
+            ['name' => 'Kemeja Abu Lengan Panjang SMA Putra (XL,XXL)', 'price' => 215000],
+            ['name' => 'Kemeja Abu Lengan Panjang SMA Putra (XXXL)', 'price' => 225000],
+
+            ['name' => 'Kemeja Batik SMA Putra (S,M,L)', 'price' => 225000],
+            ['name' => 'Kemeja Batik SMA Putra (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Batik SMA Putra (XXXL)', 'price' => 230000],
+
+            ['name' => 'Kemeja Cream List Bordir SMA Putra (S,M,L)', 'price' => 235000],
+            ['name' => 'Kemeja Cream List Bordir SMA Putra (XL,XXL)', 'price' => 240000],
+            ['name' => 'Kemeja Cream List Bordir SMA Putra (XXXL)', 'price' => 250000],
+
+            ['name' => 'Kemeja Pramuka SMA Putra (S,M,L)', 'price' => 225000],
+            ['name' => 'Kemeja Pramuka SMA Putra (XL,XXL)', 'price' => 230000],
+            ['name' => 'Kemeja Pramuka SMA Putra (XXXL)', 'price' => 240000],
+
+            ['name' => 'Baju Olahraga SMA Putra (S,M,L)', 'price' => 150000],
+            ['name' => 'Baju Olahraga SMA Putra (XL,XXL)', 'price' => 155000],
+            ['name' => 'Baju Olahraga SMA Putra (XXXL)', 'price' => 160000],
+
+            ['name' => 'Celana Olahraga SMA Putra (S,M,L)', 'price' => 150000],
+            ['name' => 'Celana Olahraga SMA Putra (XL,XXL)', 'price' => 155000],
+            ['name' => 'Celana Olahraga SMA Putra (XXXL)', 'price' => 160000],
+
+            ['name' => 'Celana Abu SMA Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Abu SMA Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Abu SMA Putra (XXXL)', 'price' => 200000],
+
+            ['name' => 'Celana Abu Tua SMA Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Abu Tua SMA Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Abu Tua SMA Putra (XXXL)', 'price' => 200000],
+
+            ['name' => 'Celana Cream Coklat SMA Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Cream Coklat SMA Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Cream Coklat SMA Putra (XXXL)', 'price' => 200000],
+
+            ['name' => 'Celana Pramuka SMA Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Pramuka SMA Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Pramuka SMA Putra (XXXL)', 'price' => 200000],
+
+
+            // --- KATEGORI SMP Putri ---
             ['name' => 'Jilbab Putih SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
             ['name' => 'Jilbab Biru SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
             ['name' => 'Jilbab Pramuka SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
@@ -113,32 +160,90 @@ class ProductSeeder extends Seeder
             ['name' => 'Rok Celana Olahraga SMP Putri (XL,XXL)', 'price' => 205000],
             ['name' => 'Rok Celana Olahraga SMP Putri (XXXL)', 'price' => 215000],
 
+            // --- KATEGORI SMA Putri ---
+            ['name' => 'Jilbab Putih SMA Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Abu SMA Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Cream SMA Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Pramuka SMA Putri (S,M,L/XL,XXL)', 'price' => 120000],
 
-            ['name' => 'Rok Abu-abu SMA Putri (S,M,L)', 'price' => 225000],
-            ['name' => 'Rok Abu-abu SMA Putri (XL,XXL)', 'price' => 230000],
-            ['name' => 'Rok Abu-abu SMA Putri (XXXL)', 'price' => 235000],
+            ['name' => 'Kemeja Putih SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Kemeja Putih SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Putih SMA Putri (XXXL)', 'price' => 235000],
 
-            ['name' => 'Rok Abu-abu Gelap SMA Putri (S,M,L)', 'price' => 225000],
-            ['name' => 'Rok Abu-abu Gelap SMA Putri (XL,XXL)', 'price' => 230000],
-            ['name' => 'Rok Abu-abu Gelap SMA Putri (XXXL)', 'price' => 235000],
+            ['name' => 'Kemeja Biru SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Kemeja Biru SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Biru SMA Putri (XXXL)', 'price' => 235000],
+
+            ['name' => 'Kemeja Batik SMA Putri (S,M,L)', 'price' => 230000],
+            ['name' => 'Kemeja Batik SMA Putri (XL,XXL)', 'price' => 235000],
+            ['name' => 'Kemeja Batik SMA Putri (XXXL)', 'price' => 245000],
+
+            ['name' => 'Kemeja Biru List Bordir SMA Putri (S,M,L)', 'price' => 235000],
+            ['name' => 'Kemeja Biru List Bordir SMA Putri (XL,XXL)', 'price' => 240000],
+            ['name' => 'Kemeja Biru List Bordir SMA Putri (XXXL)', 'price' => 250000],
+
+            ['name' => 'Kemeja Pramuka SMA Putri (S,M,L)', 'price' => 240000],
+            ['name' => 'Kemeja Pramuka SMA Putri (XL,XXL)', 'price' => 245000],
+            ['name' => 'Kemeja Pramuka SMA Putri (XXXL)', 'price' => 255000],
+
+            ['name' => 'Baju Olahraga SMA Putri (S,M,L)', 'price' => 150000],
+            ['name' => 'Baju Olahraga SMA Putri (XL,XXL)', 'price' => 155000],
+            ['name' => 'Baju Olahraga SMA Putri (XXXL)', 'price' => 165000],
+
+            ['name' => 'Rok Abu SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Abu SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Abu SMA Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Abu Tua SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Abu Tua SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Abu Tua SMA Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Abu Tua Stip Batik SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Abu Tua Stip Batik SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Abu Tua Stip Batik SMA Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Abu Tua Stip Abu SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Abu Tua Stip Abu SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Abu Tua Stip Abu SMA Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Pramuka SMA Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Pramuka SMA Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Pramuka SMA Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Celana Pramuka SMA Putri (S,M,L)', 'price' => 200000],
+            ['name' => 'Rok Celana Pramuka SMA Putri (XL,XXL)', 'price' => 210000],
+            ['name' => 'Rok Celana Pramuka SMA Putri (XXXL)', 'price' => 225000],
+
+            ['name' => 'Rok Celana Olahraga SMA Putri (S,M,L)', 'price' => 200000],
+            ['name' => 'Rok Celana Olahraga SMA Putri (XL,XXL)', 'price' => 205000],
+            ['name' => 'Rok Celana Olahraga SMA Putri (XXXL)', 'price' => 215000],
 
             // --- AKSESORI ---
-            ['name' => 'Topi', 'price' => 50000],
-            ['name' => 'Dasi', 'price' => 25000],
+            ['name' => 'Topi SMP', 'price' => 50000],
+            ['name' => 'Dasi SMP', 'price' => 25000],
+            ['name' => 'Topi SMA', 'price' => 50000],
+            ['name' => 'Dasi SMA', 'price' => 25000],
         ];
+    
 
         $catSmpPutra = \App\Models\ProductCategory::where('slug', 'seragam-smp-putra')->first()->id;
         $catSmpPutri = \App\Models\ProductCategory::where('slug', 'seragam-smp-putri')->first()->id;
+        $catSmaPutra = \App\Models\ProductCategory::where('slug', 'seragam-sma-putra')->first()->id;
+        $catSmaPutri = \App\Models\ProductCategory::where('slug', 'seragam-sma-putri')->first()->id;
         $catPerlengkapanSeragam = \App\Models\ProductCategory::where('slug', 'perlengkapan-seragam')->first()->id;
 
         foreach ($products as $item) {
             $name = $item['name'];
 
             // 2. Logika Penentuan Kategori Otomatis
-            if (\Illuminate\Support\Str::contains($name, ['Putra'])) {
+            if (\Illuminate\Support\Str::contains($name, ['SMP Putra'])) {
                 $categoryId = $catSmpPutra;
-            } elseif (\Illuminate\Support\Str::contains($name, ['Putri', 'Rok', 'Jilbab'])) {
+            } elseif (\Illuminate\Support\Str::contains($name, ['SMP Putra'])) {
                 $categoryId = $catSmpPutri;
+            } elseif (\Illuminate\Support\Str::contains($name, ['SMA Putra'])) {
+                $categoryId = $catSmaPutra;
+            } elseif (\Illuminate\Support\Str::contains($name, ['SMA Putri'])) {
+                $categoryId = $catSmaPutri;
             } elseif (\Illuminate\Support\Str::contains($name, ['Topi', 'Dasi'])) {
                 $categoryId = $catPerlengkapanSeragam;
             }

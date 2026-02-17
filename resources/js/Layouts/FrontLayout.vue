@@ -110,10 +110,7 @@ const menus = computed(() => [
                             class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100">
                             {{ $page.props.auth.user.name.charAt(0) }}
                         </Link>
-                        <Link v-else :href="route('login')"
-                            class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-full shadow-lg shadow-blue-200">
-                            Login
-                        </Link>
+                        
 
                     </div>
                 </div>
