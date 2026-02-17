@@ -9,6 +9,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
+    volumes:
+      - /home/nfbsb/asset/koperasi:/var/www/html/storage/app/public
       
     ports:
     - "7060:80"
