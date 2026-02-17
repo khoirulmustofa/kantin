@@ -16,80 +16,111 @@ class ProductSeeder extends Seeder
 
         $products = [
             // --- KATEGORI Putra ---
-            ['name' => 'Kemeja Senin Putra (S,M,L)', 'price' => 210000],
-            ['name' => 'Kemeja Senin Putra (XL,XXL)', 'price' => 215000],
-            ['name' => 'Kemeja Senin Putra (XXXL)', 'price' => 225000],
+            ['name' => 'Kemeja Putih SMP Putra (S,M,L)', 'price' => 210000],
+            ['name' => 'Kemeja Putih SMP Putra (XL,XXL)', 'price' => 215000],
+            ['name' => 'Kemeja Putih SMP Putra (XXXL)', 'price' => 225000],
 
-            ['name' => 'Kemeja Selasa Putra (S,M,L)', 'price' => 210000],
-            ['name' => 'Kemeja Selasa Putra (XL,XXL)', 'price' => 215000],
-            ['name' => 'Kemeja Selasa Putra (XXXL)', 'price' => 225000],
+            ['name' => 'Kemeja Biru Lengan Panjang SMP Putra (S,M,L)', 'price' => 210000],
+            ['name' => 'Kemeja Biru Lengan Panjang SMP Putra (XL,XXL)', 'price' => 215000],
+            ['name' => 'Kemeja Biru Lengan Panjang SMP Putra (XXXL)', 'price' => 225000],
 
-            ['name' => 'Kemeja Batik Putra (S,M,L)', 'price' => 225000],
-            ['name' => 'Kemeja Batik Putra (XL,XXL)', 'price' => 225000],
-            ['name' => 'Kemeja Batik Putra (XXXL)', 'price' => 230000],
+            ['name' => 'Kemeja Batik SMP Putra (S,M,L)', 'price' => 225000],
+            ['name' => 'Kemeja Batik SMP Putra (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Batik SMP Putra (XXXL)', 'price' => 230000],
 
-            ['name' => 'Kemeja Biru List Putra (S,M,L)', 'price' => 235000],
-            ['name' => 'Kemeja Biru List Putra (XL,XXL)', 'price' => 240000],
-            ['name' => 'Kemeja Biru List Putra (XXXL)', 'price' => 250000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putra (S,M,L)', 'price' => 235000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putra (XL,XXL)', 'price' => 240000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putra (XXXL)', 'price' => 250000],
 
-            ['name' => 'Kemeja Pramuka Putra (S,M,L)', 'price' => 225000],
-            ['name' => 'Kemeja Pramuka Putra (XL,XXL)', 'price' => 230000],
-            ['name' => 'Kemeja Pramuka Putra (XXXL)', 'price' => 240000],
+            ['name' => 'Kemeja Pramuka SMP Putra (S,M,L)', 'price' => 225000],
+            ['name' => 'Kemeja Pramuka SMP Putra (XL,XXL)', 'price' => 230000],
+            ['name' => 'Kemeja Pramuka SMP Putra (XXXL)', 'price' => 240000],
 
-            ['name' => 'Baju Olahraga Putra (S,M,L)', 'price' => 150000],
-            ['name' => 'Baju Olahraga Putra (XL,XXL)', 'price' => 155000],
-            ['name' => 'Baju Olahraga Putra (XXXL)', 'price' => 160000],
+            ['name' => 'Baju Olahraga SMP Putra (S,M,L)', 'price' => 150000],
+            ['name' => 'Baju Olahraga SMP Putra (XL,XXL)', 'price' => 155000],
+            ['name' => 'Baju Olahraga SMP Putra (XXXL)', 'price' => 160000],
 
-            ['name' => 'Celana Olahraga Putra (S,M,L)', 'price' => 150000],
-            ['name' => 'Celana Olahraga Putra (XL,XXL)', 'price' => 155000],
-            ['name' => 'Celana Olahraga Putra (XXXL)', 'price' => 160000],
+            ['name' => 'Celana Olahraga SMP Putra (S,M,L)', 'price' => 150000],
+            ['name' => 'Celana Olahraga SMP Putra (XL,XXL)', 'price' => 155000],
+            ['name' => 'Celana Olahraga SMP Putra (XXXL)', 'price' => 160000],
 
-            ['name' => 'Celana Seragam Putra (S,M,L)', 'price' => 185000],
-            ['name' => 'Celana Seragam Putra (XL,XXL)', 'price' => 190000],
-            ['name' => 'Celana Seragam Putra (XXXL)', 'price' => 200000],
+            ['name' => 'Celana Biru SMP Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Biru SMP Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Biru SMP Putra (XXXL)', 'price' => 200000],
+
+            ['name' => 'Celana Biru Gelap SMP Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Biru Gelap SMP Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Biru Gelap SMP Putra (XXXL)', 'price' => 200000],
+
+            ['name' => 'Celana Pramuka SMP Putra (S,M,L)', 'price' => 185000],
+            ['name' => 'Celana Pramuka SMP Putra (XL,XXL)', 'price' => 190000],
+            ['name' => 'Celana Pramuka SMP Putra (XXXL)', 'price' => 200000],
 
             // --- KATEGORI Putri ---
-            ['name' => 'Jilbab Seragam Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Putih SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Biru SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
+            ['name' => 'Jilbab Pramuka SMP Putri (S,M,L/XL,XXL)', 'price' => 120000],
 
-            ['name' => 'Kemeja Senin Putri (S,M,L)', 'price' => 220000],
-            ['name' => 'Kemeja Senin Putri (XL,XXL)', 'price' => 225000],
-            ['name' => 'Kemeja Senin Putri (XXXL)', 'price' => 235000],
+            ['name' => 'Kemeja Putih SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Kemeja Putih SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Putih SMP Putri (XXXL)', 'price' => 235000],
 
-            ['name' => 'Kemeja Biru Polos Putri (S,M,L)', 'price' => 220000],
-            ['name' => 'Kemeja Biru Polos Putri (XL,XXL)', 'price' => 225000],
-            ['name' => 'Kemeja Biru Polos Putri (XXXL)', 'price' => 235000],
+            ['name' => 'Kemeja Biru SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Kemeja Biru SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Kemeja Biru SMP Putri (XXXL)', 'price' => 235000],
 
-            ['name' => 'Kemeja Batik Putri (S,M,L)', 'price' => 230000],
-            ['name' => 'Kemeja Batik Putri (XL,XXL)', 'price' => 235000],
-            ['name' => 'Kemeja Batik Putri (XXXL)', 'price' => 245000],
+            ['name' => 'Kemeja Batik SMP Putri (S,M,L)', 'price' => 230000],
+            ['name' => 'Kemeja Batik SMP Putri (XL,XXL)', 'price' => 235000],
+            ['name' => 'Kemeja Batik SMP Putri (XXXL)', 'price' => 245000],
 
-            ['name' => 'Kemeja Biru List Putri (S,M,L)', 'price' => 235000],
-            ['name' => 'Kemeja Biru List Putri (XL,XXL)', 'price' => 240000],
-            ['name' => 'Kemeja Biru List Putri (XXXL)', 'price' => 250000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putri (S,M,L)', 'price' => 235000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putri (XL,XXL)', 'price' => 240000],
+            ['name' => 'Kemeja Biru List Bordir SMP Putri (XXXL)', 'price' => 250000],
 
-            ['name' => 'Kemeja Pramuka Putri (S,M,L)', 'price' => 240000],
-            ['name' => 'Kemeja Pramuka Putri (XL,XXL)', 'price' => 245000],
-            ['name' => 'Kemeja Pramuka Putri (XXXL)', 'price' => 255000],
+            ['name' => 'Kemeja Pramuka SMP Putri (S,M,L)', 'price' => 240000],
+            ['name' => 'Kemeja Pramuka SMP Putri (XL,XXL)', 'price' => 245000],
+            ['name' => 'Kemeja Pramuka SMP Putri (XXXL)', 'price' => 255000],
 
-            ['name' => 'Rok Seragam SMP Putri (S,M,L)', 'price' => 220000],
-            ['name' => 'Rok Seragam SMP Putri (XL,XXL)', 'price' => 225000],
-            ['name' => 'Rok Seragam SMP Putri (XXXL)', 'price' => 230000],
+            ['name' => 'Baju Olahraga SMP Putri (S,M,L)', 'price' => 150000],
+            ['name' => 'Baju Olahraga SMP Putri (XL,XXL)', 'price' => 155000],
+            ['name' => 'Baju Olahraga SMP Putri (XXXL)', 'price' => 165000],
 
-            ['name' => 'Rok Celana Pramuka (S,M,L)', 'price' => 200000],
-            ['name' => 'Rok Celana Pramuka (XL,XXL)', 'price' => 210000],
-            ['name' => 'Rok Celana Pramuka (XXXL)', 'price' => 225000],
+            ['name' => 'Rok Biru SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Biru SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Biru SMP Putri (XXXL)', 'price' => 230000],
 
-            ['name' => 'Rok Celana Olahraga (S,M,L)', 'price' => 200000],
-            ['name' => 'Rok Celana Olahraga (XL,XXL)', 'price' => 205000],
-            ['name' => 'Rok Celana Olahraga (XXXL)', 'price' => 215000],
+            ['name' => 'Rok Biru Gelap SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Biru Gelap SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Biru Gelap SMP Putri (XXXL)', 'price' => 230000],
 
-            ['name' => 'Baju Olahraga Putri (S,M,L)', 'price' => 150000],
-            ['name' => 'Baju Olahraga Putri (XL,XXL)', 'price' => 155000],
-            ['name' => 'Baju Olahraga Putri (XXXL)', 'price' => 165000],
+            ['name' => 'Rok Biru Stip Batik SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Biru Stip Batik SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Biru Stip Batik SMP Putri (XXXL)', 'price' => 230000],
 
-            ['name' => 'Rok Seragam SMA (S,M,L)', 'price' => 225000],
-            ['name' => 'Rok Seragam SMA (XL,XXL)', 'price' => 230000],
-            ['name' => 'Rok Seragam SMA (XXXL)', 'price' => 235000],
+            ['name' => 'Rok Biru Stip Biru SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Biru Stip Biru SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Biru Stip Biru SMP Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Pramuka SMP Putri (S,M,L)', 'price' => 220000],
+            ['name' => 'Rok Pramuka SMP Putri (XL,XXL)', 'price' => 225000],
+            ['name' => 'Rok Pramuka SMP Putri (XXXL)', 'price' => 230000],
+
+            ['name' => 'Rok Celana Pramuka SMP Putri (S,M,L)', 'price' => 200000],
+            ['name' => 'Rok Celana Pramuka SMP Putri (XL,XXL)', 'price' => 210000],
+            ['name' => 'Rok Celana Pramuka SMP Putri (XXXL)', 'price' => 225000],
+
+            ['name' => 'Rok Celana Olahraga SMP Putri (S,M,L)', 'price' => 200000],
+            ['name' => 'Rok Celana Olahraga SMP Putri (XL,XXL)', 'price' => 205000],
+            ['name' => 'Rok Celana Olahraga SMP Putri (XXXL)', 'price' => 215000],
+
+
+            ['name' => 'Rok Abu-abu SMA Putri (S,M,L)', 'price' => 225000],
+            ['name' => 'Rok Abu-abu SMA Putri (XL,XXL)', 'price' => 230000],
+            ['name' => 'Rok Abu-abu SMA Putri (XXXL)', 'price' => 235000],
+
+            ['name' => 'Rok Abu-abu Gelap SMA Putri (S,M,L)', 'price' => 225000],
+            ['name' => 'Rok Abu-abu Gelap SMA Putri (XL,XXL)', 'price' => 230000],
+            ['name' => 'Rok Abu-abu Gelap SMA Putri (XXXL)', 'price' => 235000],
 
             // --- AKSESORI ---
             ['name' => 'Topi', 'price' => 50000],
