@@ -125,7 +125,7 @@ const deleteSliderImage = async (path) => {
         acceptClass: 'p-button-danger',
         accept: async () => {
             try {
-                const response = await axios.post(route('admin.settings.delete-slider'), { image_path: path });
+                const response = await axios.post(route('admin.settings.delete_slider'), { image_path: path });
                 if (response.data.status) {
 
                     await fetchSettings();
