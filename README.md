@@ -423,6 +423,7 @@ const whatsappUrl = computed(() => {
         padding: 0;
         background: white;
         visibility: hidden;
+        
     }
 
     .printable-area {
